@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.3
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabiRibi_Editor", "RabiRibi_Editor\RabiRibi_Editor.csproj", "{614903E6-2828-440E-9922-C9B0E006B9C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{614903E6-2828-440E-9922-C9B0E006B9C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{614903E6-2828-440E-9922-C9B0E006B9C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{614903E6-2828-440E-9922-C9B0E006B9C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{614903E6-2828-440E-9922-C9B0E006B9C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+EndGlobal
