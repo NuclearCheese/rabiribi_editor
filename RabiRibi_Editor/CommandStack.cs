@@ -46,8 +46,7 @@ namespace RabiRibi_Editor
     {
       internal CommandType command;
       internal int left_tile, top_tile, right_tile, bottom_tile;
-      internal short[,] old_data;
-      internal short[,] new_data;
+      internal short[,] data;
       // TODO this might need some more smarts to handle multi-layer commands.
       
       internal CommandEntry(CommandType cmd, int left, int right, int top, int bottom)
@@ -71,8 +70,7 @@ namespace RabiRibi_Editor
           bottom_tile = LevelData.Tile_Y_To_Map_Y(bottom_tile);
         }
         
-        old_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
-        new_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+        data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
       }
     }
     
@@ -126,8 +124,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y - command.top_tile] = level.tile_data[layer, x, y];
-              level.tile_data[layer, x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+              short temp = level.tile_data[layer, x, y];
+              level.tile_data[layer, x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -137,8 +136,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y - command.top_tile] = level.collision_data[x, y];
-              level.collision_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+              short temp = level.collision_data[x, y];
+              level.collision_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -148,8 +148,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y - command.top_tile] = level.event_data[x, y];
-              level.event_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+              short temp = level.event_data[x, y];
+              level.event_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -159,8 +160,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y - command.top_tile] = level.item_data[x, y];
-              level.item_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+              short temp = level.item_data[x, y];
+              level.item_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -170,8 +172,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_type_data[x, y];
-              level.room_type_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
+              short temp = level.room_type_data[x, y];
+              level.room_type_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -181,8 +184,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_color_data[x, y];
-              level.room_color_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
+              short temp = level.room_color_data[x, y];
+              level.room_color_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -192,8 +196,9 @@ namespace RabiRibi_Editor
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_bg_data[x, y];
-              level.room_bg_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
+              short temp = level.room_bg_data[x, y];
+              level.room_bg_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
           break;
@@ -208,9 +213,6 @@ namespace RabiRibi_Editor
       if (undo_stack.Count > 0)
       {
         CommandEntry cmd = undo_stack.Pop();
-        short[,] temp = cmd.old_data;
-        cmd.old_data = cmd.new_data;
-        cmd.new_data = temp;
         redo_stack.Push(cmd);
         RunCommandInternal(cmd);
       }
@@ -224,9 +226,6 @@ namespace RabiRibi_Editor
       if (redo_stack.Count > 0)
       {
         CommandEntry cmd = redo_stack.Pop();
-        short[,] temp = cmd.old_data;
-        cmd.old_data = cmd.new_data;
-        cmd.new_data = temp;
         undo_stack.Push(cmd);
         RunCommandInternal(cmd);
       }

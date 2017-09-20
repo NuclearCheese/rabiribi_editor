@@ -46,8 +46,6 @@ namespace RabiRibi_Editor
     
     CommandStack command_stack;
     
-    // TODO - add undo function
-    
     public MainForm()
     {
       //
@@ -588,11 +586,11 @@ namespace RabiRibi_Editor
           CommandStack.CommandEntry cmd =
             new CommandStack.CommandEntry((CommandStack.CommandType)i,
                                           left_tile, right_tile, top_tile, bottom_tile);
-          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              cmd.new_data[j,k] = actual_tile;
+              cmd.data[j,k] = actual_tile;
             }
           }
           command_stack.RunCommnd(cmd);
@@ -604,11 +602,11 @@ namespace RabiRibi_Editor
         CommandStack.CommandEntry cmd =
           new CommandStack.CommandEntry(CommandStack.CommandType.Write_Collision,
                                         left_tile, right_tile, top_tile, bottom_tile);
-        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+        for (int j = 0; j < cmd.data.GetLength(0); j++)
         {
-          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+          for (int k = 0; k < cmd.data.GetLength(1); k++)
           {
-            cmd.new_data[j,k] = selected_collision;
+            cmd.data[j,k] = selected_collision;
           }
         }
         command_stack.RunCommnd(cmd);
@@ -622,11 +620,11 @@ namespace RabiRibi_Editor
           CommandStack.CommandEntry cmd =
             new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
                                           left_tile, right_tile, top_tile, bottom_tile);
-          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              cmd.new_data[j,k] = data;
+              cmd.data[j,k] = data;
             }
           }
           command_stack.RunCommnd(cmd);
@@ -645,11 +643,11 @@ namespace RabiRibi_Editor
           CommandStack.CommandEntry cmd =
             new CommandStack.CommandEntry(CommandStack.CommandType.Write_Item,
                                           left_tile, right_tile, top_tile, bottom_tile);
-          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              cmd.new_data[j,k] = data;
+              cmd.data[j,k] = data;
             }
           }
           command_stack.RunCommnd(cmd);
@@ -666,11 +664,11 @@ namespace RabiRibi_Editor
           new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Type,
                                         left_tile, right_tile, top_tile, bottom_tile);
         
-        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+        for (int j = 0; j < cmd.data.GetLength(0); j++)
         {
-          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+          for (int k = 0; k < cmd.data.GetLength(1); k++)
           {
-            cmd.new_data[j,k] = (short)room_type_selection.SelectedIndex;
+            cmd.data[j,k] = (short)room_type_selection.SelectedIndex;
           }
         }
         command_stack.RunCommnd(cmd);
@@ -690,11 +688,11 @@ namespace RabiRibi_Editor
             new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Color,
                                           left_tile, right_tile, top_tile, bottom_tile);
           
-          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              cmd.new_data[j,k] = selected_index;
+              cmd.data[j,k] = selected_index;
             }
           }
           command_stack.RunCommnd(cmd);
@@ -715,11 +713,11 @@ namespace RabiRibi_Editor
             new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_BG,
                                           left_tile, right_tile, top_tile, bottom_tile);
           
-          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              cmd.new_data[j,k] = selected_index;
+              cmd.data[j,k] = selected_index;
             }
           }
           command_stack.RunCommnd(cmd);
