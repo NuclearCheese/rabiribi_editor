@@ -62,8 +62,8 @@ namespace RabiRibi_Editor
         // If the command is a per-room command, collapse the coordinates to room coordinates
         // TODO add other per-room commands.  maybe a smarter way to do this?
         if (command == CommandType.Write_Room_Type ||
-           command == CommandType.Write_Room_Color ||
-           command == CommandType.Write_Room_BG)
+            command == CommandType.Write_Room_Color ||
+            command == CommandType.Write_Room_BG)
         {
           left_tile /= LevelData.screen_width_in_tiles;
           right_tile /= LevelData.screen_width_in_tiles;
@@ -230,6 +230,26 @@ namespace RabiRibi_Editor
         undo_stack.Push(cmd);
         RunCommandInternal(cmd);
       }
+    }
+    
+    /// <summary>
+    /// Get Booleans indicating whether undo and redo are available.
+    /// </summary>
+    /// <param name="undo_available">Is undo available</param>
+    /// <param name="redo_available">Is redo available</param>
+    internal void UndoAvailable(out bool undo_available, out bool redo_available)
+    {
+      undo_available = undo_stack.Count > 0;
+      redo_available = redo_stack.Count > 0;
+    }
+    
+    /// <summary>
+    /// Clears the undo and redo stacks.
+    /// </summary>
+    internal void ClearUndoStack()
+    {
+      undo_stack.Clear();
+      redo_stack.Clear();
     }
   }
 }
