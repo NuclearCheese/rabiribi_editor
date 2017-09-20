@@ -743,7 +743,7 @@ namespace RabiRibi_Editor
       {
         if (layer_tool_radios[i].Checked)
         {
-          short tile_index = level.tile_data[i, tile_x, tile_y];
+          short tile_index = level.tile_data[i][tile_x, tile_y];
           if (tile_index < 0)
           {
             hflip_checkbox.Checked = true;

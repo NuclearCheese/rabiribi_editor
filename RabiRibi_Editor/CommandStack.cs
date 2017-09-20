@@ -110,6 +110,7 @@ namespace RabiRibi_Editor
     /// <param name="command">Command to execute</param>
     void RunCommandInternal(CommandEntry command)
     {
+      short[,] data_to_modify = null;
       switch (command.command)
       {
         case CommandType.Write_Layer_0:
@@ -120,88 +121,48 @@ namespace RabiRibi_Editor
         case CommandType.Write_Layer_5:
         case CommandType.Write_Layer_6:
           int layer = (int)command.command;
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.tile_data[layer, x, y];
-              level.tile_data[layer, x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.tile_data[layer];
           break;
           
         case CommandType.Write_Collision:
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.collision_data[x, y];
-              level.collision_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.collision_data;
           break;
           
         case CommandType.Write_Event:
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.event_data[x, y];
-              level.event_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.event_data;
           break;
           
         case CommandType.Write_Item:
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.item_data[x, y];
-              level.item_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.item_data;
           break;
           
         case CommandType.Write_Room_Type:
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.room_type_data[x, y];
-              level.room_type_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.room_type_data;
           break;
           
         case CommandType.Write_Room_Color:
-          for (int x = command.left_tile; x <= command.right_tile; x++)
-          {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
-            {
-              short temp = level.room_color_data[x, y];
-              level.room_color_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
-              command.data[x - command.left_tile, y - command.top_tile] = temp;
-            }
-          }
+          data_to_modify = level.room_color_data;
           break;
           
         case CommandType.Write_Room_BG:
+          data_to_modify = level.room_bg_data;
+          break;
+      }
+      if (data_to_modify != null)
+      {
           for (int x = command.left_tile; x <= command.right_tile; x++)
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              short temp = level.room_bg_data[x, y];
-              level.room_bg_data[x, y] = command.data[x - command.left_tile, y - command.top_tile];
+              short temp = data_to_modify[x, y];
+              data_to_modify[x, y] = command.data[x - command.left_tile, y - command.top_tile];
               command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
-          break;
+      }
+      else
+      {
+        // TODO error
       }
     }
     
