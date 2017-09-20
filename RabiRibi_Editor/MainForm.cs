@@ -44,6 +44,8 @@ namespace RabiRibi_Editor
     short selected_tile = 0;
     short selected_collision = 0;
     
+    CommandStack command_stack;
+    
     // TODO - add undo function
     
     public MainForm()
@@ -239,6 +241,7 @@ namespace RabiRibi_Editor
       base.OnLoad(e);
       
       // Initialize stuff
+      command_stack = new CommandStack(level);
       
       tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
       
@@ -565,21 +568,54 @@ namespace RabiRibi_Editor
       {
         if (layer_tool_radios[i].Checked)
         {
-          short actual_tile = selected_tile;
-          // Check H/V flip
-          if (vflip_checkbox.Checked)
+          // TODO TEST
+          if (i == 1)
           {
-            actual_tile += 5000;
-          }
-          if (hflip_checkbox.Checked)
-          {
-            actual_tile = (short)(-actual_tile);
-          }
-          for (int x = left_tile; x <= right_tile; x++)
-          {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            short actual_tile = selected_tile;
+            // Check H/V flip
+            if (vflip_checkbox.Checked)
             {
-              level.tile_data[i, x, y] = actual_tile;
+              actual_tile += 5000;
+            }
+            if (hflip_checkbox.Checked)
+            {
+              actual_tile = (short)(-actual_tile);
+            }
+            CommandStack.CommandEntry cmd = new CommandStack.CommandEntry();
+            cmd.command = CommandStack.CommandType.Write_Layer_1;
+            cmd.left_tile = left_tile;
+            cmd.right_tile = right_tile;
+            cmd.top_tile = top_tile;
+            cmd.bottom_tile = bottom_tile;
+            cmd.old_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+            cmd.new_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+            for (int k = 0; k < cmd.new_data.GetLength(0); k++)
+            {
+              for (int j = 0; j < cmd.new_data.GetLength(1); j++)
+              {
+                cmd.new_data[k,j] = actual_tile;
+              }
+            }
+            command_stack.RunCommnd(cmd);
+          }
+          else
+          {
+            short actual_tile = selected_tile;
+            // Check H/V flip
+            if (vflip_checkbox.Checked)
+            {
+              actual_tile += 5000;
+            }
+            if (hflip_checkbox.Checked)
+            {
+              actual_tile = (short)(-actual_tile);
+            }
+            for (int x = left_tile; x <= right_tile; x++)
+            {
+              for (int y = top_tile; y <= bottom_tile; y++)
+              {
+                level.tile_data[i, x, y] = actual_tile;
+              }
             }
           }
         }
@@ -884,7 +920,7 @@ namespace RabiRibi_Editor
       {
         try
         {
-        level.Save_Level(sd.FileName);
+          level.Save_Level(sd.FileName);
         }
         catch (Exception E)
         {
@@ -931,6 +967,18 @@ namespace RabiRibi_Editor
         }
         c.SelectedIndex = 0;
       }
+    }
+    
+    void UndoToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      command_stack.Undo();
+      tileView1.Invalidate();
+    }
+    
+    void RedoToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      command_stack.Redo();
+      tileView1.Invalidate();
     }
   }
 }
