@@ -21,7 +21,24 @@ namespace RabiRibi_Editor
     
     internal enum CommandType
     {
-      Write_Layer_1,
+      // The values on the Write_Layer values are important - they directly
+      // correlate to the layer indices.
+      Write_Layer_0 = 0,
+      Write_Layer_1 = 1,
+      Write_Layer_2 = 2,
+      Write_Layer_3 = 3,
+      Write_Layer_4 = 4,
+      Write_Layer_5 = 5,
+      Write_Layer_6 = 6,
+      
+      // All enumerated values below here do not rely on having a specific value.
+      Write_Collision,
+      Write_Event,
+      Write_Item,
+      Write_Room_Type,
+      Write_Room_Color,
+      Write_Room_BG,
+      
       // TODO other command types
     };
     
@@ -32,6 +49,31 @@ namespace RabiRibi_Editor
       internal short[,] old_data;
       internal short[,] new_data;
       // TODO this might need some more smarts to handle multi-layer commands.
+      
+      internal CommandEntry(CommandType cmd, int left, int right, int top, int bottom)
+      {
+        command = cmd;
+        
+        left_tile = left;
+        right_tile = right;
+        top_tile = top;
+        bottom_tile = bottom;
+        
+        // If the command is a per-room command, collapse the coordinates to room coordinates
+        // TODO add other per-room commands.  maybe a smarter way to do this?
+        if (command == CommandType.Write_Room_Type ||
+           command == CommandType.Write_Room_Color ||
+           command == CommandType.Write_Room_BG)
+        {
+          left_tile /= LevelData.screen_width_in_tiles;
+          right_tile /= LevelData.screen_width_in_tiles;
+          top_tile = LevelData.Tile_Y_To_Map_Y(top_tile);
+          bottom_tile = LevelData.Tile_Y_To_Map_Y(bottom_tile);
+        }
+        
+        old_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+        new_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+      }
     }
     
     // TODO - need some way to limit the capacity of the stack
@@ -72,13 +114,86 @@ namespace RabiRibi_Editor
     {
       switch (command.command)
       {
+        case CommandType.Write_Layer_0:
         case CommandType.Write_Layer_1:
+        case CommandType.Write_Layer_2:
+        case CommandType.Write_Layer_3:
+        case CommandType.Write_Layer_4:
+        case CommandType.Write_Layer_5:
+        case CommandType.Write_Layer_6:
+          int layer = (int)command.command;
           for (int x = command.left_tile; x <= command.right_tile; x++)
           {
             for (int y = command.top_tile; y <= command.bottom_tile; y++)
             {
-              command.old_data[x - command.left_tile, y - command.top_tile] = level.tile_data[1, x, y];
-              level.tile_data[1, x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+              command.old_data[x - command.left_tile, y - command.top_tile] = level.tile_data[layer, x, y];
+              level.tile_data[layer, x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Collision:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y - command.top_tile] = level.collision_data[x, y];
+              level.collision_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Event:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y - command.top_tile] = level.event_data[x, y];
+              level.event_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Item:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y - command.top_tile] = level.item_data[x, y];
+              level.item_data[x, y] = command.new_data[x - command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Room_Type:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_type_data[x, y];
+              level.room_type_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Room_Color:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_color_data[x, y];
+              level.room_color_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
+            }
+          }
+          break;
+          
+        case CommandType.Write_Room_BG:
+          for (int x = command.left_tile; x <= command.right_tile; x++)
+          {
+            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            {
+              command.old_data[x - command.left_tile, y -command.top_tile] = level.room_bg_data[x, y];
+              level.room_bg_data[x, y] = command.new_data[x -command.left_tile, y - command.top_tile];
             }
           }
           break;

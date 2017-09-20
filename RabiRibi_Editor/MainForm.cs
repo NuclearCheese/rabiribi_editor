@@ -568,68 +568,53 @@ namespace RabiRibi_Editor
       {
         if (layer_tool_radios[i].Checked)
         {
-          // TODO TEST
-          if (i == 1)
+          short actual_tile = selected_tile;
+          // Check H/V flip
+          if (vflip_checkbox.Checked)
           {
-            short actual_tile = selected_tile;
-            // Check H/V flip
-            if (vflip_checkbox.Checked)
-            {
-              actual_tile += 5000;
-            }
-            if (hflip_checkbox.Checked)
-            {
-              actual_tile = (short)(-actual_tile);
-            }
-            CommandStack.CommandEntry cmd = new CommandStack.CommandEntry();
-            cmd.command = CommandStack.CommandType.Write_Layer_1;
-            cmd.left_tile = left_tile;
-            cmd.right_tile = right_tile;
-            cmd.top_tile = top_tile;
-            cmd.bottom_tile = bottom_tile;
-            cmd.old_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
-            cmd.new_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
-            for (int k = 0; k < cmd.new_data.GetLength(0); k++)
-            {
-              for (int j = 0; j < cmd.new_data.GetLength(1); j++)
-              {
-                cmd.new_data[k,j] = actual_tile;
-              }
-            }
-            command_stack.RunCommnd(cmd);
+            actual_tile += 5000;
           }
-          else
+          if (hflip_checkbox.Checked)
           {
-            short actual_tile = selected_tile;
-            // Check H/V flip
-            if (vflip_checkbox.Checked)
+            actual_tile = (short)(-actual_tile);
+          }
+          //CommandStack.CommandEntry cmd = new CommandStack.CommandEntry();
+          // Note - Write_Layer commands have the same value as their respective
+          // layer indices.
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry((CommandStack.CommandType)i,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          //cmd.command = (CommandStack.CommandType)i;
+          //cmd.left_tile = left_tile;
+          //cmd.right_tile = right_tile;
+          //cmd.top_tile = top_tile;
+          //cmd.bottom_tile = bottom_tile;
+          //cmd.old_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+          //cmd.new_data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+          {
+            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
             {
-              actual_tile += 5000;
-            }
-            if (hflip_checkbox.Checked)
-            {
-              actual_tile = (short)(-actual_tile);
-            }
-            for (int x = left_tile; x <= right_tile; x++)
-            {
-              for (int y = top_tile; y <= bottom_tile; y++)
-              {
-                level.tile_data[i, x, y] = actual_tile;
-              }
+              cmd.new_data[j,k] = actual_tile;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
       }
       
       if (collision_radio.Checked)
       {
-        for (int x = left_tile; x <= right_tile; x++)
+        CommandStack.CommandEntry cmd =
+          new CommandStack.CommandEntry(CommandStack.CommandType.Write_Collision,
+                                        left_tile, right_tile, top_tile, bottom_tile);
+        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
         {
-          for (int y = top_tile; y <= bottom_tile; y++)
+          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
           {
-            level.collision_data[x, y] = selected_collision;
+            cmd.new_data[j,k] = selected_collision;
           }
         }
+        command_stack.RunCommnd(cmd);
       }
       
       if (event_radio.Checked)
@@ -637,13 +622,17 @@ namespace RabiRibi_Editor
         short data;
         if (short.TryParse(event_ID_entry.Text, out data))
         {
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
             {
-              level.event_data[x,y] = data;
+              cmd.new_data[j,k] = data;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
@@ -656,13 +645,17 @@ namespace RabiRibi_Editor
         short data;
         if (short.TryParse(item_ID_entry.Text, out data))
         {
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Item,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          for (int j = 0; j < cmd.new_data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.new_data.GetLength(1); k++)
             {
-              level.item_data[x,y] = data;
+              cmd.new_data[j,k] = data;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
@@ -672,20 +665,18 @@ namespace RabiRibi_Editor
       
       if (room_type_radio.Checked)
       {
-        // TODO this could be more efficient
-        for (int x = left_tile; x <= right_tile; x++)
+        CommandStack.CommandEntry cmd =
+          new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Type,
+                                        left_tile, right_tile, top_tile, bottom_tile);
+        
+        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
         {
-          for (int y = top_tile; y <= bottom_tile; y++)
+          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
           {
-            int map_x = x / LevelData.screen_width_in_tiles;
-            int map_y = LevelData.Tile_Y_To_Map_Y(y);
-            if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                map_y >= 0 && map_y < LevelData.map_screen_height)
-            {
-              level.room_type_data[map_x,map_y] = (short)room_type_selection.SelectedIndex;
-            }
+            cmd.new_data[j,k] = (short)room_type_selection.SelectedIndex;
           }
         }
+        command_stack.RunCommnd(cmd);
       }
       
       if (room_color_radio.Checked)
@@ -698,21 +689,33 @@ namespace RabiRibi_Editor
         
         if (short.TryParse(selection_string, out selected_index))
         {
-          // TODO this could be more efficient
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Color,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+        
+        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+        {
+          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
-            {
-              int map_x = x / LevelData.screen_width_in_tiles;
-              //int map_y = (y - LevelData.screen_vertical_offset_in_tiles) / LevelData.screen_height_in_tiles;
-              int map_y = LevelData.Tile_Y_To_Map_Y(y);
-              if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                  map_y >= 0 && map_y < LevelData.map_screen_height)
-              {
-                level.room_color_data[map_x,map_y] = selected_index;
-              }
-            }
+            cmd.new_data[j,k] = selected_index;
           }
+        }
+        command_stack.RunCommnd(cmd);
+          // TODO this could be more efficient
+          //for (int x = left_tile; x <= right_tile; x++)
+          //{
+          //  for (int y = top_tile; y <= bottom_tile; y++)
+          //  {
+          //    int map_x = x / LevelData.screen_width_in_tiles;
+          //    //int map_y = (y - LevelData.screen_vertical_offset_in_tiles) / LevelData.screen_height_in_tiles;
+          //    int map_y = LevelData.Tile_Y_To_Map_Y(y);
+          //    if (map_x >= 0 && map_x < LevelData.map_screen_width &&
+          //        map_y >= 0 && map_y < LevelData.map_screen_height)
+          //    {
+          //      level.room_color_data[map_x,map_y] = selected_index;
+          //    }
+          //  }
+          //}
         }
         else
         {
@@ -726,21 +729,33 @@ namespace RabiRibi_Editor
         
         if (short.TryParse(bg_ID_entry.Text, out selected_index))
         {
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_BG,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+        
+        for (int j = 0; j < cmd.new_data.GetLength(0); j++)
+        {
+          for (int k = 0; k < cmd.new_data.GetLength(1); k++)
+          {
+            cmd.new_data[j,k] = selected_index;
+          }
+        }
+        command_stack.RunCommnd(cmd);
           
           // TODO this could be more efficient
-          for (int x = left_tile; x <= right_tile; x++)
-          {
-            for (int y = top_tile; y <= bottom_tile; y++)
-            {
-              int map_x = x / LevelData.screen_width_in_tiles;
-              int map_y = LevelData.Tile_Y_To_Map_Y(y);
-              if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                  map_y >= 0 && map_y < LevelData.map_screen_height)
-              {
-                level.room_bg_data[map_x,map_y] = selected_index;
-              }
-            }
-          }
+          //for (int x = left_tile; x <= right_tile; x++)
+          //{
+          //  for (int y = top_tile; y <= bottom_tile; y++)
+          //  {
+          //    int map_x = x / LevelData.screen_width_in_tiles;
+          //    int map_y = LevelData.Tile_Y_To_Map_Y(y);
+          //    if (map_x >= 0 && map_x < LevelData.map_screen_width &&
+          //        map_y >= 0 && map_y < LevelData.map_screen_height)
+          //    {
+          //      level.room_bg_data[map_x,map_y] = selected_index;
+          //    }
+          //  }
+          //}
         }
         else
         {
