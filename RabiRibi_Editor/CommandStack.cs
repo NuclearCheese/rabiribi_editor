@@ -48,6 +48,8 @@ namespace RabiRibi_Editor
       internal int left_tile, top_tile, right_tile, bottom_tile;
       internal short[,] data;
       // TODO this might need some more smarts to handle multi-layer commands.
+      // Most likely, our undo/redo stack entries will end up being lists of
+      // CommandEntry objects, instead of individual objects.
       
       internal CommandEntry(CommandType cmd, int left, int right, int top, int bottom)
       {
@@ -74,17 +76,59 @@ namespace RabiRibi_Editor
       }
     }
     
-    // TODO - need some way to limit the capacity of the stack
-    // Apparently not present in standard collections, probably need to roll our own.
-    Stack<CommandEntry> undo_stack;
-    Stack<CommandEntry> redo_stack;
+    const int max_undo_entries = 50;
+    
+    /// <summary>
+    /// A stack of CommandEntry objects, with a maximum size.  If a push
+    /// exceeds the size maximum, old items are dropped.
+    /// </summary>
+    class BoundedStack
+    {
+      List<CommandEntry> storage;
+      
+      internal BoundedStack()
+      {
+        storage = new List<CommandStack.CommandEntry>();
+      }
+      
+      internal void Push(CommandEntry item)
+      {
+        storage.Add(item);
+        if (storage.Count > max_undo_entries)
+        {
+          storage.RemoveRange(0, storage.Count - max_undo_entries);
+        }
+      }
+      
+      internal CommandEntry Pop()
+      {
+        CommandEntry item = storage[storage.Count - 1];
+        storage.RemoveAt(storage.Count - 1);
+        return item;
+      }
+      
+      internal void Clear()
+      {
+        storage.Clear();
+      }
+      
+      internal int Count
+      {
+        get
+        {
+          return storage.Count;
+        }
+      }
+    }
+    BoundedStack undo_stack;
+    BoundedStack redo_stack;
     
     public CommandStack(LevelData l)
     {
       level = l;
       
-      undo_stack = new Stack<CommandStack.CommandEntry>();
-      redo_stack = new Stack<CommandStack.CommandEntry>();
+      undo_stack = new CommandStack.BoundedStack();
+      redo_stack = new CommandStack.BoundedStack();
     }
     
     /// <summary>
