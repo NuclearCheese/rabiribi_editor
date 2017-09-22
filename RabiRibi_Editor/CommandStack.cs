@@ -84,14 +84,14 @@ namespace RabiRibi_Editor
     /// </summary>
     class BoundedStack
     {
-      List<CommandEntry> storage;
+      List<List<CommandEntry>> storage;
       
       internal BoundedStack()
       {
-        storage = new List<CommandStack.CommandEntry>();
+        storage = new List<List<CommandEntry>>();
       }
       
-      internal void Push(CommandEntry item)
+      internal void Push(List<CommandEntry> item)
       {
         storage.Add(item);
         if (storage.Count > max_undo_entries)
@@ -100,9 +100,9 @@ namespace RabiRibi_Editor
         }
       }
       
-      internal CommandEntry Pop()
+      internal List<CommandEntry> Pop()
       {
-        CommandEntry item = storage[storage.Count - 1];
+        List<CommandEntry> item = storage[storage.Count - 1];
         storage.RemoveAt(storage.Count - 1);
         return item;
       }
@@ -138,13 +138,23 @@ namespace RabiRibi_Editor
     /// <param name="command">Command to execute</param>
     internal void RunCommnd(CommandEntry command)
     {
+      List<CommandEntry> temp = new List<CommandStack.CommandEntry>();
+      temp.Add(command);
+      RunCommandList(temp);
+    }
+    
+    internal void RunCommandList(List<CommandEntry> command)
+    {
       undo_stack.Push(command);
       
       // We're breaking from the old undo chain.
       // TODO - this is typical behavior, but maybe there's something smarter?
       redo_stack.Clear();
       
-      RunCommandInternal(command);
+      for (int i = 0; i < command.Count; i++)
+      {
+        RunCommandInternal(command[i]);
+      }
     }
     
     /// <summary>
@@ -217,9 +227,12 @@ namespace RabiRibi_Editor
     {
       if (undo_stack.Count > 0)
       {
-        CommandEntry cmd = undo_stack.Pop();
+        List<CommandEntry> cmd = undo_stack.Pop();
         redo_stack.Push(cmd);
-        RunCommandInternal(cmd);
+        for (int i = 0; i < cmd.Count; i++)
+        {
+          RunCommandInternal(cmd[i]);
+        }
       }
     }
     
@@ -230,9 +243,12 @@ namespace RabiRibi_Editor
     {
       if (redo_stack.Count > 0)
       {
-        CommandEntry cmd = redo_stack.Pop();
+        List<CommandEntry> cmd = redo_stack.Pop();
         undo_stack.Push(cmd);
-        RunCommandInternal(cmd);
+        for (int i = cmd.Count - 1; i >= 0; i--)
+        {
+          RunCommandInternal(cmd[i]);
+        }
       }
     }
     

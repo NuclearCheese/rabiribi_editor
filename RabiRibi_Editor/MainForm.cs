@@ -41,6 +41,7 @@ namespace RabiRibi_Editor
     RadioButton room_type_radio;
     RadioButton room_color_radio;
     RadioButton room_bg_radio;
+    RadioButton metatile_radio;
     
     short selected_tile = 0;
     short selected_collision = 0;
@@ -390,6 +391,14 @@ namespace RabiRibi_Editor
       item_radio.Checked = false;
       item_radio.CheckedChanged += new EventHandler(tool_selection_changed);
       
+      metatile_radio = new RadioButton();
+      metatile_radio.Parent = tools_panel;
+      metatile_radio.Text = "Metatile";
+      metatile_radio.Top = 230;
+      metatile_radio.Left = 10;
+      metatile_radio.Checked = false;
+      metatile_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+      
       room_type_radio = new RadioButton();
       room_type_radio.Parent = tools_panel;
       room_type_radio.Text = "Room Type";
@@ -705,6 +714,13 @@ namespace RabiRibi_Editor
         {
           MessageBox.Show("Invalid item ID!");
         }
+      }
+      
+      if (metatile_radio.Checked)
+      {
+        // TODO TEST
+        Metatile m = new Metatile();
+        command_stack.RunCommandList(m.Get_Commands(left_tile, right_tile, top_tile, bottom_tile, 1));
       }
       
       if (room_type_radio.Checked)
