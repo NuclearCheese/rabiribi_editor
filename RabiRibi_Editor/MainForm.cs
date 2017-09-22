@@ -976,5 +976,35 @@ namespace RabiRibi_Editor
       undoToolStripMenuItem.Enabled = undo;
       redoToolStripMenuItem.Enabled = redo;
     }
+    
+    void LoadTilesetToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
+        
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          Load_Tile_Graphics(od.FileName);
+          tile_picturebox.Invalidate();
+          tileView1.Invalidate();
+        }
+      }
+    }
+    
+    void LoadCollisionTilesToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
+        
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          Load_Collision_Graphics(od.FileName);
+          collision_tiles.Invalidate();
+          tileView1.Invalidate();
+        }
+      }
+    }
   }
 }

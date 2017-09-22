@@ -40,6 +40,9 @@ namespace RabiRibi_Editor
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      this.loadTilesetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.loadCollisionTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +97,10 @@ namespace RabiRibi_Editor
       // 
       this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
                   this.openToolStripMenuItem,
-                  this.saveToolStripMenuItem});
+                  this.saveToolStripMenuItem,
+                  this.toolStripSeparator1,
+                  this.loadTilesetToolStripMenuItem,
+                  this.loadCollisionTilesToolStripMenuItem});
       this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
       this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
       this.fileToolStripMenuItem.Text = "File";
@@ -103,17 +109,36 @@ namespace RabiRibi_Editor
       // 
       this.openToolStripMenuItem.Name = "openToolStripMenuItem";
       this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-      this.openToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-      this.openToolStripMenuItem.Text = "Open";
+      this.openToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.openToolStripMenuItem.Text = "Open Level";
       this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItemClick);
       // 
       // saveToolStripMenuItem
       // 
       this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
       this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-      this.saveToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-      this.saveToolStripMenuItem.Text = "Save";
+      this.saveToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.saveToolStripMenuItem.Text = "Save Level";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItemClick);
+      // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
+      // 
+      // loadTilesetToolStripMenuItem
+      // 
+      this.loadTilesetToolStripMenuItem.Name = "loadTilesetToolStripMenuItem";
+      this.loadTilesetToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.loadTilesetToolStripMenuItem.Text = "Load Tileset";
+      this.loadTilesetToolStripMenuItem.Click += new System.EventHandler(this.LoadTilesetToolStripMenuItemClick);
+      // 
+      // loadCollisionTilesToolStripMenuItem
+      // 
+      this.loadCollisionTilesToolStripMenuItem.Name = "loadCollisionTilesToolStripMenuItem";
+      this.loadCollisionTilesToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.loadCollisionTilesToolStripMenuItem.Text = "Load Collision Tiles";
+      this.loadCollisionTilesToolStripMenuItem.Click += new System.EventHandler(this.LoadCollisionTilesToolStripMenuItemClick);
       // 
       // editToolStripMenuItem
       // 
@@ -129,7 +154,7 @@ namespace RabiRibi_Editor
       this.undoToolStripMenuItem.Enabled = false;
       this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
       this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-      this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.undoToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
       this.undoToolStripMenuItem.Text = "Undo";
       this.undoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItemClick);
       // 
@@ -138,7 +163,7 @@ namespace RabiRibi_Editor
       this.redoToolStripMenuItem.Enabled = false;
       this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
       this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-      this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.redoToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
       this.redoToolStripMenuItem.Text = "Redo";
       this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
       // 
@@ -783,6 +808,9 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ToolStripMenuItem loadCollisionTilesToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem loadTilesetToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
