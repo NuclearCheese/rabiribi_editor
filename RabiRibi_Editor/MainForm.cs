@@ -550,7 +550,7 @@ namespace RabiRibi_Editor
             
             // Also check for collision graphic tiles
             auto_tiles_file = Path.GetDirectoryName(od.FileName) +
-              Path.DirectorySeparatorChar + "COLLISION_TILES.png";
+              Path.DirectorySeparatorChar + "collision_tiles.png";
             if (File.Exists(auto_tiles_file))
             {
               if (MessageBox.Show
