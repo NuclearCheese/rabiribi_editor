@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace RabiRibi_Editor
@@ -531,6 +532,37 @@ namespace RabiRibi_Editor
             command_stack.ClearUndoStack();
             CheckUndoEnabled();
             
+            // If there is a tile1_a.png tileset image in the same directory as
+            // the loaded level, ask the user if they want to load it now.
+            string auto_tiles_file = Path.GetDirectoryName(od.FileName) +
+              Path.DirectorySeparatorChar + "tile1_a.png";
+            if (File.Exists(auto_tiles_file))
+            {
+              if (MessageBox.Show
+                  ("It appears a tileset image is in the same directory as this level file.\n" +
+                   "Do you want to load it now?", "Load tiles?", MessageBoxButtons.YesNo)
+                  == DialogResult.Yes)
+              {
+                Load_Tile_Graphics(auto_tiles_file);
+                tile_picturebox.Invalidate();
+              }
+            }
+            
+            // Also check for collision graphic tiles
+            auto_tiles_file = Path.GetDirectoryName(od.FileName) +
+              Path.DirectorySeparatorChar + "collision_tiles.png";
+            if (File.Exists(auto_tiles_file))
+            {
+              if (MessageBox.Show
+                  ("It appears a collision tiles image is in the same directory as this level file.\n" +
+                   "Do you want to load it now?", "Load tiles?", MessageBoxButtons.YesNo)
+                  == DialogResult.Yes)
+              {
+                Load_Collision_Graphics(auto_tiles_file);
+                collision_tiles.Invalidate();
+              }
+            }
+            
             tileView1.Invalidate();
           }
           catch (Exception E)
@@ -975,6 +1007,36 @@ namespace RabiRibi_Editor
       
       undoToolStripMenuItem.Enabled = undo;
       redoToolStripMenuItem.Enabled = redo;
+    }
+    
+    void LoadTilesetToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
+        
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          Load_Tile_Graphics(od.FileName);
+          tile_picturebox.Invalidate();
+          tileView1.Invalidate();
+        }
+      }
+    }
+    
+    void LoadCollisionTilesToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
+        
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          Load_Collision_Graphics(od.FileName);
+          collision_tiles.Invalidate();
+          tileView1.Invalidate();
+        }
+      }
     }
   }
 }
