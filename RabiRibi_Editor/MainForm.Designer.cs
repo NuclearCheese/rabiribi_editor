@@ -40,6 +40,9 @@ namespace RabiRibi_Editor
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.tileView1 = new RabiRibi_Editor.TileView();
       this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
@@ -79,7 +82,8 @@ namespace RabiRibi_Editor
       // menuStrip1
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                  this.fileToolStripMenuItem});
+                  this.fileToolStripMenuItem,
+                  this.editToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(942, 24);
@@ -110,6 +114,33 @@ namespace RabiRibi_Editor
       this.saveToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
       this.saveToolStripMenuItem.Text = "Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItemClick);
+      // 
+      // editToolStripMenuItem
+      // 
+      this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                  this.undoToolStripMenuItem,
+                  this.redoToolStripMenuItem});
+      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+      this.editToolStripMenuItem.Text = "Edit";
+      // 
+      // undoToolStripMenuItem
+      // 
+      this.undoToolStripMenuItem.Enabled = false;
+      this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+      this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+      this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.undoToolStripMenuItem.Text = "Undo";
+      this.undoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItemClick);
+      // 
+      // redoToolStripMenuItem
+      // 
+      this.redoToolStripMenuItem.Enabled = false;
+      this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+      this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+      this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.redoToolStripMenuItem.Text = "Redo";
+      this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
       // 
       // tileView1
       // 
@@ -752,6 +783,9 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
     private System.Windows.Forms.TextBox bg_ID_entry;
     private System.Windows.Forms.ComboBox misc_event_selection;
     private System.Windows.Forms.ComboBox entity_event_selection;

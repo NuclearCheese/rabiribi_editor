@@ -223,7 +223,7 @@ namespace RabiRibi_Editor
           {
             if (tile_layers_visible[layer])
             {
-              int data = level.tile_data[layer, tile_draw_x, tile_draw_y];
+              int data = level.tile_data[layer][tile_draw_x, tile_draw_y];
               if (data != 0)
               {
                 int tile_index = data;

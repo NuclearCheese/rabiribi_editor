@@ -44,7 +44,7 @@ namespace RabiRibi_Editor
     short selected_tile = 0;
     short selected_collision = 0;
     
-    // TODO - add undo function
+    CommandStack command_stack;
     
     public MainForm()
     {
@@ -239,6 +239,7 @@ namespace RabiRibi_Editor
       base.OnLoad(e);
       
       // Initialize stuff
+      command_stack = new CommandStack(level);
       
       tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
       
@@ -517,21 +518,26 @@ namespace RabiRibi_Editor
     
     void OpenToolStripMenuItemClick(object sender, EventArgs e)
     {
-      OpenFileDialog od = new OpenFileDialog();
-      od.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
-      
-      if (od.ShowDialog() == DialogResult.OK)
+      using (OpenFileDialog od = new OpenFileDialog())
       {
-        try
+        od.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
+        
+        if (od.ShowDialog() == DialogResult.OK)
         {
-          
-          level.Load_Level(od.FileName);
-          tileView1.Invalidate();
-        }
-        catch (Exception E)
-        {
-          MessageBox.Show("Error loading file!\n\nError information:\n" +
-                          E.Message);
+          try
+          {
+            level.Load_Level(od.FileName);
+            
+            command_stack.ClearUndoStack();
+            CheckUndoEnabled();
+            
+            tileView1.Invalidate();
+          }
+          catch (Exception E)
+          {
+            MessageBox.Show("Error loading file!\n\nError information:\n" +
+                            E.Message);
+          }
         }
       }
     }
@@ -575,25 +581,35 @@ namespace RabiRibi_Editor
           {
             actual_tile = (short)(-actual_tile);
           }
-          for (int x = left_tile; x <= right_tile; x++)
+          // Note - Write_Layer commands have the same value as their respective
+          // layer indices.
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry((CommandStack.CommandType)i,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              level.tile_data[i, x, y] = actual_tile;
+              cmd.data[j,k] = actual_tile;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
       }
       
       if (collision_radio.Checked)
       {
-        for (int x = left_tile; x <= right_tile; x++)
+        CommandStack.CommandEntry cmd =
+          new CommandStack.CommandEntry(CommandStack.CommandType.Write_Collision,
+                                        left_tile, right_tile, top_tile, bottom_tile);
+        for (int j = 0; j < cmd.data.GetLength(0); j++)
         {
-          for (int y = top_tile; y <= bottom_tile; y++)
+          for (int k = 0; k < cmd.data.GetLength(1); k++)
           {
-            level.collision_data[x, y] = selected_collision;
+            cmd.data[j,k] = selected_collision;
           }
         }
+        command_stack.RunCommnd(cmd);
       }
       
       if (event_radio.Checked)
@@ -601,13 +617,17 @@ namespace RabiRibi_Editor
         short data;
         if (short.TryParse(event_ID_entry.Text, out data))
         {
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              level.event_data[x,y] = data;
+              cmd.data[j,k] = data;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
@@ -620,13 +640,17 @@ namespace RabiRibi_Editor
         short data;
         if (short.TryParse(item_ID_entry.Text, out data))
         {
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Item,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              level.item_data[x,y] = data;
+              cmd.data[j,k] = data;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
@@ -636,20 +660,18 @@ namespace RabiRibi_Editor
       
       if (room_type_radio.Checked)
       {
-        // TODO this could be more efficient
-        for (int x = left_tile; x <= right_tile; x++)
+        CommandStack.CommandEntry cmd =
+          new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Type,
+                                        left_tile, right_tile, top_tile, bottom_tile);
+        
+        for (int j = 0; j < cmd.data.GetLength(0); j++)
         {
-          for (int y = top_tile; y <= bottom_tile; y++)
+          for (int k = 0; k < cmd.data.GetLength(1); k++)
           {
-            int map_x = x / LevelData.screen_width_in_tiles;
-            int map_y = LevelData.Tile_Y_To_Map_Y(y);
-            if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                map_y >= 0 && map_y < LevelData.map_screen_height)
-            {
-              level.room_type_data[map_x,map_y] = (short)room_type_selection.SelectedIndex;
-            }
+            cmd.data[j,k] = (short)room_type_selection.SelectedIndex;
           }
         }
+        command_stack.RunCommnd(cmd);
       }
       
       if (room_color_radio.Checked)
@@ -662,21 +684,18 @@ namespace RabiRibi_Editor
         
         if (short.TryParse(selection_string, out selected_index))
         {
-          // TODO this could be more efficient
-          for (int x = left_tile; x <= right_tile; x++)
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_Color,
+                                          left_tile, right_tile, top_tile, bottom_tile);
+          
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              int map_x = x / LevelData.screen_width_in_tiles;
-              //int map_y = (y - LevelData.screen_vertical_offset_in_tiles) / LevelData.screen_height_in_tiles;
-              int map_y = LevelData.Tile_Y_To_Map_Y(y);
-              if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                  map_y >= 0 && map_y < LevelData.map_screen_height)
-              {
-                level.room_color_data[map_x,map_y] = selected_index;
-              }
+              cmd.data[j,k] = selected_index;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
@@ -690,27 +709,26 @@ namespace RabiRibi_Editor
         
         if (short.TryParse(bg_ID_entry.Text, out selected_index))
         {
+          CommandStack.CommandEntry cmd =
+            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Room_BG,
+                                          left_tile, right_tile, top_tile, bottom_tile);
           
-          // TODO this could be more efficient
-          for (int x = left_tile; x <= right_tile; x++)
+          for (int j = 0; j < cmd.data.GetLength(0); j++)
           {
-            for (int y = top_tile; y <= bottom_tile; y++)
+            for (int k = 0; k < cmd.data.GetLength(1); k++)
             {
-              int map_x = x / LevelData.screen_width_in_tiles;
-              int map_y = LevelData.Tile_Y_To_Map_Y(y);
-              if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                  map_y >= 0 && map_y < LevelData.map_screen_height)
-              {
-                level.room_bg_data[map_x,map_y] = selected_index;
-              }
+              cmd.data[j,k] = selected_index;
             }
           }
+          command_stack.RunCommnd(cmd);
         }
         else
         {
           MessageBox.Show("Invalid BG ID!");
         }
       }
+      
+      CheckUndoEnabled();
       
       tileView1.Invalidate();
     }
@@ -725,7 +743,7 @@ namespace RabiRibi_Editor
       {
         if (layer_tool_radios[i].Checked)
         {
-          short tile_index = level.tile_data[i, tile_x, tile_y];
+          short tile_index = level.tile_data[i][tile_x, tile_y];
           if (tile_index < 0)
           {
             hflip_checkbox.Checked = true;
@@ -876,20 +894,22 @@ namespace RabiRibi_Editor
     
     void SaveToolStripMenuItemClick(object sender, EventArgs e)
     {
-      SaveFileDialog sd = new SaveFileDialog();
-      sd.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
-      sd.OverwritePrompt = true;
-      
-      if (sd.ShowDialog() == DialogResult.OK)
+      using (SaveFileDialog sd = new SaveFileDialog())
       {
-        try
+        sd.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
+        sd.OverwritePrompt = true;
+        
+        if (sd.ShowDialog() == DialogResult.OK)
         {
-        level.Save_Level(sd.FileName);
-        }
-        catch (Exception E)
-        {
-          MessageBox.Show("Error saving file!\n\nError information:\n" +
-                          E.Message);
+          try
+          {
+            level.Save_Level(sd.FileName);
+          }
+          catch (Exception E)
+          {
+            MessageBox.Show("Error saving file!\n\nError information:\n" +
+                            E.Message);
+          }
         }
       }
     }
@@ -931,6 +951,30 @@ namespace RabiRibi_Editor
         }
         c.SelectedIndex = 0;
       }
+    }
+    
+    void UndoToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      command_stack.Undo();
+      CheckUndoEnabled();
+      tileView1.Invalidate();
+    }
+    
+    void RedoToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      command_stack.Redo();
+      CheckUndoEnabled();
+      tileView1.Invalidate();
+    }
+    
+    void CheckUndoEnabled()
+    {
+      bool undo, redo;
+      command_stack.UndoAvailable(out undo,
+                                  out redo);
+      
+      undoToolStripMenuItem.Enabled = undo;
+      redoToolStripMenuItem.Enabled = redo;
     }
   }
 }

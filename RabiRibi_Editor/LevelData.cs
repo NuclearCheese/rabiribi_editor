@@ -48,7 +48,7 @@ namespace RabiRibi_Editor
     const int int_version_offset = 2602704;
     
     // Local data storage
-    internal short[,,] tile_data;
+    internal short[][,] tile_data;
     internal short[,] collision_data;
     internal short[,] event_data;
     internal short[,] item_data;
@@ -82,7 +82,11 @@ namespace RabiRibi_Editor
     
     public LevelData()
     {
-      tile_data = new short[num_tile_layers, map_tile_width, map_tile_height];
+      tile_data = new short[num_tile_layers][,];
+      for (int i = 0; i < num_tile_layers; i++)
+      {
+        tile_data[i] = new short[map_tile_width,map_tile_height];
+      }
       collision_data = new short[map_tile_width,map_tile_height];
       event_data = new short[map_tile_width,map_tile_height];
       item_data = new short[map_tile_width,map_tile_height];
@@ -94,7 +98,7 @@ namespace RabiRibi_Editor
         {
           for (int layer = 0; layer < num_tile_layers; layer++)
           {
-            tile_data[layer,x,y] = 0;
+            tile_data[layer][x,y] = 0;
           }
           collision_data[x,y] = 0;
           event_data[x,y] = 0;
@@ -129,7 +133,7 @@ namespace RabiRibi_Editor
           {
             for (int y = 0; y < map_tile_height; y++)
             {
-              output.Write(tile_data[i,x,y]);
+              output.Write(tile_data[i][x,y]);
             }
           }
         }
@@ -208,7 +212,11 @@ namespace RabiRibi_Editor
     {
       // Create new arrays, and only assign them at the end.  This way, if the
       // load fails we still keep the old data
-      short[,,] new_tile_data = new short[num_tile_layers, map_tile_width, map_tile_height];
+      short[][,] new_tile_data = new short[num_tile_layers][,];
+      for (int i = 0; i < num_tile_layers; i++)
+      {
+        new_tile_data[i] = new short[map_tile_width,map_tile_height];
+      }
       short[,] new_collision_data = new short[map_tile_width,map_tile_height];
       short[,] new_event_data = new short[map_tile_width,map_tile_height];
       short[,] new_item_data = new short[map_tile_width,map_tile_height];
@@ -229,7 +237,7 @@ namespace RabiRibi_Editor
           {
             for (int y = 0; y < map_tile_height; y++)
             {
-              new_tile_data[i,x,y] = input.ReadInt16();
+              new_tile_data[i][x,y] = input.ReadInt16();
             }
           }
         }
