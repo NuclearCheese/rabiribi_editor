@@ -259,8 +259,16 @@ namespace RabiRibi_Editor
         CheckBox c = new CheckBox();
         c.Parent = tabPage1;
         c.Text = "Layer " + i.ToString();
-        // TODO maybe reverse these, to have the highest layer at the top?
-        c.Top = 10 + (tileView1.layer_draw_order[i] * 20);
+        
+        // Do a reverse lookup on the draw order to get each layer's priority.
+        // This allows us to position the tools in draw order.
+        for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
+        {
+          if (tileView1.layer_draw_order[j] == i)
+          {
+            c.Top = 10 + j * 20;
+          }
+        }
         c.Left = 10;
         c.Checked = true;
         c.CheckedChanged += new EventHandler(LayerVisibleChanged);
@@ -341,7 +349,16 @@ namespace RabiRibi_Editor
         RadioButton r = new RadioButton();
         r.Parent = tools_panel;
         r.Text = "Layer " + i.ToString();
-        r.Top =  30 + (tileView1.layer_draw_order[i] * 20);
+        
+        // Do a reverse lookup on the draw order to get each layer's priority.
+        // This allows us to position the tools in draw order.
+        for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
+        {
+          if (tileView1.layer_draw_order[j] == i)
+          {
+            r.Top = 30 + j * 20;
+          }
+        }
         r.Left = 10;
         r.Width = 80;
         r.Checked = false;
