@@ -548,6 +548,21 @@ namespace RabiRibi_Editor
               }
             }
             
+            // Also check for collision graphic tiles
+            auto_tiles_file = Path.GetDirectoryName(od.FileName) +
+              Path.DirectorySeparatorChar + "COLLISION_TILES.png";
+            if (File.Exists(auto_tiles_file))
+            {
+              if (MessageBox.Show
+                  ("It appears a collision tiles image is in the same directory as this level file.\n" +
+                   "Do you want to load it now?", "Load tiles?", MessageBoxButtons.YesNo)
+                  == DialogResult.Yes)
+              {
+                Load_Collision_Graphics(auto_tiles_file);
+                collision_tiles.Invalidate();
+              }
+            }
+            
             tileView1.Invalidate();
           }
           catch (Exception E)
