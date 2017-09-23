@@ -55,6 +55,7 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.warp_event_selection = new System.Windows.Forms.ComboBox();
       this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.metatile_selection = new System.Windows.Forms.ComboBox();
       this.bg_ID_entry = new System.Windows.Forms.TextBox();
@@ -254,6 +255,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.warp_event_selection);
       this.tabPage2.Controls.Add(this.metatile_layer_selection);
       this.tabPage2.Controls.Add(this.metatile_selection);
       this.tabPage2.Controls.Add(this.bg_ID_entry);
@@ -281,6 +283,45 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // warp_event_selection
+      // 
+      this.warp_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_event_selection.FormattingEnabled = true;
+      this.warp_event_selection.Items.AddRange(new object[] {
+                  "Select a warp event ...",
+                  "112 Warp graphic (3 tiles below)",
+                  "208 Warp entrance",
+                  "209 Warp ID 0",
+                  "210 Warp ID 1",
+                  "211 Warp ID 2",
+                  "212 Warp ID 3",
+                  "213 Warp ID 4",
+                  "214 Warp ID 5",
+                  "215 Warp ID 6",
+                  "216 Warp ID 7",
+                  "217 Warp ID 8",
+                  "218 Warp ID 9",
+                  "219 Warp ID 10",
+                  "220 Warp ID 11",
+                  "240 Warp exit",
+                  "241 Warp cross-map off",
+                  "242 Warp cross-map to map 0",
+                  "243 Warp cross-map to map 1",
+                  "244 Warp cross-map to map 2",
+                  "245 Warp cross-map to map 3",
+                  "246 Warp cross-map to map 4",
+                  "247 Warp cross-map to map 5",
+                  "248 Warp cross-map to map 6",
+                  "249 Warp cross-map to map 7",
+                  "250 Warp cross-map to map 8",
+                  "251 Warp cross-map to map 9"});
+      this.warp_event_selection.Location = new System.Drawing.Point(6, 390);
+      this.warp_event_selection.Name = "warp_event_selection";
+      this.warp_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_event_selection.TabIndex = 20;
+      this.warp_event_selection.Visible = false;
+      this.warp_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // metatile_layer_selection
       // 
@@ -360,7 +401,7 @@ namespace RabiRibi_Editor
                   "5010 Type 10 modifier",
                   "5011 Type 11 modifier",
                   "5012 Type 12 modifier"});
-      this.misc_event_selection.Location = new System.Drawing.Point(6, 390);
+      this.misc_event_selection.Location = new System.Drawing.Point(6, 420);
       this.misc_event_selection.Name = "misc_event_selection";
       this.misc_event_selection.Size = new System.Drawing.Size(218, 21);
       this.misc_event_selection.TabIndex = 15;
@@ -508,8 +549,14 @@ namespace RabiRibi_Editor
                   "160 Boss gate (blocks exit during boss fight)",
                   "192 Reset breakable blocks",
                   "197 Spike block",
+                  "237 Timer block",
+                  "238 Timer item (use type to set duration)",
                   "455 Keke Bunny Gate (used in Keke Bunny fight)",
-                  "432 Break after post game clear?"});
+                  "432 Break after post game clear?",
+                  "512 Hall of Memory DLC area red blocks",
+                  "513 Hall of Memory DLC area blue blocks",
+                  "514 Hall of Memory DLC area green blocks",
+                  "515 Hall of Memory DLC area purple blocks"});
       this.tile_event_selection.Location = new System.Drawing.Point(6, 330);
       this.tile_event_selection.Name = "tile_event_selection";
       this.tile_event_selection.Size = new System.Drawing.Size(218, 21);
@@ -881,6 +928,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox warp_event_selection;
     private System.Windows.Forms.ToolStripMenuItem clearLoadedMetatilesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem loadMetatileFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem metatilesToolStripMenuItem;
