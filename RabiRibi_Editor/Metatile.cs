@@ -153,6 +153,7 @@ namespace RabiRibi_Editor
               int distance_from_right = (cmd.data.GetLength(0) - x) - right_cols;
               top_y_offset = (distance_from_right - 1) / mid_width;
             }
+            top_y_offset *= Math.Abs(slope);
             
             // If the slope makes this position outside the affected area, mark
             // it as such and go to the next tile.
@@ -219,6 +220,19 @@ namespace RabiRibi_Editor
             // New metatile definition
             if (line.StartsWith("metatile"))
             {
+              // Check if we have an existing, incomplete metatile definition
+              if (working != null)
+              {
+                if ((working.left_cols == -1) || (working.mid_cols == -1) ||
+                    (working.right_cols == -1) || (working.top_rows == -1) ||
+                    (working.mid_rows == -1) || (working.bottom_rows == -1))
+                {
+                  throw new MetatileFileException
+                    ("At line " + line_number.ToString()
+                     + ": starting a new metatile definition without completing the previous one.");
+                }
+              }
+              
               working = new Metatile();
               working.name = line.Substring(8).Trim();
               

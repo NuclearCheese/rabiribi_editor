@@ -256,16 +256,7 @@ namespace RabiRibi_Editor
       // Initialize stuff
       command_stack = new CommandStack(level);
       
-      try
-      {
-        metatile_list = Metatile.LoadFromFile("metatile.txt");
-      }
-      catch (Metatile.MetatileFileException E)
-      {
-        metatile_list = new List<Metatile>();
-        MessageBox.Show("Error loading metatile definitions from metatile.txt:\n"
-                        + E.Message);
-      }
+      metatile_list = new List<Metatile>();
       
       UpdateMetatileList();
       
@@ -1101,6 +1092,41 @@ namespace RabiRibi_Editor
           Load_Collision_Graphics(od.FileName);
           collision_tiles.Invalidate();
           tileView1.Invalidate();
+        }
+      }
+    }
+    
+    void ClearLoadedMetatilesToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      if (MessageBox.Show
+          ("Are you sure you want to clear all loaded metatile definitions?",
+           "Clear metatiles?",
+           MessageBoxButtons.YesNo) == DialogResult.Yes)
+      {
+        metatile_list.Clear();
+        UpdateMetatileList();
+      }
+    }
+    
+    void LoadMetatileFileToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "Text files (*.txt)|*.txt|All files|*";
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          List<Metatile> new_metatiles;
+          try
+          {
+            new_metatiles = Metatile.LoadFromFile(od.FileName);
+            metatile_list.AddRange(new_metatiles);
+            UpdateMetatileList();
+          }
+          catch (Metatile.MetatileFileException E)
+          {
+            MessageBox.Show
+              ("Error reading metatile definitions!\n" + E.Message);
+          }
         }
       }
     }

@@ -46,12 +46,16 @@ namespace RabiRibi_Editor
       this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.metatilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.loadMetatileFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.clearLoadedMetatilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.tileView1 = new RabiRibi_Editor.TileView();
       this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.metatile_selection = new System.Windows.Forms.ComboBox();
       this.bg_ID_entry = new System.Windows.Forms.TextBox();
       this.misc_event_selection = new System.Windows.Forms.ComboBox();
@@ -73,7 +77,6 @@ namespace RabiRibi_Editor
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
       this.metatile_layer_label = new System.Windows.Forms.Label();
-      this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -89,7 +92,8 @@ namespace RabiRibi_Editor
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                   this.fileToolStripMenuItem,
-                  this.editToolStripMenuItem});
+                  this.editToolStripMenuItem,
+                  this.metatilesToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(942, 24);
@@ -169,6 +173,29 @@ namespace RabiRibi_Editor
       this.redoToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
       this.redoToolStripMenuItem.Text = "Redo";
       this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
+      // 
+      // metatilesToolStripMenuItem
+      // 
+      this.metatilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                  this.loadMetatileFileToolStripMenuItem,
+                  this.clearLoadedMetatilesToolStripMenuItem});
+      this.metatilesToolStripMenuItem.Name = "metatilesToolStripMenuItem";
+      this.metatilesToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+      this.metatilesToolStripMenuItem.Text = "Metatiles";
+      // 
+      // loadMetatileFileToolStripMenuItem
+      // 
+      this.loadMetatileFileToolStripMenuItem.Name = "loadMetatileFileToolStripMenuItem";
+      this.loadMetatileFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+      this.loadMetatileFileToolStripMenuItem.Text = "Load Metatile file";
+      this.loadMetatileFileToolStripMenuItem.Click += new System.EventHandler(this.LoadMetatileFileToolStripMenuItemClick);
+      // 
+      // clearLoadedMetatilesToolStripMenuItem
+      // 
+      this.clearLoadedMetatilesToolStripMenuItem.Name = "clearLoadedMetatilesToolStripMenuItem";
+      this.clearLoadedMetatilesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+      this.clearLoadedMetatilesToolStripMenuItem.Text = "Clear Loaded Metatiles";
+      this.clearLoadedMetatilesToolStripMenuItem.Click += new System.EventHandler(this.ClearLoadedMetatilesToolStripMenuItemClick);
       // 
       // tileView1
       // 
@@ -254,6 +281,24 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // metatile_layer_selection
+      // 
+      this.metatile_layer_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.metatile_layer_selection.FormattingEnabled = true;
+      this.metatile_layer_selection.Items.AddRange(new object[] {
+                  "Layer 0",
+                  "Layer 1",
+                  "Layer 2",
+                  "Layer 3",
+                  "Layer 4",
+                  "Layer 5",
+                  "Layer 6"});
+      this.metatile_layer_selection.Location = new System.Drawing.Point(6, 314);
+      this.metatile_layer_selection.Name = "metatile_layer_selection";
+      this.metatile_layer_selection.Size = new System.Drawing.Size(218, 21);
+      this.metatile_layer_selection.TabIndex = 19;
+      this.metatile_layer_selection.Visible = false;
       // 
       // metatile_selection
       // 
@@ -805,24 +850,6 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Text = "Selectable layer:";
       this.metatile_layer_label.Visible = false;
       // 
-      // metatile_layer_selection
-      // 
-      this.metatile_layer_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.metatile_layer_selection.FormattingEnabled = true;
-      this.metatile_layer_selection.Items.AddRange(new object[] {
-                  "Layer 0",
-                  "Layer 1",
-                  "Layer 2",
-                  "Layer 3",
-                  "Layer 4",
-                  "Layer 5",
-                  "Layer 6"});
-      this.metatile_layer_selection.Location = new System.Drawing.Point(6, 314);
-      this.metatile_layer_selection.Name = "metatile_layer_selection";
-      this.metatile_layer_selection.Size = new System.Drawing.Size(218, 21);
-      this.metatile_layer_selection.TabIndex = 19;
-      this.metatile_layer_selection.Visible = false;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -853,6 +880,9 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ToolStripMenuItem clearLoadedMetatilesToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem loadMetatileFileToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem metatilesToolStripMenuItem;
     private System.Windows.Forms.ComboBox metatile_layer_selection;
     private System.Windows.Forms.Label metatile_layer_label;
     private System.Windows.Forms.ComboBox metatile_selection;
