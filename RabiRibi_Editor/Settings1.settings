@@ -16,5 +16,8 @@
     <Setting Name="lastTilePath" Type="System.String" Scope="User" Roaming="false">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="upgradeRequired" Type="System.Boolean" Scope="User" Roaming="false">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

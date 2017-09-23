@@ -253,6 +253,15 @@ namespace RabiRibi_Editor
     {
       base.OnLoad(e);
       
+      // If this is the first time running this version, pull settings from
+      // any previous versions.
+      if (Settings1.Default.upgradeRequired)
+      {
+        Settings1.Default.Upgrade();
+        Settings1.Default.upgradeRequired = false;
+        Settings1.Default.Save();
+      }
+      
       // Initialize stuff
       command_stack = new CommandStack(level);
       

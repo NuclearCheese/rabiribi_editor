@@ -70,5 +70,17 @@ namespace RabiRibi_Editor {
         this["lastTilePath"] = value;
       }
     }
+    
+    [global::System.Configuration.UserScopedSettingAttribute()]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Configuration.DefaultSettingValueAttribute("True")]
+    public bool upgradeRequired {
+      get {
+        return ((bool)(this["upgradeRequired"]));
+      }
+      set {
+        this["upgradeRequired"] = value;
+      }
+    }
   }
 }
