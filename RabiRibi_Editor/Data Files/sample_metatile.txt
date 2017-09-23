@@ -1,0 +1,267 @@
+# Sample metatile file
+#
+# Note: any blank lines or lines starting with "#" are ignored by the program.
+#
+# Each metatile is divided into a 3 by 3 grid of rectangles, something like
+# the following:
+#
+# upper-left       upper-mid       upper-right
+# mid-left         mid-mid         mid-right
+# lower-left       lower-mid       lower-right
+#
+# The upper, lower, left, and right parts define the borders, while the mid
+# parts define the middle, which can repeat depending on how big the user
+# draws the metatile.
+#
+# To define a metatile, first give it a name with a line like this (without
+# the "#"):
+# metatile My Custom Metatile
+#
+# Next, the size of the sections must be defined.  This is done by specifying
+# the top/mid/bottom number of rows, and left/mid/right number of columns:
+# top_rows 1
+# mid_rows 2
+# bottom_rows 3
+# left_cols 2
+# mid_cols 3
+# right_cols 1
+#
+# You can have zero top/bottom rows or left/right columns, but you must have at
+# least one mid row/column.
+#
+# You can optionally define a slope as well.  If set to non-zero, the top of
+# the metatile will shift vertically by this amount each horizontal repeat of
+# the mid columns.  This allows creation of sloped surfaces.
+# Note that negative values slope downward to the right, while positive values
+# slope downward to the left.
+# slope 1
+#
+# Finally, the actual tile updates need to be defined.  This takes the form of
+# one or more layer statements, followed by the tile values to use:
+# layer 1
+# 1 2 3 4 5 6h
+# 2 3 4 5 6 7v
+# 3 4 5 6 7 8hv
+# 4 5 6 7 8 9
+# 5 6 7 8 9 1
+# 6 5 4 3 2 1
+#
+# (Note: the tile values don't need to be arranged by rows and columns, but it's
+# probably a good idea to help align things when making metatile definitions)
+#
+# The 'layer' command is followed by one of the following:
+# 0 through 6 - draw on this tile layer
+# S - draw on the user-selected tile layer
+# C - draw on the collision layer (uses collision tile values)
+# E - draw on the event layer (event IDs)
+# I - draw on the item layer (item IDs)
+#
+# For tile layers only, 'h' and 'v' can be added to number to specify
+# horizontal and/or vertical flip.
+#
+# Once all of the layers for a metatile are defined, another metatile can be
+# started by starting from the 'metatile' command again.
+
+# Door (as seen in Rabi Rabi Town)
+metatile Door
+
+top_rows 0
+mid_rows 3
+bottom_rows 0
+
+left_cols 0
+mid_cols 3
+right_cols 0
+
+slope 0
+
+layer S
+
+1577 1578 1579
+1609 1610 1611
+1641 1642 1643
+
+
+# Simple library square block
+metatile Blue Library Cube
+
+top_rows 1
+mid_rows 1
+bottom_rows 1
+
+left_cols 1
+mid_cols 1
+right_cols 1
+
+slope 0
+
+layer S
+
+297  298  297h
+329  267  329h
+297v 298v 297hv
+
+layer C
+1  1  1
+1  1  1
+1  1  1
+
+
+# Blue library slope, going down to the right
+metatile Blue Library Slope Right
+
+top_rows 2
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 2
+right_cols 0
+
+slope -1
+
+layer S
+
+268 269
+300 301
+267 267
+
+layer C
+
+7 5
+1 1
+1 1
+
+
+# Blue library slope, going down to the left
+metatile Blue Library Slope Left
+
+top_rows 2
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 2
+right_cols 0
+
+slope 1
+
+layer S
+269h 268h
+301h 300h
+267  267
+
+layer C
+4 6
+1 1
+1 1
+
+
+
+# Green slope left
+metatile Green Slope Left
+
+top_rows 2
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 3
+right_cols 0
+
+slope 1
+
+layer S
+103h 102h 101h
+135h 134h 133h
+ 98   98   98
+
+layer C
+ 9 11 13
+ 1  1  1
+ 1  1  1
+
+
+# Staggered platforms
+# mainly for testing masking of tile data
+metatile Staggered platforms
+
+top_rows 0
+mid_rows 2
+bottom_rows 0
+
+left_cols 1
+mid_cols 1
+right_cols 1
+
+layer S
+4 5 6
+* * *
+
+layer C
+14 14 14
+ *  *  *
+
+
+# Hammer blocks
+metatile Hammer Blocks
+
+top_rows 0
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 1
+right_cols 0
+
+layer S
+32
+
+layer C
+1
+
+layer E
+1
+
+
+# Brown Dirt Bomb Blocks
+metatile Bomb Blocks (brown dirt)
+
+top_rows 0
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 1
+right_cols 0
+
+layer S
+64
+
+layer C
+1
+
+layer E
+2
+
+
+# Spikeballs
+metatile Spikeballs
+
+top_rows 0
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 1
+right_cols 0
+
+layer S
+1597
+
+layer C
+1
+
+layer E
+197
+

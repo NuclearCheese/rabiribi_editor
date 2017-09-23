@@ -41,11 +41,14 @@ namespace RabiRibi_Editor
     RadioButton room_type_radio;
     RadioButton room_color_radio;
     RadioButton room_bg_radio;
+    RadioButton metatile_radio;
     
     short selected_tile = 0;
     short selected_collision = 0;
     
     CommandStack command_stack;
+    
+    List<Metatile> metatile_list;
     
     public MainForm()
     {
@@ -235,12 +238,29 @@ namespace RabiRibi_Editor
       tileView1.Update_Collision_Graphics(tiles);
     }
     
+    void UpdateMetatileList()
+    {
+      metatile_selection.Items.Clear();
+      metatile_selection.Items.Add("Select a metatile ...");
+      for (int i = 0; i < metatile_list.Count; i++)
+      {
+        metatile_selection.Items.Add(metatile_list[i].name);
+      }
+      metatile_selection.SelectedIndex = 0;
+    }
+    
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
       
       // Initialize stuff
       command_stack = new CommandStack(level);
+      
+      metatile_list = new List<Metatile>();
+      
+      UpdateMetatileList();
+      
+      metatile_layer_selection.SelectedIndex = 1;
       
       tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
       
@@ -390,6 +410,14 @@ namespace RabiRibi_Editor
       item_radio.Checked = false;
       item_radio.CheckedChanged += new EventHandler(tool_selection_changed);
       
+      metatile_radio = new RadioButton();
+      metatile_radio.Parent = tools_panel;
+      metatile_radio.Text = "Metatile";
+      metatile_radio.Top = 230;
+      metatile_radio.Left = 10;
+      metatile_radio.Checked = false;
+      metatile_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+      
       room_type_radio = new RadioButton();
       room_type_radio.Parent = tools_panel;
       room_type_radio.Text = "Room Type";
@@ -493,6 +521,9 @@ namespace RabiRibi_Editor
       room_color_selection.Visible = room_color_radio.Checked;
       
       bg_ID_entry.Visible = room_bg_radio.Checked;
+      
+      metatile_layer_selection.Visible = metatile_layer_label.Visible =
+        metatile_selection.Visible = metatile_radio.Checked;
     }
 
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -704,6 +735,15 @@ namespace RabiRibi_Editor
         else
         {
           MessageBox.Show("Invalid item ID!");
+        }
+      }
+      
+      if (metatile_radio.Checked)
+      {
+        if (metatile_selection.SelectedIndex > 0)
+        {
+          command_stack.RunCommandList
+            (metatile_list[metatile_selection.SelectedIndex - 1].Get_Commands(left_tile, right_tile, top_tile, bottom_tile, metatile_layer_selection.SelectedIndex));
         }
       }
       
@@ -1052,6 +1092,41 @@ namespace RabiRibi_Editor
           Load_Collision_Graphics(od.FileName);
           collision_tiles.Invalidate();
           tileView1.Invalidate();
+        }
+      }
+    }
+    
+    void ClearLoadedMetatilesToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      if (MessageBox.Show
+          ("Are you sure you want to clear all loaded metatile definitions?",
+           "Clear metatiles?",
+           MessageBoxButtons.YesNo) == DialogResult.Yes)
+      {
+        metatile_list.Clear();
+        UpdateMetatileList();
+      }
+    }
+    
+    void LoadMetatileFileToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      using (OpenFileDialog od = new OpenFileDialog())
+      {
+        od.Filter = "Text files (*.txt)|*.txt|All files|*";
+        if (od.ShowDialog() == DialogResult.OK)
+        {
+          List<Metatile> new_metatiles;
+          try
+          {
+            new_metatiles = Metatile.LoadFromFile(od.FileName);
+            metatile_list.AddRange(new_metatiles);
+            UpdateMetatileList();
+          }
+          catch (Metatile.MetatileFileException E)
+          {
+            MessageBox.Show
+              ("Error reading metatile definitions!\n" + E.Message);
+          }
         }
       }
     }
