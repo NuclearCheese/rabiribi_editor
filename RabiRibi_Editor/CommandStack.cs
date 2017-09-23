@@ -47,9 +47,9 @@ namespace RabiRibi_Editor
       internal CommandType command;
       internal int left_tile, top_tile, right_tile, bottom_tile;
       internal short[,] data;
-      // TODO this might need some more smarts to handle multi-layer commands.
-      // Most likely, our undo/redo stack entries will end up being lists of
-      // CommandEntry objects, instead of individual objects.
+      
+      // If a mask entry is false, no action is actually taken on that tile.
+      internal bool[,] mask;
       
       internal CommandEntry(CommandType cmd, int left, int right, int top, int bottom)
       {
@@ -73,6 +73,16 @@ namespace RabiRibi_Editor
         }
         
         data = new short[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+        mask = new bool[(right_tile - left_tile) + 1, (bottom_tile - top_tile) + 1];
+        
+        // By default, assume the entire rectangle will be acted upon.
+        for (int i = 0; i < mask.GetLength(0); i++)
+        {
+          for (int j = 0; j < mask.GetLength(1); j++)
+          {
+            mask[i,j] = true;
+          }
+        }
       }
     }
     
@@ -204,15 +214,18 @@ namespace RabiRibi_Editor
       }
       if (data_to_modify != null)
       {
-          for (int x = command.left_tile; x <= command.right_tile; x++)
+        for (int x = command.left_tile; x <= command.right_tile; x++)
+        {
+          for (int y = command.top_tile; y <= command.bottom_tile; y++)
           {
-            for (int y = command.top_tile; y <= command.bottom_tile; y++)
+            if (command.mask[x - command.left_tile, y - command.top_tile])
             {
               short temp = data_to_modify[x, y];
               data_to_modify[x, y] = command.data[x - command.left_tile, y - command.top_tile];
               command.data[x - command.left_tile, y - command.top_tile] = temp;
             }
           }
+        }
       }
       else
       {

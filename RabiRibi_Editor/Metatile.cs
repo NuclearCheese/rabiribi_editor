@@ -35,7 +35,7 @@ namespace RabiRibi_Editor
       internal short[,] data;
       internal bool[,] hflip;
       internal bool[,] vflip;
-      // TODO mask
+      internal bool[,] mask;
     }
     
     List<Metatile_Layer_Info> layers;
@@ -123,11 +123,18 @@ namespace RabiRibi_Editor
             
             if (y < top_y_offset)
             {
+              cmd.mask[x,y] = false;
               continue;
             }
             
             data_y = CalculateDataCoordinate(y - top_y_offset, top_rows, bottom_rows,
                                              cmd.data.GetLength(1) - top_y_offset, layer.data.GetLength(1), false);
+            
+            if (!(layer.mask[data_x, data_y]))
+            {
+              cmd.mask[x,y] = false;
+              continue;
+            }
             
             short temp = layer.data[data_x, data_y];
             if (layer.vflip[data_x, data_y])
@@ -350,6 +357,8 @@ namespace RabiRibi_Editor
                                  working.top_rows + working.mid_rows + working.bottom_rows];
               l.vflip = new bool[working.left_cols + working.mid_cols + working.right_cols,
                                  working.top_rows + working.mid_rows + working.bottom_rows];
+              l.mask = new bool[working.left_cols + working.mid_cols + working.right_cols,
+                                 working.top_rows + working.mid_rows + working.bottom_rows];
               
               // Read layer tiles
               line = "";
@@ -359,6 +368,7 @@ namespace RabiRibi_Editor
                 {
                   l.hflip[x,y] = false;
                   l.vflip[x,y] = false;
+                  l.mask[x,y] = true;
                   if (line.Length == 0)
                   {
                     do
@@ -408,8 +418,14 @@ namespace RabiRibi_Editor
                     throw new MetatileFileException("At line " + line_number.ToString()
                                                     + ": cannot flip non-tile-layer tiles.");
                   }
-                  l.data[x,y] = short.Parse(temp);
-                  
+                  if (temp == "*")
+                  {
+                    l.mask[x,y] = false;
+                  }
+                  else
+                  {
+                    l.data[x,y] = short.Parse(temp);
+                  }
                 }
               }
             }
