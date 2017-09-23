@@ -57,6 +57,10 @@
     <Compile Include="Metatile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings1.Designer.cs">
+      <DependentUpon>Settings1.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="TileView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,8 +72,13 @@
     <Folder Include="Data Files" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Data Files\sample_metatile.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Settings1.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

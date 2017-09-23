@@ -253,6 +253,15 @@ namespace RabiRibi_Editor
     {
       base.OnLoad(e);
       
+      // If this is the first time running this version, pull settings from
+      // any previous versions.
+      if (Settings1.Default.upgradeRequired)
+      {
+        Settings1.Default.Upgrade();
+        Settings1.Default.upgradeRequired = false;
+        Settings1.Default.Save();
+      }
+      
       // Initialize stuff
       command_stack = new CommandStack(level);
       
@@ -571,6 +580,19 @@ namespace RabiRibi_Editor
       {
         od.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
         
+        string temp = Settings1.Default.lastMapPath;
+        if (temp != null)
+        {
+          // SharpDevelop's app settings generator doesn't generate an empty
+          // string quite right (it leaves in some whitespace).  This works
+          // around it.
+          temp = temp.Trim();
+          if (temp != "")
+          {
+            od.InitialDirectory = temp;
+          }
+        }
+        
         if (od.ShowDialog() == DialogResult.OK)
         {
           try
@@ -618,6 +640,8 @@ namespace RabiRibi_Editor
             MessageBox.Show("Error loading file!\n\nError information:\n" +
                             E.Message);
           }
+          
+          Settings1.Default.lastMapPath = Path.GetDirectoryName(od.FileName);
         }
       }
     }
@@ -988,6 +1012,19 @@ namespace RabiRibi_Editor
         sd.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
         sd.OverwritePrompt = true;
         
+        string temp = Settings1.Default.lastMapPath;
+        if (temp != null)
+        {
+          // SharpDevelop's app settings generator doesn't generate an empty
+          // string quite right (it leaves in some whitespace).  This works
+          // around it.
+          temp = temp.Trim();
+          if (temp != "")
+          {
+            sd.InitialDirectory = temp;
+          }
+        }
+        
         if (sd.ShowDialog() == DialogResult.OK)
         {
           try
@@ -999,6 +1036,7 @@ namespace RabiRibi_Editor
             MessageBox.Show("Error saving file!\n\nError information:\n" +
                             E.Message);
           }
+          Settings1.Default.lastMapPath = Path.GetDirectoryName(sd.FileName);
         }
       }
     }
@@ -1072,11 +1110,25 @@ namespace RabiRibi_Editor
       {
         od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
         
+        string temp = Settings1.Default.lastTilePath;
+        if (temp != null)
+        {
+          // SharpDevelop's app settings generator doesn't generate an empty
+          // string quite right (it leaves in some whitespace).  This works
+          // around it.
+          temp = temp.Trim();
+          if (temp != "")
+          {
+            od.InitialDirectory = temp;
+          }
+        }
+        
         if (od.ShowDialog() == DialogResult.OK)
         {
           Load_Tile_Graphics(od.FileName);
           tile_picturebox.Invalidate();
           tileView1.Invalidate();
+          Settings1.Default.lastTilePath = Path.GetDirectoryName(od.FileName);
         }
       }
     }
@@ -1087,11 +1139,26 @@ namespace RabiRibi_Editor
       {
         od.Filter = "PNG Image Files (*.png)|*.png|All Files|*";
         
+        string temp = Settings1.Default.lastCollisionPath;
+        if (temp != null)
+        {
+          // SharpDevelop's app settings generator doesn't generate an empty
+          // string quite right (it leaves in some whitespace).  This works
+          // around it.
+          temp = temp.Trim();
+          if (temp != "")
+          {
+            od.InitialDirectory = temp;
+          }
+        }
+        
         if (od.ShowDialog() == DialogResult.OK)
         {
           Load_Collision_Graphics(od.FileName);
           collision_tiles.Invalidate();
           tileView1.Invalidate();
+          
+          Settings1.Default.lastCollisionPath = Path.GetDirectoryName(od.FileName);
         }
       }
     }
@@ -1113,6 +1180,20 @@ namespace RabiRibi_Editor
       using (OpenFileDialog od = new OpenFileDialog())
       {
         od.Filter = "Text files (*.txt)|*.txt|All files|*";
+        
+        string temp = Settings1.Default.lastMetatilePath;
+        if (temp != null)
+        {
+          // SharpDevelop's app settings generator doesn't generate an empty
+          // string quite right (it leaves in some whitespace).  This works
+          // around it.
+          temp = temp.Trim();
+          if (temp != "")
+          {
+            od.InitialDirectory = temp;
+          }
+        }
+        
         if (od.ShowDialog() == DialogResult.OK)
         {
           List<Metatile> new_metatiles;
@@ -1127,8 +1208,15 @@ namespace RabiRibi_Editor
             MessageBox.Show
               ("Error reading metatile definitions!\n" + E.Message);
           }
+          
+          Settings1.Default.lastMetatilePath = Path.GetDirectoryName(od.FileName);
         }
       }
+    }
+    
+    void MainFormFormClosed(object sender, FormClosedEventArgs e)
+    {
+      Settings1.Default.Save();
     }
   }
 }
