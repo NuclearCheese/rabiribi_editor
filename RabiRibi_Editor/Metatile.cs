@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace RabiRibi_Editor
 {
@@ -16,6 +17,16 @@ namespace RabiRibi_Editor
   /// </summary>
   public class Metatile
   {
+    /// <summary>
+    /// Exception class for errors parsing a metatile definition file.
+    /// </summary>
+    public class MetatileFileException : System.Exception
+    {
+      public MetatileFileException(string message) : base(message)
+      {
+        
+      }
+    }
     
     class Metatile_Layer_Info
     {
@@ -37,134 +48,17 @@ namespace RabiRibi_Editor
     int mid_cols;
     int right_cols;
     
-    string name;
+    internal string name;
     
     int slope;
     
-    // TODO we might need something smarter
     public Metatile()
     {
       layers = new List<Metatile.Metatile_Layer_Info>();
-      
-      //name = "Blue library block";
-      name = "Blue library slope down-right";
-      
-      slope = -1;
-      
-      // TODO default data to start with
-      //top_rows = 1;
-      //mid_rows = 1;
-      //bottom_rows = 1;
-      top_rows = 2;
-      mid_rows = 1;
-      bottom_rows = 0;
-      
-      //left_cols = 1;
-      //mid_cols = 1;
-      //right_cols = 1;
-      left_cols = 0;
-      mid_cols = 2;
-      right_cols = 0;
-      
-      Metatile_Layer_Info m = new Metatile.Metatile_Layer_Info();
-      m.uses_selectable_layer = true;
-      m.command = CommandStack.CommandType.Write_Layer_0;
-      //m.data = new short[3,3];
-      //m.data[0,2] = 1641;
-      //m.data[1,2] = 1642;
-      //m.data[2,2] = 1643;
-      //m.data[0,1] = 1609;
-      //m.data[1,1] = 1610;
-      //m.data[2,1] = 1611;
-      //m.data[0,0] = 1577;
-      //m.data[1,0] = 1578;
-      //m.data[2,0] = 1579;
-      //m.data[0,2] = 297;
-      //m.data[1,2] = 298;
-      //m.data[2,2] = 297;
-      //m.data[0,1] = 329;
-      //m.data[1,1] = 361;
-      //m.data[2,1] = 329;
-      //m.data[0,0] = 297;
-      //m.data[1,0] = 298;
-      //m.data[2,0] = 297;
-      m.data = new short[2,3];
-      m.data[0,0] = 268;
-      m.data[1,0] = 269;
-      m.data[0,1] = 300;
-      m.data[1,1] = 301;
-      m.data[0,2] = 267;
-      m.data[1,2] = 267;
-      
-      //m.hflip = new bool[3,3];
-      //m.hflip[0,0] = false;
-      //m.hflip[1,0] = false;
-      //m.hflip[2,0] = true;
-      //m.hflip[0,1] = false;
-      //m.hflip[1,1] = false;
-      //m.hflip[2,1] = true;
-      //m.hflip[0,2] = false;
-      //m.hflip[1,2] = false;
-      //m.hflip[2,2] = true;
-      m.hflip = new bool[2,3];
-      m.vflip = new bool[2,3];
-      for (int i = 0; i < 2; i++)
-      {
-        for (int j = 0; j < 3; j++)
-        {
-          m.hflip[i,j] = false;
-          m.vflip[i,j] = false;
-        }
-      }
-      
-      //m.vflip = new bool[3,3];
-      //m.vflip[0,0] = false;
-      //m.vflip[1,0] = false;
-      //m.vflip[1,0] = false;
-      //m.vflip[0,1] = false;
-      //m.vflip[1,1] = false;
-      //m.vflip[1,1] = false;
-      //m.vflip[0,2] = true;
-      //m.vflip[1,2] = true;
-      //m.vflip[2,2] = true;
-      layers.Add(m);
-      
-      m = new Metatile.Metatile_Layer_Info();
-      //m.data = new short[3,3];
-      //m.hflip = new bool[3,3];
-      //m.vflip = new bool[3,3];
-      m.uses_selectable_layer = false;
-      m.command = CommandStack.CommandType.Write_Collision;
-      //for (int i = 0; i < 3; i++)
-      //{
-      //  for (int j = 0; j < 3; j++)
-      //  {
-      //    m.data[i,j] = 1;
-      //    m.hflip[i,j] = false;
-      //    m.vflip[i,j] = false;
-      //  }
-      //}
-      m.data = new short[2,3];
-      m.data[0,0] = 7;
-      m.data[1,0] = 5;
-      m.data[0,1] = 1;
-      m.data[1,1] = 1;
-      m.data[0,2] = 1;
-      m.data[1,2] = 1;
-      m.hflip = new bool[2,3];
-      m.vflip = new bool[2,3];
-      for (int i = 0; i < 2; i++)
-      {
-        for (int j = 0; j < 3; j++)
-        {
-          m.hflip[i,j] = false;
-          m.vflip[i,j] = false;
-        }
-      }
-      layers.Add(m);
+      slope = 0;
     }
     
-    static int CalculateDataCoordinate(int raw_coordinate, int lower_margin, int upper_margin, int total_size, int data_size)
+    static int CalculateDataCoordinate(int raw_coordinate, int lower_margin, int upper_margin, int total_size, int data_size, bool right_align_mid)
     {
       if (raw_coordinate < lower_margin)
       {
@@ -175,6 +69,12 @@ namespace RabiRibi_Editor
         return (data_size - upper_margin) + (raw_coordinate - (total_size - upper_margin));
       }
       int mid_width = data_size - upper_margin - lower_margin;
+      if (right_align_mid)
+      {
+        int size_modulo = (total_size - lower_margin - upper_margin) % mid_width;
+        int adjusted_coordinate = raw_coordinate + (mid_width - size_modulo);
+        return (adjusted_coordinate - lower_margin) % mid_width + lower_margin;
+      }
       return (raw_coordinate - lower_margin) % mid_width + lower_margin;
     }
     
@@ -204,7 +104,7 @@ namespace RabiRibi_Editor
             int data_y;
             
             data_x = CalculateDataCoordinate(x, left_cols, right_cols,
-                                             cmd.data.GetLength(0), layer.data.GetLength(0));
+                                             cmd.data.GetLength(0), layer.data.GetLength(0), slope > 0);
             
             // If we have a sloped top on this metatile, adjust the top of the
             // current column accordingly
@@ -217,7 +117,8 @@ namespace RabiRibi_Editor
             else if ((slope > 0) && (x < (cmd.data.GetLength(0) - right_cols)))
             {
               int distance_from_right = (cmd.data.GetLength(0) - x) - right_cols;
-              top_y_offset = (distance_from_right - (mid_width - 1)) / mid_width;
+              //top_y_offset = (distance_from_right - (mid_width - 1)) / mid_width;
+              top_y_offset = (distance_from_right - 1) / mid_width;
             }
             
             if (y < top_y_offset)
@@ -226,7 +127,7 @@ namespace RabiRibi_Editor
             }
             
             data_y = CalculateDataCoordinate(y - top_y_offset, top_rows, bottom_rows,
-                                             cmd.data.GetLength(1) - top_y_offset, layer.data.GetLength(1));
+                                             cmd.data.GetLength(1) - top_y_offset, layer.data.GetLength(1), false);
             
             short temp = layer.data[data_x, data_y];
             if (layer.vflip[data_x, data_y])
@@ -245,6 +146,299 @@ namespace RabiRibi_Editor
       }
       
       return results;
+    }
+    
+    internal static List<Metatile> LoadFromFile(string filename)
+    {
+      List<Metatile> result = new List<Metatile>();
+      int line_number = 0;
+      try
+      {
+        using (StreamReader input = new StreamReader(File.Open(filename, FileMode.Open)))
+        {
+          Metatile working = null;
+          while (!input.EndOfStream)
+          {
+            string line = input.ReadLine().Trim();
+            line_number++;
+            
+            // Empty line or line that starts with the comment marker - skip it.
+            if ((line.Length == 0) ||
+                (line.StartsWith("#")))
+            {
+              continue;
+            }
+            
+            // New metatile definition
+            if (line.StartsWith("metatile"))
+            {
+              working = new Metatile();
+              working.name = line.Substring(8).Trim();
+              
+              // Add to the list right away.
+              // Since we error out if a problem occurs, this saves us from
+              // having to track if we have a new metatile to add to the list.
+              result.Add(working);
+              
+              // default to sentinel values to detect missing definitions
+              working.left_cols = working.mid_cols = working.right_cols =
+                working.top_rows = working.mid_rows = working.bottom_rows = -1;
+            }
+            
+            if (line.StartsWith("top_rows"))
+            {
+              if (working.top_rows > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate top_rows line");
+              }
+              working.top_rows = int.Parse(line.Substring(8).Trim());
+              if (working.top_rows < 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad top_rows (must be >= 0)");
+              }
+            }
+            
+            if (line.StartsWith("mid_rows"))
+            {
+              if (working.mid_rows > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate mid_rows line");
+              }
+              working.mid_rows = int.Parse(line.Substring(8).Trim());
+              if (working.mid_rows <= 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad mid_rows (must be > 0)");
+              }
+            }
+            
+            if (line.StartsWith("bottom_rows"))
+            {
+              if (working.bottom_rows > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate bottom_rows line");
+              }
+              working.bottom_rows = int.Parse(line.Substring(11).Trim());
+              if (working.bottom_rows < 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad bottom_rows (must be >= 0)");
+              }
+            }
+            
+            if (line.StartsWith("left_cols"))
+            {
+              if (working.left_cols > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate left_cols line");
+              }
+              working.left_cols = int.Parse(line.Substring(9).Trim());
+              if (working.left_cols < 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad left_cols (must be >= 0)");
+              }
+            }
+            
+            if (line.StartsWith("mid_cols"))
+            {
+              if (working.mid_cols > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate mid_cols line");
+              }
+              working.mid_cols = int.Parse(line.Substring(8).Trim());
+              if (working.mid_cols <= 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad mid_cols (must be > 0)");
+              }
+            }
+            
+            if (line.StartsWith("right_cols"))
+            {
+              if (working.right_cols > -1)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": duplicate right_cols line");
+              }
+              working.right_cols = int.Parse(line.Substring(10).Trim());
+              if (working.right_cols < 0)
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": bad right_cols (must be >= 0)");
+              }
+            }
+            
+            if (line.StartsWith("slope"))
+            {
+              working.slope = int.Parse(line.Substring(6).Trim());
+            }
+            
+            if (line.StartsWith("layer"))
+            {
+              if ((working.left_cols < 0) || (working.mid_cols < 0) ||
+                  (working.right_cols < 0) || (working.top_rows < 0) ||
+                  (working.mid_rows < 0) || (working.bottom_rows < 0))
+              {
+                throw new MetatileFileException("At line " + line_number.ToString() +
+                                                ": must define size before layers.");
+              }
+              Metatile_Layer_Info l = new Metatile.Metatile_Layer_Info();
+              l.uses_selectable_layer = false;
+              working.layers.Add(l);
+              switch (line.Substring(6).Trim().ToLower())
+              {
+                case "s":
+                  l.uses_selectable_layer = true;
+                  // Default data
+                  l.command = CommandStack.CommandType.Write_Layer_0;
+                  break;
+                  
+                case "0":
+                  l.command = CommandStack.CommandType.Write_Layer_0;
+                  break;
+                  
+                case "1":
+                  l.command = CommandStack.CommandType.Write_Layer_1;
+                  break;
+                  
+                case "2":
+                  l.command = CommandStack.CommandType.Write_Layer_2;
+                  break;
+                  
+                case "3":
+                  l.command = CommandStack.CommandType.Write_Layer_3;
+                  break;
+                  
+                case "4":
+                  l.command = CommandStack.CommandType.Write_Layer_4;
+                  break;
+                  
+                case "5":
+                  l.command = CommandStack.CommandType.Write_Layer_5;
+                  break;
+                  
+                case "6":
+                  l.command = CommandStack.CommandType.Write_Layer_6;
+                  break;
+                  
+                case "c":
+                  l.command = CommandStack.CommandType.Write_Collision;
+                  break;
+                  
+                case "e":
+                  l.command = CommandStack.CommandType.Write_Event;
+                  break;
+                  
+                case "i":
+                  l.command = CommandStack.CommandType.Write_Item;
+                  break;
+                  
+                default:
+                  throw new MetatileFileException("At line " + line_number.ToString()
+                                                  + ": bad layer type");
+              }
+              l.data = new short[working.left_cols + working.mid_cols + working.right_cols,
+                                 working.top_rows + working.mid_rows + working.bottom_rows];
+              l.hflip = new bool[working.left_cols + working.mid_cols + working.right_cols,
+                                 working.top_rows + working.mid_rows + working.bottom_rows];
+              l.vflip = new bool[working.left_cols + working.mid_cols + working.right_cols,
+                                 working.top_rows + working.mid_rows + working.bottom_rows];
+              
+              // Read layer tiles
+              line = "";
+              for (int y = 0; y < l.data.GetLength(1); y++)
+              {
+                for (int x = 0; x < l.data.GetLength(0); x++)
+                {
+                  l.hflip[x,y] = false;
+                  l.vflip[x,y] = false;
+                  if (line.Length == 0)
+                  {
+                    do
+                    {
+                      line = input.ReadLine().Trim();
+                      line_number++;
+                      if ((line.Length > 0) &&
+                          !(line.StartsWith("#")))
+                      {
+                        break;
+                      }
+                    } while (true);
+                  }
+                  string temp;
+                  if (line.IndexOf(' ') > 0)
+                  {
+                    temp = line.Substring(0, line.IndexOf(' ')).Trim().ToLower();
+                    line = line.Substring(line.IndexOf(' ')).Trim();
+                  }
+                  else
+                  {
+                    temp = line;
+                    line = "";
+                  }
+                  do
+                  {
+                    if (temp.EndsWith("h"))
+                    {
+                      l.hflip[x,y] = true;
+                      temp = temp.Substring(0, temp.Length - 1);
+                    }
+                    else if (temp.EndsWith("v"))
+                    {
+                      l.vflip[x,y] = true;
+                      temp = temp.Substring(0, temp.Length - 1);
+                    }
+                    else
+                    {
+                      break;
+                    }
+                  } while (true);
+                  if (((l.command < CommandStack.CommandType.Write_Layer_0) ||
+                      (l.command > CommandStack.CommandType.Write_Layer_6))
+                      &&
+                      (l.vflip[x,y] || l.hflip[x,y]))
+                  {
+                    throw new MetatileFileException("At line " + line_number.ToString()
+                                                    + ": cannot flip non-tile-layer tiles.");
+                  }
+                  l.data[x,y] = short.Parse(temp);
+                  
+                }
+              }
+            }
+          }
+          
+          // Check that we don't have a partial metatile definition
+          if (working != null)
+          {
+            if ((working.left_cols == -1) || (working.mid_cols == -1) ||
+                (working.right_cols == -1) || (working.top_rows == -1) ||
+                (working.mid_rows == -1) || (working.bottom_rows == -1))
+            {
+              throw new MetatileFileException("Incomplete metatile definition at the end of the file.");
+            }
+          }
+        }
+      }
+      catch (MetatileFileException)
+      {
+        // Rethrow if we have a specific error message already
+        throw;
+      }
+      catch (Exception E)
+      {
+        throw new MetatileFileException("Error at line " + line_number.ToString()
+                                        + ": " + E.Message);
+      }
+      
+      return result;
     }
   }
 }

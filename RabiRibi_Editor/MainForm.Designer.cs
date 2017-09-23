@@ -52,6 +52,7 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.metatile_selection = new System.Windows.Forms.ComboBox();
       this.bg_ID_entry = new System.Windows.Forms.TextBox();
       this.misc_event_selection = new System.Windows.Forms.ComboBox();
       this.entity_event_selection = new System.Windows.Forms.ComboBox();
@@ -71,6 +72,8 @@ namespace RabiRibi_Editor
       this.tile_picturebox_panel = new System.Windows.Forms.Panel();
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
+      this.metatile_layer_label = new System.Windows.Forms.Label();
+      this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -224,6 +227,8 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.metatile_layer_selection);
+      this.tabPage2.Controls.Add(this.metatile_selection);
       this.tabPage2.Controls.Add(this.bg_ID_entry);
       this.tabPage2.Controls.Add(this.misc_event_selection);
       this.tabPage2.Controls.Add(this.entity_event_selection);
@@ -241,6 +246,7 @@ namespace RabiRibi_Editor
       this.tabPage2.Controls.Add(this.hflip_checkbox);
       this.tabPage2.Controls.Add(this.tile_picturebox_panel);
       this.tabPage2.Controls.Add(this.tools_panel);
+      this.tabPage2.Controls.Add(this.metatile_layer_label);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -248,6 +254,18 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // metatile_selection
+      // 
+      this.metatile_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.metatile_selection.FormattingEnabled = true;
+      this.metatile_selection.Items.AddRange(new object[] {
+                  "Select a metatile ..."});
+      this.metatile_selection.Location = new System.Drawing.Point(6, 266);
+      this.metatile_selection.Name = "metatile_selection";
+      this.metatile_selection.Size = new System.Drawing.Size(215, 21);
+      this.metatile_selection.TabIndex = 17;
+      this.metatile_selection.Visible = false;
       // 
       // bg_ID_entry
       // 
@@ -778,6 +796,33 @@ namespace RabiRibi_Editor
       this.tools_panel.Size = new System.Drawing.Size(214, 255);
       this.tools_panel.TabIndex = 0;
       // 
+      // metatile_layer_label
+      // 
+      this.metatile_layer_label.Location = new System.Drawing.Point(6, 290);
+      this.metatile_layer_label.Name = "metatile_layer_label";
+      this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
+      this.metatile_layer_label.TabIndex = 18;
+      this.metatile_layer_label.Text = "Selectable layer:";
+      this.metatile_layer_label.Visible = false;
+      // 
+      // metatile_layer_selection
+      // 
+      this.metatile_layer_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.metatile_layer_selection.FormattingEnabled = true;
+      this.metatile_layer_selection.Items.AddRange(new object[] {
+                  "Layer 0",
+                  "Layer 1",
+                  "Layer 2",
+                  "Layer 3",
+                  "Layer 4",
+                  "Layer 5",
+                  "Layer 6"});
+      this.metatile_layer_selection.Location = new System.Drawing.Point(6, 314);
+      this.metatile_layer_selection.Name = "metatile_layer_selection";
+      this.metatile_layer_selection.Size = new System.Drawing.Size(218, 21);
+      this.metatile_layer_selection.TabIndex = 19;
+      this.metatile_layer_selection.Visible = false;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -808,6 +853,9 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox metatile_layer_selection;
+    private System.Windows.Forms.Label metatile_layer_label;
+    private System.Windows.Forms.ComboBox metatile_selection;
     private System.Windows.Forms.ToolStripMenuItem loadCollisionTilesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem loadTilesetToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

@@ -48,6 +48,8 @@ namespace RabiRibi_Editor
     
     CommandStack command_stack;
     
+    List<Metatile> metatile_list;
+    
     public MainForm()
     {
       //
@@ -236,12 +238,38 @@ namespace RabiRibi_Editor
       tileView1.Update_Collision_Graphics(tiles);
     }
     
+    void UpdateMetatileList()
+    {
+      metatile_selection.Items.Clear();
+      metatile_selection.Items.Add("Select a metatile ...");
+      for (int i = 0; i < metatile_list.Count; i++)
+      {
+        metatile_selection.Items.Add(metatile_list[i].name);
+      }
+      metatile_selection.SelectedIndex = 0;
+    }
+    
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
       
       // Initialize stuff
       command_stack = new CommandStack(level);
+      
+      try
+      {
+        metatile_list = Metatile.LoadFromFile("metatile.txt");
+      }
+      catch (Metatile.MetatileFileException E)
+      {
+        metatile_list = new List<Metatile>();
+        MessageBox.Show("Error loading metatile definitions from metatile.txt:\n"
+                        + E.Message);
+      }
+      
+      UpdateMetatileList();
+      
+      metatile_layer_selection.SelectedIndex = 1;
       
       tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
       
@@ -502,6 +530,9 @@ namespace RabiRibi_Editor
       room_color_selection.Visible = room_color_radio.Checked;
       
       bg_ID_entry.Visible = room_bg_radio.Checked;
+      
+      metatile_layer_selection.Visible = metatile_layer_label.Visible =
+        metatile_selection.Visible = metatile_radio.Checked;
     }
 
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -718,9 +749,11 @@ namespace RabiRibi_Editor
       
       if (metatile_radio.Checked)
       {
-        // TODO TEST
-        Metatile m = new Metatile();
-        command_stack.RunCommandList(m.Get_Commands(left_tile, right_tile, top_tile, bottom_tile, 1));
+        if (metatile_selection.SelectedIndex > 0)
+        {
+          command_stack.RunCommandList
+            (metatile_list[metatile_selection.SelectedIndex - 1].Get_Commands(left_tile, right_tile, top_tile, bottom_tile, metatile_layer_selection.SelectedIndex));
+        }
       }
       
       if (room_type_radio.Checked)
