@@ -460,6 +460,7 @@ namespace RabiRibi_Editor
       tile_event_selection.SelectedIndex = 0;
       entity_event_selection.SelectedIndex = 0;
       misc_event_selection.SelectedIndex = 0;
+      warp_event_selection.SelectedIndex = 0;
     }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -519,9 +520,10 @@ namespace RabiRibi_Editor
         = tile_picturebox_panel.Visible = tile_preview.Visible
         = any_layer_tool_selected;
       
-      misc_event_selection.Visible = entity_event_selection.Visible
-        = tile_event_selection.Visible = music_event_selection.Visible
-        = event_ID_entry.Visible = event_radio.Checked;
+      warp_event_selection.Visible = misc_event_selection.Visible
+        = entity_event_selection.Visible = tile_event_selection.Visible
+        = music_event_selection.Visible = event_ID_entry.Visible
+        = event_radio.Checked;
       
       item_selection.Visible = item_ID_entry.Visible = item_radio.Checked;
       
