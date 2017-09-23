@@ -265,3 +265,125 @@ layer C
 layer E
 197
 
+
+
+# Rock floor
+metatile Rock floor
+
+top_rows 1
+mid_rows 1
+bottom_rows 0
+
+left_cols 0
+mid_cols 2
+right_cols 0
+
+layer S
+567 568
+569 569
+
+layer C
+1 1
+1 1
+
+
+
+# Rock ceiling
+metatile Rock ceiling
+
+top_rows 0
+mid_rows 1
+bottom_rows 1
+
+left_cols 0
+mid_cols 2
+right_cols 0
+
+layer S
+569 569
+567v 568v
+
+layer C
+1 1
+1 1
+
+# Rock wall, left side
+metatile Rock wall left
+
+top_rows 0
+mid_rows 2
+bottom_rows 0
+
+left_cols 0
+mid_cols 1
+right_cols 1
+
+layer S
+569 598h
+569 630h
+
+layer C
+1 1
+1 1
+
+
+# Rock wall, right side
+metatile Rock wall right
+
+top_rows 0
+mid_rows 2
+bottom_rows 0
+
+left_cols 1
+mid_cols 1
+right_cols 0
+
+layer S
+598 569
+630 569
+
+layer C
+1 1
+1 1
+
+
+# Rock box
+metatile Rock box
+
+top_rows 1
+mid_rows 2
+bottom_rows 1
+
+left_cols 1
+mid_cols 2
+right_cols 1
+
+layer S
+566  567  568  566h
+598  569  569  598h
+630  569  569  630h
+566v 567v 568v 566vh
+
+layer C
+1 1 1 1
+1 1 1 1
+1 1 1 1
+1 1 1 1
+
+
+# Platform
+metatile Platform
+
+top_rows 0
+mid_rows 1
+bottom_rows 0
+
+left_cols 1
+mid_cols 1
+right_cols 1
+
+layer S
+4 5 6
+
+layer C
+14 14 14

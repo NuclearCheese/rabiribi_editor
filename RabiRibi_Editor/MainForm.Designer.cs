@@ -289,7 +289,7 @@ namespace RabiRibi_Editor
       this.warp_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.warp_event_selection.FormattingEnabled = true;
       this.warp_event_selection.Items.AddRange(new object[] {
-                  "Select a warp event ...",
+                  "select a warp event ...",
                   "112 Warp graphic (3 tiles below)",
                   "208 Warp entrance",
                   "209 Warp ID 0",
