@@ -864,6 +864,7 @@ namespace RabiRibi_Editor
       this.MinimumSize = new System.Drawing.Size(650, 500);
       this.Name = "MainForm";
       this.Text = "RabiRibi_Editor";
+      this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFormFormClosed);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.tabControl1.ResumeLayout(false);
