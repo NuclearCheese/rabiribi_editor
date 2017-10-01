@@ -263,7 +263,7 @@ namespace RabiRibi_Editor
       }
       
       // Initialize stuff
-      command_stack = new CommandStack(level);
+      command_stack = new CommandStack(level, tileView1);
       
       metatile_list = new List<Metatile>();
       
@@ -844,8 +844,6 @@ namespace RabiRibi_Editor
       }
       
       CheckUndoEnabled();
-      
-      tileView1.Invalidate();
     }
     
     void Process_Right_Click(int tile_x, int tile_y)
@@ -1086,14 +1084,12 @@ namespace RabiRibi_Editor
     {
       command_stack.Undo();
       CheckUndoEnabled();
-      tileView1.Invalidate();
     }
     
     void RedoToolStripMenuItemClick(object sender, EventArgs e)
     {
       command_stack.Redo();
       CheckUndoEnabled();
-      tileView1.Invalidate();
     }
     
     void CheckUndoEnabled()

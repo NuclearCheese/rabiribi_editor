@@ -200,9 +200,43 @@ namespace RabiRibi_Editor
       right_click_callback = rc_callback;
     }
     
+    /// <summary>
+    /// Invalidates the appropriate region of the control for the given
+    /// rectangle of tiles.
+    /// </summary>
+    /// <param name="left">Leftmost tile index</param>
+    /// <param name="right">Rightmost tile index</param>
+    /// <param name="top">Topmost tile index</param>
+    /// <param name="bottom">Bottommost tile index</param>
+    internal void InvalidateTiles(int left, int right, int top, int bottom)
+    {
+      // If showing a room-size layer, expand to include the the full size of
+      // all rooms included in this tile range.
+      if (room_bg_visible || room_color_visible || room_type_visible)
+      {
+        left -= left % LevelData.screen_width_in_tiles;
+        right = right + LevelData.screen_width_in_tiles;
+        right -= right % LevelData.screen_width_in_tiles;
+        
+        top = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(top));
+        bottom = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(bottom) + 1);
+      }
+      
+      left -= scroll_x;
+      right -= scroll_x;
+      top -= scroll_y;
+      bottom -= scroll_y;
+      
+      int x = left * 32;
+      int width = (right - left + 1) * 32;
+      int y = top * 32;
+      int height = (bottom - top + 1) * 32;
+      Invalidate(new Rectangle(x, y, width, height));
+    }
+    
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
     {
-      e.Graphics.Clear(Color.Black);
+      e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
       
       // Prevents the form designer from crashing.
       if (level == null)
@@ -212,96 +246,123 @@ namespace RabiRibi_Editor
       
       // TODO this is kinda slow when the window is big - ways to optimize?
       
+      // Determine the actual bounds to draw by checking the invalidated
+      // area of the control.
+      int tile_draw_min_x = scroll_x + (e.ClipRectangle.Left / 32);
+      int tile_draw_max_x = scroll_x + ((e.ClipRectangle.Right + 31) / 32);
+      
+      int tile_draw_min_y = scroll_y + (e.ClipRectangle.Top / 32);
+      int tile_draw_max_y = scroll_y + ((e.ClipRectangle.Bottom + 31) / 32);
+      
+      // Expand to the full size of a room to redraw room-size layers
+      if (room_bg_visible || room_type_visible || room_color_visible)
+      {
+        tile_draw_min_x -= tile_draw_min_x % LevelData.screen_width_in_tiles;
+        tile_draw_max_x = tile_draw_max_x + (LevelData.screen_width_in_tiles - 1);
+        tile_draw_max_x -= tile_draw_max_x % LevelData.screen_width_in_tiles;
+        
+        tile_draw_min_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(tile_draw_min_y));
+        tile_draw_max_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(tile_draw_max_y) + 1);
+      }
+      
       int tile_draw_x = scroll_x;
       for (int draw_x = 0; draw_x < Width; draw_x += 32)
       {
-        int tile_draw_y = scroll_y;
-        for (int draw_y = 0; draw_y < Height; draw_y += 32)
+        if ((tile_draw_x >= tile_draw_min_x) &&
+            (tile_draw_x <= tile_draw_max_x))
         {
-          // Draw the tile layers
-          foreach (int layer in layer_draw_order)
+          int tile_draw_y = scroll_y;
+          for (int draw_y = 0; draw_y < Height; draw_y += 32)
           {
-            if (tile_layers_visible[layer])
+            if ((tile_draw_y >= tile_draw_min_y) &&
+                (tile_draw_y <= tile_draw_max_y))
             {
-              int data = level.tile_data[layer][tile_draw_x, tile_draw_y];
-              if (data != 0)
+              // Draw the tile layers
+              foreach (int layer in layer_draw_order)
               {
-                int tile_index = data;
-                bool horiz_flip = false;
-                bool vert_flip = false;
-                if (tile_index < 0)
+                if (tile_layers_visible[layer])
                 {
-                  tile_index = -tile_index;
-                  horiz_flip = true;
-                }
-                if (tile_index >= 5000)
-                {
-                  tile_index -= 5000;
-                  vert_flip = true;
-                }
-                int tile_source_x = (tile_index % 32) * 32;
-                int tile_source_y = (tile_index / 32) * 32;
-                temp_gfx.Clear(Color.Transparent);
-                temp_gfx.DrawImage
-                  (tileset_graphics, new Rectangle(0, 0, 32, 32),
-                   tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
-                if (horiz_flip)
-                {
-                  if (vert_flip)
+                  int data = level.tile_data[layer][tile_draw_x, tile_draw_y];
+                  if (data != 0)
                   {
-                    temp.RotateFlip(RotateFlipType.RotateNoneFlipXY);
-                  }
-                  else
-                  {
-                    temp.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    int tile_index = data;
+                    bool horiz_flip = false;
+                    bool vert_flip = false;
+                    if (tile_index < 0)
+                    {
+                      tile_index = -tile_index;
+                      horiz_flip = true;
+                    }
+                    if (tile_index >= 5000)
+                    {
+                      tile_index -= 5000;
+                      vert_flip = true;
+                    }
+                    int tile_source_x = (tile_index % 32) * 32;
+                    int tile_source_y = (tile_index / 32) * 32;
+                    temp_gfx.Clear(Color.Transparent);
+                    temp_gfx.DrawImage
+                      (tileset_graphics, new Rectangle(0, 0, 32, 32),
+                       tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
+                    if (horiz_flip)
+                    {
+                      if (vert_flip)
+                      {
+                        temp.RotateFlip(RotateFlipType.RotateNoneFlipXY);
+                      }
+                      else
+                      {
+                        temp.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                      }
+                    }
+                    else if (vert_flip)
+                    {
+                      temp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    }
+                    e.Graphics.DrawImage(temp, draw_x, draw_y);
                   }
                 }
-                else if (vert_flip)
+              }
+              
+              if (collision_layer_visible)
+              {
+                int data = level.collision_data[tile_draw_x, tile_draw_y];
+                if (data != 0)
                 {
-                  temp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                  int tile_source_x = (data % 32) * 32;
+                  int tile_source_y = (data / 32) * 32;
+                  e.Graphics.DrawImage
+                    (collision_graphics, new Rectangle(draw_x, draw_y, 32, 32),
+                     tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
                 }
-                e.Graphics.DrawImage(temp, draw_x, draw_y);
+              }
+              
+              if (event_layer_visible)
+              {
+                int data = level.event_data[tile_draw_x, tile_draw_y];
+                if (data != 0)
+                {
+                  e.Graphics.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
+                                        draw_x, draw_y);
+                }
+              }
+              
+              if (item_layer_visible)
+              {
+                int data = level.item_data[tile_draw_x, tile_draw_y];
+                if (data != 0)
+                {
+                  e.Graphics.DrawString(data.ToString(), DefaultFont,
+                                        Brushes.Turquoise, draw_x, draw_y + 12);
+                }
               }
             }
-          }
-          
-          if (collision_layer_visible)
-          {
-            int data = level.collision_data[tile_draw_x, tile_draw_y];
-            if (data != 0)
+            
+            tile_draw_y++;
+            if (tile_draw_y >= LevelData.map_tile_height)
             {
-              int tile_source_x = (data % 32) * 32;
-              int tile_source_y = (data / 32) * 32;
-              e.Graphics.DrawImage
-                (collision_graphics, new Rectangle(draw_x, draw_y, 32, 32),
-                 tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
+              break;
             }
-          }
-          
-          if (event_layer_visible)
-          {
-            int data = level.event_data[tile_draw_x, tile_draw_y];
-            if (data != 0)
-            {
-              e.Graphics.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
-                                    draw_x, draw_y);
-            }
-          }
-          
-          if (item_layer_visible)
-          {
-            int data = level.item_data[tile_draw_x, tile_draw_y];
-            if (data != 0)
-            {
-              e.Graphics.DrawString(data.ToString(), DefaultFont,
-                                    Brushes.Turquoise, draw_x, draw_y + 12);
-            }
-          }
-          
-          tile_draw_y++;
-          if (tile_draw_y >= LevelData.map_tile_height)
-          {
-            break;
           }
         }
         tile_draw_x++;
