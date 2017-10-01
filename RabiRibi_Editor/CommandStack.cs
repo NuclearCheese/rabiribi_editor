@@ -16,8 +16,9 @@ namespace RabiRibi_Editor
   /// </summary>
   public class CommandStack
   {
-    // Local reference to the level data
+    // Local reference to the level data and tile view control
     LevelData level = null;
+    TileView tileview = null;
     
     internal enum CommandType
     {
@@ -51,6 +52,13 @@ namespace RabiRibi_Editor
       // If a mask entry is false, no action is actually taken on that tile.
       internal bool[,] mask;
       
+      internal bool IsMapOperation()
+      {
+        return (command == CommandType.Write_Room_BG) ||
+          (command == CommandType.Write_Room_Color) ||
+          (command == CommandType.Write_Room_Type);
+      }
+      
       internal CommandEntry(CommandType cmd, int left, int right, int top, int bottom)
       {
         command = cmd;
@@ -61,10 +69,7 @@ namespace RabiRibi_Editor
         bottom_tile = bottom;
         
         // If the command is a per-room command, collapse the coordinates to room coordinates
-        // TODO add other per-room commands.  maybe a smarter way to do this?
-        if (command == CommandType.Write_Room_Type ||
-            command == CommandType.Write_Room_Color ||
-            command == CommandType.Write_Room_BG)
+        if (IsMapOperation())
         {
           left_tile /= LevelData.screen_width_in_tiles;
           right_tile /= LevelData.screen_width_in_tiles;
@@ -133,9 +138,10 @@ namespace RabiRibi_Editor
     BoundedStack undo_stack;
     BoundedStack redo_stack;
     
-    public CommandStack(LevelData l)
+    public CommandStack(LevelData l, TileView t)
     {
       level = l;
+      tileview = t;
       
       undo_stack = new CommandStack.BoundedStack();
       redo_stack = new CommandStack.BoundedStack();
@@ -231,6 +237,25 @@ namespace RabiRibi_Editor
       {
         // TODO error
       }
+      
+      // Determine what area of the tile view to invalidate.
+      int invalidate_left = command.left_tile;
+      int invalidate_right = command.right_tile;
+      int invalidate_top = command.top_tile;
+      int invalidate_bottom = command.bottom_tile;
+      
+      if (command.IsMapOperation())
+      {
+        // Convert map coordinates back to tile coordinates.
+        invalidate_left = invalidate_left * LevelData.screen_width_in_tiles;
+        invalidate_right = (invalidate_right * LevelData.screen_width_in_tiles)
+          + (LevelData.screen_width_in_tiles - 1);
+        invalidate_top = LevelData.Map_Y_To_Tile_Y(invalidate_top);
+        invalidate_bottom = LevelData.Map_Y_To_Tile_Y(invalidate_bottom + 1) - 1;
+      }
+      
+      tileview.InvalidateTiles(invalidate_left, invalidate_right,
+                               invalidate_top, invalidate_bottom);
     }
     
     /// <summary>
