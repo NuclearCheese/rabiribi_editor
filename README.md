@@ -32,3 +32,17 @@ You can also select a value by right-clicking on the map to select whatever you'
 
 Once a tool and value/tile are selected, left click in the map view to draw it on the map.  You can also drag with the left mouse button to fill in a rectangular area.
 Be aware that you can draw on a map even if the layer you're drawing to is not currently visible.
+
+
+## Sample Map
+
+I threw together a quick map using the editor, as a sample of what it can do.
+
+Download is at: https://github.com/NuclearCheese/rabiribi_maps/blob/master/maps/Rabi-Ribi%20Editor%20Sample%20Level.zip?raw=true
+
+Or navigate to it manually in my maps repository:
+- https://github.com/NuclearCheese/rabiribi_maps
+- maps directory
+- Rabi-Ribi Editor Sample Level.zip
+
+Note that admittedly I'm not the best artist, so things look a bit plain.  That's more on me than the editor! :)
