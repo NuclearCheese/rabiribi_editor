@@ -55,7 +55,15 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
-      this.warp_event_selection = new System.Windows.Forms.ComboBox();
+      this.entity_dir_selection = new System.Windows.Forms.ComboBox();
+      this.entity_type_selection = new System.Windows.Forms.ComboBox();
+      this.warp_graphic_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_local_id_selection = new System.Windows.Forms.ComboBox();
+      this.warp_exit_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_entrance_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_map_selection = new System.Windows.Forms.ComboBox();
+      this.event_category_selection = new System.Windows.Forms.ComboBox();
+      this.warp_destination_selection = new System.Windows.Forms.ComboBox();
       this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.metatile_selection = new System.Windows.Forms.ComboBox();
       this.bg_ID_entry = new System.Windows.Forms.TextBox();
@@ -78,6 +86,7 @@ namespace RabiRibi_Editor
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
       this.metatile_layer_label = new System.Windows.Forms.Label();
+      this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -255,7 +264,16 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
-      this.tabPage2.Controls.Add(this.warp_event_selection);
+      this.tabPage2.Controls.Add(this.entity_laser_delay_selection);
+      this.tabPage2.Controls.Add(this.entity_dir_selection);
+      this.tabPage2.Controls.Add(this.entity_type_selection);
+      this.tabPage2.Controls.Add(this.warp_graphic_checkbox);
+      this.tabPage2.Controls.Add(this.warp_local_id_selection);
+      this.tabPage2.Controls.Add(this.warp_exit_checkbox);
+      this.tabPage2.Controls.Add(this.warp_entrance_checkbox);
+      this.tabPage2.Controls.Add(this.warp_map_selection);
+      this.tabPage2.Controls.Add(this.event_category_selection);
+      this.tabPage2.Controls.Add(this.warp_destination_selection);
       this.tabPage2.Controls.Add(this.metatile_layer_selection);
       this.tabPage2.Controls.Add(this.metatile_selection);
       this.tabPage2.Controls.Add(this.bg_ID_entry);
@@ -284,44 +302,109 @@ namespace RabiRibi_Editor
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
-      // warp_event_selection
+      // entity_dir_selection
       // 
-      this.warp_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.warp_event_selection.FormattingEnabled = true;
-      this.warp_event_selection.Items.AddRange(new object[] {
-                  "select a warp event ...",
-                  "112 Warp graphic (3 tiles below)",
-                  "208 Warp entrance",
-                  "209 Warp ID 0",
-                  "210 Warp ID 1",
-                  "211 Warp ID 2",
-                  "212 Warp ID 3",
-                  "213 Warp ID 4",
-                  "214 Warp ID 5",
-                  "215 Warp ID 6",
-                  "216 Warp ID 7",
-                  "217 Warp ID 8",
-                  "218 Warp ID 9",
-                  "219 Warp ID 10",
-                  "220 Warp ID 11",
-                  "240 Warp exit",
-                  "241 Warp cross-map off",
-                  "242 Warp cross-map to map 0",
-                  "243 Warp cross-map to map 1",
-                  "244 Warp cross-map to map 2",
-                  "245 Warp cross-map to map 3",
-                  "246 Warp cross-map to map 4",
-                  "247 Warp cross-map to map 5",
-                  "248 Warp cross-map to map 6",
-                  "249 Warp cross-map to map 7",
-                  "250 Warp cross-map to map 8",
-                  "251 Warp cross-map to map 9"});
-      this.warp_event_selection.Location = new System.Drawing.Point(6, 390);
-      this.warp_event_selection.Name = "warp_event_selection";
-      this.warp_event_selection.Size = new System.Drawing.Size(218, 21);
-      this.warp_event_selection.TabIndex = 20;
-      this.warp_event_selection.Visible = false;
-      this.warp_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
+      this.entity_dir_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.entity_dir_selection.FormattingEnabled = true;
+      this.entity_dir_selection.Location = new System.Drawing.Point(6, 360);
+      this.entity_dir_selection.Name = "entity_dir_selection";
+      this.entity_dir_selection.Size = new System.Drawing.Size(121, 21);
+      this.entity_dir_selection.TabIndex = 28;
+      this.entity_dir_selection.Visible = false;
+      // 
+      // entity_type_selection
+      // 
+      this.entity_type_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.entity_type_selection.FormattingEnabled = true;
+      this.entity_type_selection.Location = new System.Drawing.Point(6, 330);
+      this.entity_type_selection.Name = "entity_type_selection";
+      this.entity_type_selection.Size = new System.Drawing.Size(218, 21);
+      this.entity_type_selection.TabIndex = 27;
+      this.entity_type_selection.Visible = false;
+      // 
+      // warp_graphic_checkbox
+      // 
+      this.warp_graphic_checkbox.Checked = true;
+      this.warp_graphic_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_graphic_checkbox.Location = new System.Drawing.Point(6, 450);
+      this.warp_graphic_checkbox.Name = "warp_graphic_checkbox";
+      this.warp_graphic_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_graphic_checkbox.TabIndex = 26;
+      this.warp_graphic_checkbox.Text = "Create Warp Graphic";
+      this.warp_graphic_checkbox.UseVisualStyleBackColor = true;
+      this.warp_graphic_checkbox.Visible = false;
+      // 
+      // warp_local_id_selection
+      // 
+      this.warp_local_id_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_local_id_selection.FormattingEnabled = true;
+      this.warp_local_id_selection.Location = new System.Drawing.Point(6, 420);
+      this.warp_local_id_selection.Name = "warp_local_id_selection";
+      this.warp_local_id_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_local_id_selection.TabIndex = 25;
+      this.warp_local_id_selection.Visible = false;
+      // 
+      // warp_exit_checkbox
+      // 
+      this.warp_exit_checkbox.Checked = true;
+      this.warp_exit_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_exit_checkbox.Location = new System.Drawing.Point(6, 390);
+      this.warp_exit_checkbox.Name = "warp_exit_checkbox";
+      this.warp_exit_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_exit_checkbox.TabIndex = 24;
+      this.warp_exit_checkbox.Text = "Create Warp Exit";
+      this.warp_exit_checkbox.UseVisualStyleBackColor = true;
+      this.warp_exit_checkbox.Visible = false;
+      // 
+      // warp_entrance_checkbox
+      // 
+      this.warp_entrance_checkbox.Checked = true;
+      this.warp_entrance_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_entrance_checkbox.Location = new System.Drawing.Point(6, 300);
+      this.warp_entrance_checkbox.Name = "warp_entrance_checkbox";
+      this.warp_entrance_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_entrance_checkbox.TabIndex = 23;
+      this.warp_entrance_checkbox.Text = "Create Warp Entrance";
+      this.warp_entrance_checkbox.UseVisualStyleBackColor = true;
+      this.warp_entrance_checkbox.Visible = false;
+      // 
+      // warp_map_selection
+      // 
+      this.warp_map_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_map_selection.FormattingEnabled = true;
+      this.warp_map_selection.Location = new System.Drawing.Point(6, 330);
+      this.warp_map_selection.Name = "warp_map_selection";
+      this.warp_map_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_map_selection.TabIndex = 22;
+      this.warp_map_selection.Visible = false;
+      // 
+      // event_category_selection
+      // 
+      this.event_category_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.event_category_selection.FormattingEnabled = true;
+      this.event_category_selection.Items.AddRange(new object[] {
+                  "Raw ID Entry",
+                  "Music Events",
+                  "Tile Events",
+                  "Entities",
+                  "Warp Events",
+                  "Misc. Events"});
+      this.event_category_selection.Location = new System.Drawing.Point(6, 266);
+      this.event_category_selection.Name = "event_category_selection";
+      this.event_category_selection.Size = new System.Drawing.Size(218, 21);
+      this.event_category_selection.TabIndex = 21;
+      this.event_category_selection.Visible = false;
+      this.event_category_selection.SelectedIndexChanged += new System.EventHandler(this.Event_category_selectionSelectedIndexChanged);
+      // 
+      // warp_destination_selection
+      // 
+      this.warp_destination_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_destination_selection.FormattingEnabled = true;
+      this.warp_destination_selection.Location = new System.Drawing.Point(6, 360);
+      this.warp_destination_selection.Name = "warp_destination_selection";
+      this.warp_destination_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_destination_selection.TabIndex = 20;
+      this.warp_destination_selection.Visible = false;
       // 
       // metatile_layer_selection
       // 
@@ -365,250 +448,45 @@ namespace RabiRibi_Editor
       // 
       this.misc_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.misc_event_selection.FormattingEnabled = true;
-      this.misc_event_selection.Items.AddRange(new object[] {
-                  "select a misc. event ...",
-                  "32 Warp stone",
-                  "34 Start point",
-                  "42 Auto save trigger",
-                  "44 Auto save reenable (allows auto save to trigger again)",
-                  "45 Heal point",
-                  "80 Door (goes upward 2 screens on map)",
-                  "81 Door (goes downward 2 screens on map)",
-                  "193 Hide layer 2",
-                  "194 Show layer 2",
-                  "195 Right direction modifier",
-                  "196 Left direction modifier",
-                  "198 Up direction modifier",
-                  "199 Down direction modifier",
-                  "200 Red laser delay 1 (place below)",
-                  "201 Red laser delay 2 (place below)",
-                  "202 Red laser delay 3 (place below)",
-                  "203 Red laser delay 4 (place below)",
-                  "204 Red laser delay 5 (place below)",
-                  "205 Red laser delay 6 (place below)",
-                  "224 Save point",
-                  "250 Easter egg",
-                  "483 Fall damage and reset",
-                  "5001 Type 1 modifier",
-                  "5002 Type 2 modifier",
-                  "5003 Type 3 modifier",
-                  "5004 Type 4 modifier",
-                  "5005 Type 5 modifier",
-                  "5006 Type 6 modifier",
-                  "5007 Type 7 modifier",
-                  "5008 Type 8 modifier",
-                  "5009 Type 9 modifier",
-                  "5010 Type 10 modifier",
-                  "5011 Type 11 modifier",
-                  "5012 Type 12 modifier"});
-      this.misc_event_selection.Location = new System.Drawing.Point(6, 420);
+      this.misc_event_selection.Location = new System.Drawing.Point(6, 300);
       this.misc_event_selection.Name = "misc_event_selection";
       this.misc_event_selection.Size = new System.Drawing.Size(218, 21);
       this.misc_event_selection.TabIndex = 15;
       this.misc_event_selection.Visible = false;
-      this.misc_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // entity_event_selection
       // 
       this.entity_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.entity_event_selection.DropDownWidth = 375;
       this.entity_event_selection.FormattingEnabled = true;
-      this.entity_event_selection.Items.AddRange(new object[] {
-                  "select an entity event ...",
-                  "1003 Four-way fire bar",
-                  "1004 Three-way fire bar",
-                  "1005 Spike ball",
-                  "1006 Super spike ball",
-                  "1007 Wall climber",
-                  "1008 Blue death laser",
-                  "1009 Prologue Cocoa",
-                  "1010 Pixelface (Cave 2 face boss)",
-                  "1011 Rumi",
-                  "1012 Ashuri",
-                  "1013 Rita",
-                  "1014 Ribbon",
-                  "1015 Forgotten Cave Cocoa",
-                  "1016 Computer Cicini",
-                  "1017 Cicini\'s desk (also other objects)",
-                  "1018 Cicini",
-                  "1019 Red laser",
-                  "1020 Saya",
-                  "1021 Syaro",
-                  "1022 Pandora",
-                  "1023 Nieve",
-                  "1024 Nixie",
-                  "1025 Aruraune",
-                  "1027 \"Into Town\" (???)",
-                  "1028 Interactable NPC",
-                  "1030 Seana",
-                  "1031 Lilith",
-                  "1032 Vanilla",
-                  "1033 Chocolate",
-                  "1035 Illusion Alius 1 (/2/3/4)",
-                  "1036 Pink Kotri (/Green/Blue/Pink)",
-                  "1037 Noah",
-                  "1038 Irisu",
-                  "1039 Miriam",
-                  "1043 Miru",
-                  "1045 Rita 2",
-                  "1046 Lilli (/Pixie)",
-                  "1053 Noah 3",
-                  "1054 Keke Bunny",
-                  "1055 Mr. Tako (sitting; type 3 is standing)",
-                  "1056 Blue Ordinary Cat (/Pink)",
-                  "1096 Pink bunny slime (5: big, 6: large)",
-                  "1097 Flowers",
-                  "1098 \"Ball mouse\"",
-                  "1099 Bee",
-                  "1102 Bird",
-                  "1100 Rafflesia (type 1: green)",
-                  "1101 Wisp (type 2+: exploding halloween pumpkins)",
-                  "1103 Mushroom",
-                  "1104 Dog",
-                  "1105 Brown Mushroom (5: big, 6: large)",
-                  "1106 Worm (1: shoots)",
-                  "1107 Cactus",
-                  "1108 Eagle (1: shoots)",
-                  "1109 Blue blob charger (1: pink)",
-                  "1110 UPRPRC, overalls, pink hair",
-                  "1111 Purple bunny slime (5: big, 6: large)",
-                  "1112 Egg (1: blue, shoots, 2: yellow, shoots)",
-                  "1113 Dice (type changes value & fairies to spawn, up to 5)",
-                  "1114 Blue UPRPRC fairy (/red/yellow/green/purple/gray)",
-                  "1115 Card soldier",
-                  "1116 Bunny thromp (down, /left/up/right/no movement)",
-                  "1117 UPRPRC hugger (red, /green/blue/yellow)",
-                  "1118 UPRPRC swimsuit gunner (red, /blue/yellow/green)",
-                  "1119 UPRPRC debuff mage (blue, /red/green/yellow)",
-                  "1120 UPRPRC bomber (red, /blue/purple/green)",
-                  "1124 Open box",
-                  "1125 Vehicle",
-                  "1126 Skinny otaku (green, /yellow/blue)",
-                  "1127 Fat otaku (red, /black)",
-                  "1128 Sandbag",
-                  "1129 \"STG fairy\"",
-                  "1130 Fake rock (type 1: snow version)",
-                  "1131 Rock-tossing mole",
-                  "1132 Five-way lab turret (down, /left/right/up)",
-                  "1133 Tall lab robot (1: Mr. Big Box, 5: eye lasers that turn)",
-                  "1134 Flying lab robot",
-                  "1135 Small lab robot (1: tiny robot)",
-                  "1136 Robot maid (pink, /blue/yellow/green/Rainbow Maid)",
-                  "1137 Spider (1: already dropped)",
-                  "1138 Riverbank running swarmers (2: halloween variant)",
-                  "1139 Hug fairy (blue, /yellow/red/green)",
-                  "1140 Cyber cube (blue, /green/yellow/red/silver)",
-                  "1141 Irisu clone",
-                  "1142 Rainbow Crystal boss core",
-                  "1143 Rainbow Crystal boss part (type affects color)",
-                  "1144 UPRPRC tank (yellow, /blue/green)",
-                  "1145 Bouncy cat (gray, /blue/halloween)",
-                  "1146 Spark ball (rainbow, /blue/yellow/green/rainbow slow)",
-                  "1147 UPRPC mage (blue, /red/green/yellow)",
-                  "1148 Snow ball (type 1: fragment)",
-                  "1149 Elemental magic ball (light blue, /dark blue/red)",
-                  "1150 UPRPC fairy (white, /red/yellow/green/purple/gray)",
-                  "1151 Pyramid eye",
-                  "1152 Pyramid laser (move horizontal/vertical)",
-                  "1153 UPRPC speed up mage",
-                  "1154 City NPC (type affects appearance)",
-                  "1155 Aurora Palace laser",
-                  "1156 Meaty bone (boomerang, 1: explosive, 5: large, 6: huge)",
-                  "1157 Plurkwood bullet spitter",
-                  "1158 Plurkwood moth slime (5: large, 6: huge)",
-                  "1159 Plurkwood bat (type affects initial movement)",
-                  "1160 Fish (yellow, /blue/green)",
-                  "1161 Mummy ball",
-                  "1162 Five floating energy swords",
-                  "1163 Library crystal (red, /orange/yellow/green/cyan/blue/purple/silver)",
-                  "1164 Bunny ghost (high type modifier deals more damage)"});
-      this.entity_event_selection.Location = new System.Drawing.Point(6, 360);
+      this.entity_event_selection.Location = new System.Drawing.Point(6, 300);
       this.entity_event_selection.Name = "entity_event_selection";
       this.entity_event_selection.Size = new System.Drawing.Size(218, 21);
       this.entity_event_selection.TabIndex = 14;
       this.entity_event_selection.Visible = false;
-      this.entity_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
+      this.entity_event_selection.SelectedIndexChanged += new System.EventHandler(this.Entity_event_selectionSelectedIndexChanged);
       // 
       // tile_event_selection
       // 
       this.tile_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.tile_event_selection.DropDownWidth = 300;
       this.tile_event_selection.FormattingEnabled = true;
-      this.tile_event_selection.Items.AddRange(new object[] {
-                  "select a tile event ...",
-                  "1 Wood block (break with hammer)",
-                  "2 Bomb block",
-                  "3 Bomb chain block",
-                  "6 Fairy block (break with magic)",
-                  "7 Ice block (break by touch with Fire Orb)",
-                  "8 Cracked block (break when stepped on)",
-                  "30 Low Item % block (disappears at >10% item collection)",
-                  "108 Rainbow Crystal gate (solid until crystal boss is defeated)",
-                  "109 Ignore adjacent Spikes",
-                  "110 Pandora gate (solid until Pandora is defeated)",
-                  "160 Boss gate (blocks exit during boss fight)",
-                  "192 Reset breakable blocks",
-                  "197 Spike block",
-                  "237 Timer block",
-                  "238 Timer item (use type to set duration)",
-                  "455 Keke Bunny Gate (used in Keke Bunny fight)",
-                  "432 Break after post game clear?",
-                  "512 Hall of Memory DLC area red blocks",
-                  "513 Hall of Memory DLC area blue blocks",
-                  "514 Hall of Memory DLC area green blocks",
-                  "515 Hall of Memory DLC area purple blocks"});
-      this.tile_event_selection.Location = new System.Drawing.Point(6, 330);
+      this.tile_event_selection.Location = new System.Drawing.Point(6, 300);
       this.tile_event_selection.Name = "tile_event_selection";
       this.tile_event_selection.Size = new System.Drawing.Size(218, 21);
       this.tile_event_selection.TabIndex = 13;
       this.tile_event_selection.Visible = false;
-      this.tile_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // music_event_selection
       // 
       this.music_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.music_event_selection.DropDownWidth = 250;
       this.music_event_selection.FormattingEnabled = true;
-      this.music_event_selection.Items.AddRange(new object[] {
-                  "select a music event ...",
-                  "128 No Music (disable currently playing music)",
-                  "129 Adventure Starts Here",
-                  "130 Spectral Cave",
-                  "131 Forgotten Cave",
-                  "132 Underwater Ambient",
-                  "133 Library Ambient",
-                  "134 Forgotten Cave II",
-                  "135 Starting Forest Night / Nightwalker",
-                  "136 Bounce Bounce",
-                  "137 Rabi Rabi Beach",
-                  "138 Pandora\'s Palace",
-                  "139 Rabi Rabi Ravine",
-                  "140 Home Sweet Home",
-                  "141 Rabi Rabi Park",
-                  "142 Inside UPRPRC",
-                  "143 Sky Island Town",
-                  "144 Winter Wonderland",
-                  "145 Cyberspace.exe",
-                  "146 Evernight Peak",
-                  "147 Exotic Laboratory",
-                  "148 Golden Riverbank",
-                  "149 Floating Graveyard",
-                  "150 System Interior II",
-                  "151 Aurora Palace",
-                  "152 Speicher Galerie",
-                  "153 Deep Under The Sea (Natural Aquarium)",
-                  "154 Sky-High Bridge",
-                  "155 Warp Destination",
-                  "156 Volcanic Caverns",
-                  "157 Plurkwood",
-                  "158 Another D (Hall of Memories)",
-                  "159 Icy Summit"});
       this.music_event_selection.Location = new System.Drawing.Point(6, 300);
       this.music_event_selection.Name = "music_event_selection";
       this.music_event_selection.Size = new System.Drawing.Size(218, 21);
       this.music_event_selection.TabIndex = 12;
       this.music_event_selection.Visible = false;
-      this.music_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // item_selection
       // 
@@ -788,7 +666,7 @@ namespace RabiRibi_Editor
       // 
       // event_ID_entry
       // 
-      this.event_ID_entry.Location = new System.Drawing.Point(118, 268);
+      this.event_ID_entry.Location = new System.Drawing.Point(118, 300);
       this.event_ID_entry.Name = "event_ID_entry";
       this.event_ID_entry.Size = new System.Drawing.Size(100, 20);
       this.event_ID_entry.TabIndex = 7;
@@ -897,6 +775,16 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Text = "Selectable layer:";
       this.metatile_layer_label.Visible = false;
       // 
+      // entity_laser_delay_selection
+      // 
+      this.entity_laser_delay_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.entity_laser_delay_selection.FormattingEnabled = true;
+      this.entity_laser_delay_selection.Location = new System.Drawing.Point(6, 390);
+      this.entity_laser_delay_selection.Name = "entity_laser_delay_selection";
+      this.entity_laser_delay_selection.Size = new System.Drawing.Size(218, 21);
+      this.entity_laser_delay_selection.TabIndex = 29;
+      this.entity_laser_delay_selection.Visible = false;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -908,7 +796,7 @@ namespace RabiRibi_Editor
       this.Controls.Add(this.tileView1);
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
-      this.MinimumSize = new System.Drawing.Size(650, 500);
+      this.MinimumSize = new System.Drawing.Size(650, 600);
       this.Name = "MainForm";
       this.Text = "RabiRibi_Editor";
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFormFormClosed);
@@ -928,7 +816,16 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
-    private System.Windows.Forms.ComboBox warp_event_selection;
+    private System.Windows.Forms.ComboBox entity_laser_delay_selection;
+    private System.Windows.Forms.ComboBox entity_dir_selection;
+    private System.Windows.Forms.ComboBox entity_type_selection;
+    private System.Windows.Forms.CheckBox warp_graphic_checkbox;
+    private System.Windows.Forms.CheckBox warp_exit_checkbox;
+    private System.Windows.Forms.ComboBox warp_local_id_selection;
+    private System.Windows.Forms.CheckBox warp_entrance_checkbox;
+    private System.Windows.Forms.ComboBox warp_map_selection;
+    private System.Windows.Forms.ComboBox event_category_selection;
+    private System.Windows.Forms.ComboBox warp_destination_selection;
     private System.Windows.Forms.ToolStripMenuItem clearLoadedMetatilesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem loadMetatileFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem metatilesToolStripMenuItem;

@@ -59,8 +59,9 @@ namespace RabiRibi_Editor
     public delegate void Process_Mouse_Delegate(int old_tx, int old_ty, int new_tx, int new_ty);
     Process_Mouse_Delegate mouse_callback;
     
-    public delegate void Process_Right_Click_Delegate(int tile_x, int tile_y);
-    Process_Right_Click_Delegate right_click_callback;
+    public delegate void Single_Tile_Click_Delegate(int tile_x, int tile_y);
+    Single_Tile_Click_Delegate left_click_callback;
+    Single_Tile_Click_Delegate right_click_callback;
     
     Brush[] room_type_brushes;
     Dictionary<int, Brush> room_color_brushes;
@@ -83,7 +84,7 @@ namespace RabiRibi_Editor
       collision_graphics = coll_gfx;
     }
     
-    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Process_Right_Click_Delegate rc_callback)
+    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Click_Delegate lc_callback, Single_Tile_Click_Delegate rc_callback)
     {
       level = level_data;
       
@@ -197,6 +198,7 @@ namespace RabiRibi_Editor
       room_color_brushes[98] = new SolidBrush(Color.FromArgb(96, 160, 160, 160));
       
       mouse_callback = callback;
+      left_click_callback = lc_callback;
       right_click_callback = rc_callback;
     }
     
@@ -524,11 +526,32 @@ namespace RabiRibi_Editor
       
       if (e.Button == System.Windows.Forms.MouseButtons.Left)
       {
-        // Left button down starts a draw event.  Nothing actually gets drawn
-        // until the button is released.
+        // Note where the left mouse started, so that we can report the full
+        // range of the input when it is released.
         mouse_down_x = e.X;
         mouse_down_y = e.Y;
         send_mouse_event = true;
+        
+        // Also trigger the left click callback.
+        int tile_x = (e.X / 32) + scroll_x;
+        if (tile_x < 0)
+        {
+          tile_x = 0;
+        }
+        else if (tile_x >= LevelData.map_tile_width)
+        {
+          tile_x = LevelData.map_tile_width - 1;
+        }
+        int tile_y = (e.Y / 32) + scroll_y;
+        if (tile_y < 0)
+        {
+          tile_y = 0;
+        }
+        else if (tile_y >= LevelData.map_tile_height)
+        {
+          tile_y = LevelData.map_tile_height - 1;
+        }
+        left_click_callback(tile_x, tile_y);
       }
       else if (e.Button == System.Windows.Forms.MouseButtons.Right)
       {

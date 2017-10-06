@@ -50,6 +50,44 @@ namespace RabiRibi_Editor
     
     List<Metatile> metatile_list;
     
+    // TODO make this configurable for the user
+    const bool show_event_ids = true;
+    
+    /// <summary>
+    /// Simple container class to contain both event names and IDs within the
+    /// event selection lists.
+    /// </summary>
+    class Event_Selection_Item
+    {
+      public string name;
+      public short id;
+      
+      public List<Event_Selection_Item> direction_list;
+      public List<Event_Selection_Item> type_list;
+      public bool laser_delay;
+      
+      public Event_Selection_Item(string event_name, short event_id)
+      {
+        name = event_name;
+        id = event_id;
+        direction_list = new List<MainForm.Event_Selection_Item>();
+        type_list = new List<MainForm.Event_Selection_Item>();
+        laser_delay = false;
+      }
+      
+      public override string ToString()
+      {
+        if (show_event_ids)
+        {
+          return id.ToString() + " " + name;
+        }
+        else
+        {
+          return name;
+        }
+      }
+    }
+    
     public MainForm()
     {
       //
@@ -253,214 +291,349 @@ namespace RabiRibi_Editor
     {
       base.OnLoad(e);
       
-      // If this is the first time running this version, pull settings from
-      // any previous versions.
-      if (Settings1.Default.upgradeRequired)
+      try
       {
-        Settings1.Default.Upgrade();
-        Settings1.Default.upgradeRequired = false;
-        Settings1.Default.Save();
-      }
-      
-      // Initialize stuff
-      command_stack = new CommandStack(level, tileView1);
-      
-      metatile_list = new List<Metatile>();
-      
-      UpdateMetatileList();
-      
-      metatile_layer_selection.SelectedIndex = 1;
-      
-      tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
-      
-      // Load tile graphics
-      Load_Tile_Graphics("TILE1_A.png");
-      Load_Collision_Graphics("COLLISION_TILES.png");
-      
-      // Set up preview areas
-      tile_preview.Image = new Bitmap(32, 32);
-      collision_preview.Image = new Bitmap(32, 32);
-      
-      // Create checkboxes for visibility toggles
-      layer_checkboxes = new CheckBox[LevelData.num_tile_layers];
-      for (int i = 0; i < LevelData.num_tile_layers; i++)
-      {
-        CheckBox c = new CheckBox();
-        c.Parent = tabPage1;
-        c.Text = "Layer " + i.ToString();
         
-        // Do a reverse lookup on the draw order to get each layer's priority.
-        // This allows us to position the tools in draw order.
-        for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
+        // If this is the first time running this version, pull settings from
+        // any previous versions.
+        if (Settings1.Default.upgradeRequired)
         {
-          if (tileView1.layer_draw_order[j] == i)
+          Settings1.Default.Upgrade();
+          Settings1.Default.upgradeRequired = false;
+          Settings1.Default.Save();
+        }
+        
+        // Initialize stuff
+        command_stack = new CommandStack(level, tileView1);
+        
+        metatile_list = new List<Metatile>();
+        
+        UpdateMetatileList();
+        
+        metatile_layer_selection.SelectedIndex = 1;
+        
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click);
+        
+        // Load tile graphics
+        Load_Tile_Graphics("TILE1_A.png");
+        Load_Collision_Graphics("COLLISION_TILES.png");
+        
+        // Set up preview areas
+        tile_preview.Image = new Bitmap(32, 32);
+        collision_preview.Image = new Bitmap(32, 32);
+        
+        // Create checkboxes for visibility toggles
+        layer_checkboxes = new CheckBox[LevelData.num_tile_layers];
+        for (int i = 0; i < LevelData.num_tile_layers; i++)
+        {
+          CheckBox c = new CheckBox();
+          c.Parent = tabPage1;
+          c.Text = "Layer " + i.ToString();
+          
+          // Do a reverse lookup on the draw order to get each layer's priority.
+          // This allows us to position the tools in draw order.
+          for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
           {
-            c.Top = 10 + j * 20;
+            if (tileView1.layer_draw_order[j] == i)
+            {
+              c.Top = 10 + j * 20;
+            }
+          }
+          c.Left = 10;
+          c.Checked = true;
+          c.CheckedChanged += new EventHandler(LayerVisibleChanged);
+          layer_checkboxes[i] = c;
+        }
+        collision_checkbox = new CheckBox();
+        collision_checkbox.Parent = tabPage1;
+        collision_checkbox.Text = "Collision";
+        collision_checkbox.Top = 150;
+        collision_checkbox.Left = 10;
+        collision_checkbox.Checked = false;
+        collision_checkbox.CheckedChanged += new EventHandler(collision_checkbox_CheckedChanged);
+        event_layer_checkbox = new CheckBox();
+        event_layer_checkbox.Parent = tabPage1;
+        event_layer_checkbox.Text = "Event IDs";
+        event_layer_checkbox.Top = 190;
+        event_layer_checkbox.Left = 10;
+        event_layer_checkbox.Checked = false;
+        event_layer_checkbox.CheckedChanged += new EventHandler(event_layer_checkbox_CheckedChanged);
+        item_layer_checkbox = new CheckBox();
+        item_layer_checkbox.Parent = tabPage1;
+        item_layer_checkbox.Text = "Item IDs";
+        item_layer_checkbox.Top = 210;
+        item_layer_checkbox.Left = 10;
+        item_layer_checkbox.Checked = false;
+        item_layer_checkbox.CheckedChanged += new EventHandler(item_layer_checkbox_CheckedChanged);
+        
+        room_type_checkbox = new CheckBox();
+        room_type_checkbox.Parent = tabPage1;
+        room_type_checkbox.Text = "Room types";
+        room_type_checkbox.Top = 250;
+        room_type_checkbox.Left = 10;
+        room_type_checkbox.Checked = false;
+        room_type_checkbox.CheckedChanged += new EventHandler(room_type_checkbox_CheckedChanged);
+        room_color_checkbox = new CheckBox();
+        room_color_checkbox.Parent = tabPage1;
+        room_color_checkbox.Text = "Room colors";
+        room_color_checkbox.Top = 270;
+        room_color_checkbox.Left = 10;
+        room_color_checkbox.Checked = false;
+        room_color_checkbox.CheckedChanged += new EventHandler(room_color_checkbox_CheckedChanged);
+        room_bg_checkbox = new CheckBox();
+        room_bg_checkbox.Parent = tabPage1;
+        room_bg_checkbox.Text = "Room BGs";
+        room_bg_checkbox.Top = 290;
+        room_bg_checkbox.Left = 10;
+        room_bg_checkbox.Checked = false;
+        room_bg_checkbox.CheckedChanged += new EventHandler(room_bg_checkbox_CheckedChanged);
+        
+        tile_grid_checkbox = new CheckBox();
+        tile_grid_checkbox.Parent = tabPage1;
+        tile_grid_checkbox.Text = "Tile Grid";
+        tile_grid_checkbox.Top = 330;
+        tile_grid_checkbox.Left = 10;
+        tile_grid_checkbox.Checked = false;
+        tile_grid_checkbox.CheckedChanged += new EventHandler(tile_grid_checkbox_CheckedChanged);
+        screen_grid_checkbox = new CheckBox();
+        screen_grid_checkbox.Parent = tabPage1;
+        screen_grid_checkbox.Text = "Screen Grid";
+        screen_grid_checkbox.Top = 350;
+        screen_grid_checkbox.Left = 10;
+        screen_grid_checkbox.Checked = false;
+        screen_grid_checkbox.CheckedChanged += new EventHandler(screen_grid_checkbox_CheckedChanged);
+        
+        // Create radio buttons for tool selection
+        no_tool_radio = new RadioButton();
+        no_tool_radio.Parent = tools_panel;
+        no_tool_radio.Text = "No tool";
+        no_tool_radio.Top = 10;
+        no_tool_radio.Left = 10;
+        no_tool_radio.Width = 80;
+        no_tool_radio.Checked = true;
+        no_tool_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        layer_tool_radios = new RadioButton[LevelData.num_tile_layers];
+        for (int i = 0; i < LevelData.num_tile_layers; i++)
+        {
+          RadioButton r = new RadioButton();
+          r.Parent = tools_panel;
+          r.Text = "Layer " + i.ToString();
+          
+          // Do a reverse lookup on the draw order to get each layer's priority.
+          // This allows us to position the tools in draw order.
+          for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
+          {
+            if (tileView1.layer_draw_order[j] == i)
+            {
+              r.Top = 30 + j * 20;
+            }
+          }
+          r.Left = 10;
+          r.Width = 80;
+          r.Checked = false;
+          r.CheckedChanged += new EventHandler(tool_selection_changed);
+          layer_tool_radios[i] = r;
+        }
+        
+        collision_radio = new RadioButton();
+        collision_radio.Parent = tools_panel;
+        collision_radio.Text = "Collision";
+        collision_radio.Top = 170;
+        collision_radio.Left = 10;
+        collision_radio.Checked = false;
+        collision_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        event_radio = new RadioButton();
+        event_radio.Parent = tools_panel;
+        event_radio.Text = "Event IDs";
+        event_radio.Top = 190;
+        event_radio.Left = 10;
+        event_radio.Checked = false;
+        event_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        item_radio = new RadioButton();
+        item_radio.Parent = tools_panel;
+        item_radio.Text = "Item IDs";
+        item_radio.Top = 210;
+        item_radio.Left = 10;
+        item_radio.Checked = false;
+        item_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        metatile_radio = new RadioButton();
+        metatile_radio.Parent = tools_panel;
+        metatile_radio.Text = "Metatile";
+        metatile_radio.Top = 230;
+        metatile_radio.Left = 10;
+        metatile_radio.Checked = false;
+        metatile_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        room_type_radio = new RadioButton();
+        room_type_radio.Parent = tools_panel;
+        room_type_radio.Text = "Room Type";
+        room_type_radio.Top = 30;
+        room_type_radio.Left = 100;
+        room_type_radio.Checked = false;
+        room_type_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        room_color_radio = new RadioButton();
+        room_color_radio.Parent = tools_panel;
+        room_color_radio.Text = "Room Color";
+        room_color_radio.Top = 50;
+        room_color_radio.Left = 100;
+        room_color_radio.Checked = false;
+        room_color_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        room_bg_radio = new RadioButton();
+        room_bg_radio.Parent = tools_panel;
+        room_bg_radio.Text = "Room BG";
+        room_bg_radio.Top = 70;
+        room_bg_radio.Left = 100;
+        room_bg_radio.Checked = false;
+        room_bg_radio.CheckedChanged += new EventHandler(tool_selection_changed);
+        
+        // TODO other tools (what else?)
+        
+        // Load event IDs
+        using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.event_ids.txt"))
+        {
+          using (var input = new StreamReader(resource))
+          {
+            ComboBox current_target = null;
+            Event_Selection_Item item = null;
+            while (!input.EndOfStream)
+            {
+              string line = input.ReadLine().Trim();
+              
+              // Ignore blank lines
+              if (line == "")
+              {
+                continue;
+              }
+              
+              // The following change which category of events are being added.
+              else if (line == "[music]")
+              {
+                current_target = music_event_selection;
+                continue;
+              }
+              else if (line == "[tile]")
+              {
+                current_target = tile_event_selection;
+                continue;
+              }
+              else if (line == "[misc]")
+              {
+                current_target = misc_event_selection;
+                continue;
+              }
+              else if (line == "[warps]")
+              {
+                current_target = warp_destination_selection;
+                continue;
+              }
+              else if (line == "[warps2]")
+              {
+                current_target = warp_local_id_selection;
+                continue;
+              }
+              else if (line == "[mapwarps]")
+              {
+                current_target = warp_map_selection;
+                continue;
+              }
+              else if (line == "[entity]")
+              {
+                current_target = entity_event_selection;
+                continue;
+              }
+              
+              // Add a direction modified entry to the most recent event
+              else if (line.StartsWith("dir"))
+              {
+                line = line.Substring(4).Trim();
+                bool zero_id = false;
+                if (line.StartsWith("0"))
+                {
+                  zero_id = true;
+                  line = line.Substring(2).Trim();
+                }
+                if (line == "left")
+                {
+                  item.direction_list.Add(new Event_Selection_Item("left", (short)(zero_id ? 0 : 196)));
+                }
+                if (line == "right")
+                {
+                  item.direction_list.Add(new Event_Selection_Item("right", (short)(zero_id ? 0 : 195)));
+                }
+                if (line == "up")
+                {
+                  item.direction_list.Add(new Event_Selection_Item("up", (short)(zero_id ? 0 : 198)));
+                }
+                if (line == "down")
+                {
+                  item.direction_list.Add(new Event_Selection_Item("down", (short)(zero_id ? 0 : 199)));
+                }
+                continue;
+              }
+              
+              // Add a type modifier to the most recent event
+              else if (line.StartsWith("type"))
+              {
+                line = line.Substring(5).Trim();
+                short subtype_id = short.Parse(line.Substring(0, line.IndexOf(' ')));
+                if (subtype_id != 0)
+                {
+                  subtype_id += 5000;
+                }
+                line = line.Substring(line.IndexOf(' ')).Trim();
+                item.type_list.Add(new Event_Selection_Item(line, subtype_id));
+                continue;
+              }
+              
+              // Enable laser delay modifiers on the most recent event
+              else if (line == "laser")
+              {
+                item.laser_delay = true;
+                continue;
+              }
+              
+              // None of the above -> this is a new event definition
+              short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
+              string name = line.Substring(line.IndexOf(' ')).Trim();
+              item = new MainForm.Event_Selection_Item(name, id);
+              current_target.Items.Add(item);
+            }
           }
         }
-        c.Left = 10;
-        c.Checked = true;
-        c.CheckedChanged += new EventHandler(LayerVisibleChanged);
-        layer_checkboxes[i] = c;
-      }
-      collision_checkbox = new CheckBox();
-      collision_checkbox.Parent = tabPage1;
-      collision_checkbox.Text = "Collision";
-      collision_checkbox.Top = 150;
-      collision_checkbox.Left = 10;
-      collision_checkbox.Checked = false;
-      collision_checkbox.CheckedChanged += new EventHandler(collision_checkbox_CheckedChanged);
-      event_layer_checkbox = new CheckBox();
-      event_layer_checkbox.Parent = tabPage1;
-      event_layer_checkbox.Text = "Event IDs";
-      event_layer_checkbox.Top = 190;
-      event_layer_checkbox.Left = 10;
-      event_layer_checkbox.Checked = false;
-      event_layer_checkbox.CheckedChanged += new EventHandler(event_layer_checkbox_CheckedChanged);
-      item_layer_checkbox = new CheckBox();
-      item_layer_checkbox.Parent = tabPage1;
-      item_layer_checkbox.Text = "Item IDs";
-      item_layer_checkbox.Top = 210;
-      item_layer_checkbox.Left = 10;
-      item_layer_checkbox.Checked = false;
-      item_layer_checkbox.CheckedChanged += new EventHandler(item_layer_checkbox_CheckedChanged);
-      
-      room_type_checkbox = new CheckBox();
-      room_type_checkbox.Parent = tabPage1;
-      room_type_checkbox.Text = "Room types";
-      room_type_checkbox.Top = 250;
-      room_type_checkbox.Left = 10;
-      room_type_checkbox.Checked = false;
-      room_type_checkbox.CheckedChanged += new EventHandler(room_type_checkbox_CheckedChanged);
-      room_color_checkbox = new CheckBox();
-      room_color_checkbox.Parent = tabPage1;
-      room_color_checkbox.Text = "Room colors";
-      room_color_checkbox.Top = 270;
-      room_color_checkbox.Left = 10;
-      room_color_checkbox.Checked = false;
-      room_color_checkbox.CheckedChanged += new EventHandler(room_color_checkbox_CheckedChanged);
-      room_bg_checkbox = new CheckBox();
-      room_bg_checkbox.Parent = tabPage1;
-      room_bg_checkbox.Text = "Room BGs";
-      room_bg_checkbox.Top = 290;
-      room_bg_checkbox.Left = 10;
-      room_bg_checkbox.Checked = false;
-      room_bg_checkbox.CheckedChanged += new EventHandler(room_bg_checkbox_CheckedChanged);
-      
-      tile_grid_checkbox = new CheckBox();
-      tile_grid_checkbox.Parent = tabPage1;
-      tile_grid_checkbox.Text = "Tile Grid";
-      tile_grid_checkbox.Top = 330;
-      tile_grid_checkbox.Left = 10;
-      tile_grid_checkbox.Checked = false;
-      tile_grid_checkbox.CheckedChanged += new EventHandler(tile_grid_checkbox_CheckedChanged);
-      screen_grid_checkbox = new CheckBox();
-      screen_grid_checkbox.Parent = tabPage1;
-      screen_grid_checkbox.Text = "Screen Grid";
-      screen_grid_checkbox.Top = 350;
-      screen_grid_checkbox.Left = 10;
-      screen_grid_checkbox.Checked = false;
-      screen_grid_checkbox.CheckedChanged += new EventHandler(screen_grid_checkbox_CheckedChanged);
-      
-      // Create radio buttons for tool selection
-      no_tool_radio = new RadioButton();
-      no_tool_radio.Parent = tools_panel;
-      no_tool_radio.Text = "No tool";
-      no_tool_radio.Top = 10;
-      no_tool_radio.Left = 10;
-      no_tool_radio.Width = 80;
-      no_tool_radio.Checked = true;
-      no_tool_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      layer_tool_radios = new RadioButton[LevelData.num_tile_layers];
-      for (int i = 0; i < LevelData.num_tile_layers; i++)
-      {
-        RadioButton r = new RadioButton();
-        r.Parent = tools_panel;
-        r.Text = "Layer " + i.ToString();
         
-        // Do a reverse lookup on the draw order to get each layer's priority.
-        // This allows us to position the tools in draw order.
-        for (int j = 0; j < tileView1.layer_draw_order.Length; j++)
+        // Define the laser delay events
+        for (int i = 0; i < 6; i++)
         {
-          if (tileView1.layer_draw_order[j] == i)
-          {
-            r.Top = 30 + j * 20;
-          }
+          entity_laser_delay_selection.Items.Add
+            (new Event_Selection_Item("Laser delay " + i.ToString(),
+                                      (short)(i > 0 ? i + 200 : 0)));
         }
-        r.Left = 10;
-        r.Width = 80;
-        r.Checked = false;
-        r.CheckedChanged += new EventHandler(tool_selection_changed);
-        layer_tool_radios[i] = r;
+        entity_laser_delay_selection.SelectedIndex = 0;
+        
+        room_type_selection.SelectedIndex = 0;
+        room_color_selection.SelectedIndex = 0;
+        item_selection.SelectedIndex = 0;
+        music_event_selection.SelectedIndex = 0;
+        tile_event_selection.SelectedIndex = 0;
+        entity_event_selection.SelectedIndex = 0;
+        misc_event_selection.SelectedIndex = 0;
+        warp_destination_selection.SelectedIndex = 0;
+        warp_map_selection.SelectedIndex = 0;
+        warp_local_id_selection.SelectedIndex = 0;
+        event_category_selection.SelectedIndex = 0;
       }
-      
-      collision_radio = new RadioButton();
-      collision_radio.Parent = tools_panel;
-      collision_radio.Text = "Collision";
-      collision_radio.Top = 170;
-      collision_radio.Left = 10;
-      collision_radio.Checked = false;
-      collision_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      event_radio = new RadioButton();
-      event_radio.Parent = tools_panel;
-      event_radio.Text = "Event IDs";
-      event_radio.Top = 190;
-      event_radio.Left = 10;
-      event_radio.Checked = false;
-      event_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      item_radio = new RadioButton();
-      item_radio.Parent = tools_panel;
-      item_radio.Text = "Item IDs";
-      item_radio.Top = 210;
-      item_radio.Left = 10;
-      item_radio.Checked = false;
-      item_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      metatile_radio = new RadioButton();
-      metatile_radio.Parent = tools_panel;
-      metatile_radio.Text = "Metatile";
-      metatile_radio.Top = 230;
-      metatile_radio.Left = 10;
-      metatile_radio.Checked = false;
-      metatile_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      room_type_radio = new RadioButton();
-      room_type_radio.Parent = tools_panel;
-      room_type_radio.Text = "Room Type";
-      room_type_radio.Top = 30;
-      room_type_radio.Left = 100;
-      room_type_radio.Checked = false;
-      room_type_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      room_color_radio = new RadioButton();
-      room_color_radio.Parent = tools_panel;
-      room_color_radio.Text = "Room Color";
-      room_color_radio.Top = 50;
-      room_color_radio.Left = 100;
-      room_color_radio.Checked = false;
-      room_color_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      room_bg_radio = new RadioButton();
-      room_bg_radio.Parent = tools_panel;
-      room_bg_radio.Text = "Room BG";
-      room_bg_radio.Top = 70;
-      room_bg_radio.Left = 100;
-      room_bg_radio.Checked = false;
-      room_bg_radio.CheckedChanged += new EventHandler(tool_selection_changed);
-      
-      // TODO other tools (what else?)
-      
-      room_type_selection.SelectedIndex = 0;
-      room_color_selection.SelectedIndex = 0;
-      item_selection.SelectedIndex = 0;
-      music_event_selection.SelectedIndex = 0;
-      tile_event_selection.SelectedIndex = 0;
-      entity_event_selection.SelectedIndex = 0;
-      misc_event_selection.SelectedIndex = 0;
-      warp_event_selection.SelectedIndex = 0;
+      catch (Exception E)
+      {
+        MessageBox.Show("An exception occurred while initializing the editor!\n"
+                        + "The editor will now close.\n\n" + E.ToString());
+        Close();
+      }
     }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -498,6 +671,35 @@ namespace RabiRibi_Editor
       tileView1.Invalidate();
     }
     
+    void Update_Event_Tool_Visibilities()
+    {
+      if (!event_radio.Checked)
+      {
+        event_ID_entry.Visible = music_event_selection.Visible =
+          tile_event_selection.Visible = entity_event_selection.Visible =
+          warp_destination_selection.Visible = warp_map_selection.Visible =
+          warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
+          warp_local_id_selection.Visible = misc_event_selection.Visible = 
+          warp_graphic_checkbox.Visible = false;
+      }
+      else
+      {
+        // TODO maybe make these ID connections less fragile?
+        // Right now we use these IDs in a few different places - is there a
+        // good way to force them to be consistent?
+        event_ID_entry.Visible = event_category_selection.SelectedIndex == 0;
+        music_event_selection.Visible = event_category_selection.SelectedIndex == 1;
+        tile_event_selection.Visible = event_category_selection.SelectedIndex == 2;
+        entity_event_selection.Visible = event_category_selection.SelectedIndex == 3;
+        warp_destination_selection.Visible = warp_map_selection.Visible =
+          warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
+          warp_local_id_selection.Visible = warp_graphic_checkbox.Visible
+          = event_category_selection.SelectedIndex == 4;
+        misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
+      }
+      Update_Entity_Selection_Visibility();
+    }
+    
     /// <summary>
     /// Refreshes which tool options are visible, based on the currently
     /// selected tool.
@@ -520,10 +722,8 @@ namespace RabiRibi_Editor
         = tile_picturebox_panel.Visible = tile_preview.Visible
         = any_layer_tool_selected;
       
-      warp_event_selection.Visible = misc_event_selection.Visible
-        = entity_event_selection.Visible = tile_event_selection.Visible
-        = music_event_selection.Visible = event_ID_entry.Visible
-        = event_radio.Checked;
+      event_category_selection.Visible = event_radio.Checked;
+      Update_Event_Tool_Visibilities();
       
       item_selection.Visible = item_ID_entry.Visible = item_radio.Checked;
       
@@ -720,24 +920,89 @@ namespace RabiRibi_Editor
       
       if (event_radio.Checked)
       {
-        short data;
-        if (short.TryParse(event_ID_entry.Text, out data))
+        switch (event_category_selection.SelectedIndex)
         {
-          CommandStack.CommandEntry cmd =
-            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
-                                          left_tile, right_tile, top_tile, bottom_tile);
-          for (int j = 0; j < cmd.data.GetLength(0); j++)
-          {
-            for (int k = 0; k < cmd.data.GetLength(1); k++)
+            // Raw ID
+          case 0:
             {
-              cmd.data[j,k] = data;
+              short data;
+              if (short.TryParse(event_ID_entry.Text, out data))
+              {
+                CommandStack.CommandEntry cmd =
+                  new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                                left_tile, right_tile, top_tile, bottom_tile);
+                for (int j = 0; j < cmd.data.GetLength(0); j++)
+                {
+                  for (int k = 0; k < cmd.data.GetLength(1); k++)
+                  {
+                    cmd.data[j,k] = data;
+                  }
+                }
+                command_stack.RunCommnd(cmd);
+              }
+              else
+              {
+                MessageBox.Show("Invalid event ID!");
+              }
             }
-          }
-          command_stack.RunCommnd(cmd);
-        }
-        else
-        {
-          MessageBox.Show("Invalid event ID!");
+            break;
+            
+            // Music Events
+          case 1:
+            {
+              short data = ((Event_Selection_Item)music_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
+            }
+            break;
+            
+            // Tile Events
+          case 2:
+            {
+              short data = ((Event_Selection_Item)tile_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
+            }
+            break;
+            
+            // Misc Events
+          case 5:
+            {
+              short data = ((Event_Selection_Item)misc_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
+            }
+            break;
         }
       }
       
@@ -846,6 +1111,138 @@ namespace RabiRibi_Editor
       CheckUndoEnabled();
     }
     
+    void Process_Left_Click(int tile_x, int tile_y)
+    {
+      if (event_radio.Checked)
+      {
+        switch (event_category_selection.SelectedIndex)
+        {
+            // Entity Events
+          case 3:
+            {
+              List<short> entity_values = new List<short>();
+              var entity_object = ((Event_Selection_Item)entity_event_selection.SelectedItem);
+              if (entity_object.type_list.Count > 0)
+              {
+                var type_object = ((Event_Selection_Item)entity_type_selection.SelectedItem);
+                if (type_object.id > 0)
+                {
+                  entity_values.Add(type_object.id);
+                }
+              }
+              if (entity_object.direction_list.Count > 0)
+              {
+                var dir_object = ((Event_Selection_Item)entity_dir_selection.SelectedItem);
+                if (dir_object.id > 0)
+                {
+                  entity_values.Add(dir_object.id);
+                }
+              }
+              entity_values.Add(entity_object.id);
+              if (tile_y < (entity_values.Count - 1))
+              {
+                MessageBox.Show("Entity needs more space above to fit modifiers.");
+                break;
+              }
+              if (entity_object.laser_delay)
+              {
+                short laser_delay = ((Event_Selection_Item)entity_laser_delay_selection.SelectedItem).id;
+                if (laser_delay > 0)
+                {
+                  if (tile_y == (LevelData.map_tile_height - 1))
+                  {
+                    MessageBox.Show("Entity needs more space below to fit modifiers.");
+                    break;
+                  }
+                  tile_y += 1;
+                  entity_values.Add(laser_delay);
+                }
+              }
+              CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                (CommandStack.CommandType.Write_Event, tile_x, tile_x,
+                 tile_y - (entity_values.Count - 1), tile_y);
+              for (int i = 0; i < entity_values.Count; i++)
+              {
+                cmd.data[0, i] = entity_values[i];
+              }
+              command_stack.RunCommnd(cmd);
+            }
+            break;
+            
+            // Warp Events
+          case 4:
+            {
+              List<CommandStack.CommandEntry> cmd_list = new List<CommandStack.CommandEntry>();
+              if (warp_entrance_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if ((tile_x < 2) || (tile_x >= (LevelData.map_tile_width - 2)) ||
+                    (tile_y < 2) || (tile_y >= (LevelData.map_tile_height - 2)))
+                {
+                  MessageBox.Show("Warp entrance cannot be within 2 tiles of the map edge.");
+                  break;
+                }
+                short target_map_id = ((Event_Selection_Item)warp_map_selection.SelectedItem).id;
+                short target_id = ((Event_Selection_Item)warp_destination_selection.SelectedItem).id;
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x - 2, tile_x + 2, tile_y - 2, tile_y + 2);
+                for (int x = 0; x <= 4; x++)
+                {
+                  for (int y = 0; y <= 4; y++)
+                  {
+                    int dx = Math.Abs(2 - x);
+                    int dy = Math.Abs(2 - y);
+                    short data = 208;
+                    if (dx == 2 || dy == 2)
+                    {
+                      data = target_map_id;
+                    }
+                    else if (dx == 1 || dy == 1)
+                    {
+                      data = target_id;
+                    }
+                    cmd.data[x,y] = data;
+                  }
+                }
+                cmd_list.Add(cmd);
+              }
+              if (warp_exit_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if (tile_y < 5)
+                {
+                  MessageBox.Show("Warp exit must be for a warp at least 5 tiles below the map top.");
+                  break;
+                }
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y - 5, tile_y - 4);
+                cmd.data[0, 0] = ((Event_Selection_Item)warp_local_id_selection.SelectedItem).id;
+                cmd.data[0, 1] = 240;
+                cmd_list.Add(cmd);
+              }
+              if (warp_graphic_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if (tile_y < 7)
+                {
+                  MessageBox.Show("Warp graphic must be for a warp at least 7 tiles below the map top.");
+                  break;
+                }
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y - 7, tile_y - 7);
+                cmd.data[0, 0] = 112;
+                cmd_list.Add(cmd);
+              }
+              if (cmd_list.Count > 0)
+              {
+                command_stack.RunCommandList(cmd_list);
+              }
+            }
+            break;
+        }
+      }
+    }
+    
     void Process_Right_Click(int tile_x, int tile_y)
     {
       // Figure out which tool is selected, and grab a new selection from
@@ -889,6 +1286,10 @@ namespace RabiRibi_Editor
       if (event_radio.Checked)
       {
         event_ID_entry.Text = level.event_data[tile_x, tile_y].ToString();
+        
+        // Force the event tool to the raw ID category
+        event_category_selection.SelectedIndex = 0;
+        Update_Event_Tool_Visibilities();
       }
       
       if (item_radio.Checked)
@@ -1060,26 +1461,6 @@ namespace RabiRibi_Editor
       }
     }
     
-    void Event_selectionSelectedIndexChanged(object sender, EventArgs e)
-    {
-      ComboBox c = (ComboBox)sender;
-      if (c.SelectedIndex > 0)
-      {
-        int temp;
-        string text = (string)c.Items[c.SelectedIndex];
-        text = text.Substring(0, text.IndexOf(' '));
-        if (int.TryParse(text, out temp))
-        {
-          event_ID_entry.Text = temp.ToString();
-        }
-        else
-        {
-          MessageBox.Show("Error reading event box selection!");
-        }
-        c.SelectedIndex = 0;
-      }
-    }
-    
     void UndoToolStripMenuItemClick(object sender, EventArgs e)
     {
       command_stack.Undo();
@@ -1215,6 +1596,62 @@ namespace RabiRibi_Editor
     void MainFormFormClosed(object sender, FormClosedEventArgs e)
     {
       Settings1.Default.Save();
+    }
+    
+    void Event_category_selectionSelectedIndexChanged(object sender, EventArgs e)
+    {
+      Update_Event_Tool_Visibilities();
+    }
+    
+    void Entity_event_selectionSelectedIndexChanged(object sender, EventArgs e)
+    {
+      Update_Entity_Selection_Visibility();
+    }
+    
+    void Update_Entity_Selection_Visibility()
+    {
+      if ((!event_radio.Checked) ||(event_category_selection.SelectedIndex != 3))
+      {
+        entity_type_selection.Visible = entity_dir_selection.Visible =
+          entity_laser_delay_selection.Visible = false;
+      }
+      else
+      {
+        entity_type_selection.Items.Clear();
+        var type_list = ((Event_Selection_Item)entity_event_selection.SelectedItem).type_list;
+        if (type_list.Count > 0)
+        {
+          entity_type_selection.Visible = true;
+          foreach (var entry in type_list)
+          {
+            entity_type_selection.Items.Add(entry);
+          }
+          entity_type_selection.SelectedIndex = 0;
+        }
+        else
+        {
+          entity_type_selection.Visible = false;
+        }
+        
+        entity_dir_selection.Items.Clear();
+        var dir_list = ((Event_Selection_Item)entity_event_selection.SelectedItem).direction_list;
+        if (dir_list.Count > 0)
+        {
+          entity_dir_selection.Visible = true;
+          foreach (var entry in dir_list)
+          {
+            entity_dir_selection.Items.Add(entry);
+          }
+          entity_dir_selection.SelectedIndex = 0;
+        }
+        else
+        {
+          entity_dir_selection.Visible = false;
+        }
+        
+        entity_laser_delay_selection.Visible =
+          ((Event_Selection_Item)entity_event_selection.SelectedItem).laser_delay;
+      }
     }
   }
 }
