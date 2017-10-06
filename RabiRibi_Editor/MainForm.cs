@@ -461,6 +461,7 @@ namespace RabiRibi_Editor
       entity_event_selection.SelectedIndex = 0;
       misc_event_selection.SelectedIndex = 0;
       warp_event_selection.SelectedIndex = 0;
+      event_category_selection.SelectedIndex = 0;
     }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -498,6 +499,29 @@ namespace RabiRibi_Editor
       tileView1.Invalidate();
     }
     
+    void Update_Event_Tool_Visibilities()
+    {
+      //warp_event_selection.Visible = misc_event_selection.Visible
+      //  = entity_event_selection.Visible = tile_event_selection.Visible
+      //  = music_event_selection.Visible = event_ID_entry.Visible
+      //  = event_radio.Checked;
+      // TODO update event tool visibilities based on event category selection
+      if (!event_radio.Checked)
+      {
+        warp_event_selection.Visible = misc_event_selection.Visible =
+          music_event_selection.Visible = event_ID_entry.Visible =
+          entity_event_selection.Visible = tile_event_selection.Visible = false;
+      }
+      else
+      {
+        event_ID_entry.Visible = event_category_selection.SelectedIndex == 0;
+        music_event_selection.Visible = event_category_selection.SelectedIndex == 1;
+        tile_event_selection.Visible = event_category_selection.SelectedIndex == 2;
+        entity_event_selection.Visible = event_category_selection.SelectedIndex == 3;
+        warp_event_selection.Visible = event_category_selection.SelectedIndex == 4;
+      }
+    }
+    
     /// <summary>
     /// Refreshes which tool options are visible, based on the currently
     /// selected tool.
@@ -520,10 +544,8 @@ namespace RabiRibi_Editor
         = tile_picturebox_panel.Visible = tile_preview.Visible
         = any_layer_tool_selected;
       
-      warp_event_selection.Visible = misc_event_selection.Visible
-        = entity_event_selection.Visible = tile_event_selection.Visible
-        = music_event_selection.Visible = event_ID_entry.Visible
-        = event_radio.Checked;
+      event_category_selection.Visible = event_radio.Checked;
+      Update_Event_Tool_Visibilities();
       
       item_selection.Visible = item_ID_entry.Visible = item_radio.Checked;
       
@@ -720,24 +742,37 @@ namespace RabiRibi_Editor
       
       if (event_radio.Checked)
       {
-        short data;
-        if (short.TryParse(event_ID_entry.Text, out data))
+        switch (event_category_selection.SelectedIndex)
         {
-          CommandStack.CommandEntry cmd =
-            new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
-                                          left_tile, right_tile, top_tile, bottom_tile);
-          for (int j = 0; j < cmd.data.GetLength(0); j++)
-          {
-            for (int k = 0; k < cmd.data.GetLength(1); k++)
+            // Raw ID
+          case 0:
+            short data;
+            if (short.TryParse(event_ID_entry.Text, out data))
             {
-              cmd.data[j,k] = data;
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
             }
-          }
-          command_stack.RunCommnd(cmd);
-        }
-        else
-        {
-          MessageBox.Show("Invalid event ID!");
+            else
+            {
+              MessageBox.Show("Invalid event ID!");
+            }
+            break;
+            
+            // Music selection
+          case 1:
+            // TODO
+            break;
+            
+            // TODO other categories
         }
       }
       
@@ -889,6 +924,10 @@ namespace RabiRibi_Editor
       if (event_radio.Checked)
       {
         event_ID_entry.Text = level.event_data[tile_x, tile_y].ToString();
+        
+        // Force the event tool to the raw ID category
+        event_category_selection.SelectedIndex = 0;
+        Update_Event_Tool_Visibilities();
       }
       
       if (item_radio.Checked)
@@ -1215,6 +1254,11 @@ namespace RabiRibi_Editor
     void MainFormFormClosed(object sender, FormClosedEventArgs e)
     {
       Settings1.Default.Save();
+    }
+    
+    void Event_category_selectionSelectedIndexChanged(object sender, EventArgs e)
+    {
+      Update_Event_Tool_Visibilities();
     }
   }
 }

@@ -55,6 +55,7 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.event_category_selection = new System.Windows.Forms.ComboBox();
       this.warp_event_selection = new System.Windows.Forms.ComboBox();
       this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.metatile_selection = new System.Windows.Forms.ComboBox();
@@ -255,6 +256,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.event_category_selection);
       this.tabPage2.Controls.Add(this.warp_event_selection);
       this.tabPage2.Controls.Add(this.metatile_layer_selection);
       this.tabPage2.Controls.Add(this.metatile_selection);
@@ -283,6 +285,23 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // event_category_selection
+      // 
+      this.event_category_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.event_category_selection.FormattingEnabled = true;
+      this.event_category_selection.Items.AddRange(new object[] {
+                  "Raw ID Entry",
+                  "Music Events",
+                  "Tile Events",
+                  "Entities",
+                  "Warp Events"});
+      this.event_category_selection.Location = new System.Drawing.Point(6, 266);
+      this.event_category_selection.Name = "event_category_selection";
+      this.event_category_selection.Size = new System.Drawing.Size(218, 21);
+      this.event_category_selection.TabIndex = 21;
+      this.event_category_selection.Visible = false;
+      this.event_category_selection.SelectedIndexChanged += new System.EventHandler(this.Event_category_selectionSelectedIndexChanged);
       // 
       // warp_event_selection
       // 
@@ -316,7 +335,7 @@ namespace RabiRibi_Editor
                   "249 Warp cross-map to map 7",
                   "250 Warp cross-map to map 8",
                   "251 Warp cross-map to map 9"});
-      this.warp_event_selection.Location = new System.Drawing.Point(6, 390);
+      this.warp_event_selection.Location = new System.Drawing.Point(6, 300);
       this.warp_event_selection.Name = "warp_event_selection";
       this.warp_event_selection.Size = new System.Drawing.Size(218, 21);
       this.warp_event_selection.TabIndex = 20;
@@ -401,7 +420,7 @@ namespace RabiRibi_Editor
                   "5010 Type 10 modifier",
                   "5011 Type 11 modifier",
                   "5012 Type 12 modifier"});
-      this.misc_event_selection.Location = new System.Drawing.Point(6, 420);
+      this.misc_event_selection.Location = new System.Drawing.Point(6, 300);
       this.misc_event_selection.Name = "misc_event_selection";
       this.misc_event_selection.Size = new System.Drawing.Size(218, 21);
       this.misc_event_selection.TabIndex = 15;
@@ -522,7 +541,7 @@ namespace RabiRibi_Editor
                   "1162 Five floating energy swords",
                   "1163 Library crystal (red, /orange/yellow/green/cyan/blue/purple/silver)",
                   "1164 Bunny ghost (high type modifier deals more damage)"});
-      this.entity_event_selection.Location = new System.Drawing.Point(6, 360);
+      this.entity_event_selection.Location = new System.Drawing.Point(6, 300);
       this.entity_event_selection.Name = "entity_event_selection";
       this.entity_event_selection.Size = new System.Drawing.Size(218, 21);
       this.entity_event_selection.TabIndex = 14;
@@ -557,7 +576,7 @@ namespace RabiRibi_Editor
                   "513 Hall of Memory DLC area blue blocks",
                   "514 Hall of Memory DLC area green blocks",
                   "515 Hall of Memory DLC area purple blocks"});
-      this.tile_event_selection.Location = new System.Drawing.Point(6, 330);
+      this.tile_event_selection.Location = new System.Drawing.Point(6, 300);
       this.tile_event_selection.Name = "tile_event_selection";
       this.tile_event_selection.Size = new System.Drawing.Size(218, 21);
       this.tile_event_selection.TabIndex = 13;
@@ -788,7 +807,7 @@ namespace RabiRibi_Editor
       // 
       // event_ID_entry
       // 
-      this.event_ID_entry.Location = new System.Drawing.Point(118, 268);
+      this.event_ID_entry.Location = new System.Drawing.Point(118, 300);
       this.event_ID_entry.Name = "event_ID_entry";
       this.event_ID_entry.Size = new System.Drawing.Size(100, 20);
       this.event_ID_entry.TabIndex = 7;
@@ -928,6 +947,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox event_category_selection;
     private System.Windows.Forms.ComboBox warp_event_selection;
     private System.Windows.Forms.ToolStripMenuItem clearLoadedMetatilesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem loadMetatileFileToolStripMenuItem;
