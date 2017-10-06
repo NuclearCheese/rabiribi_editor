@@ -55,8 +55,13 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.warp_graphic_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_local_id_selection = new System.Windows.Forms.ComboBox();
+      this.warp_exit_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_entrance_checkbox = new System.Windows.Forms.CheckBox();
+      this.warp_map_selection = new System.Windows.Forms.ComboBox();
       this.event_category_selection = new System.Windows.Forms.ComboBox();
-      this.warp_event_selection = new System.Windows.Forms.ComboBox();
+      this.warp_destination_selection = new System.Windows.Forms.ComboBox();
       this.metatile_layer_selection = new System.Windows.Forms.ComboBox();
       this.metatile_selection = new System.Windows.Forms.ComboBox();
       this.bg_ID_entry = new System.Windows.Forms.TextBox();
@@ -256,8 +261,13 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.warp_graphic_checkbox);
+      this.tabPage2.Controls.Add(this.warp_local_id_selection);
+      this.tabPage2.Controls.Add(this.warp_exit_checkbox);
+      this.tabPage2.Controls.Add(this.warp_entrance_checkbox);
+      this.tabPage2.Controls.Add(this.warp_map_selection);
       this.tabPage2.Controls.Add(this.event_category_selection);
-      this.tabPage2.Controls.Add(this.warp_event_selection);
+      this.tabPage2.Controls.Add(this.warp_destination_selection);
       this.tabPage2.Controls.Add(this.metatile_layer_selection);
       this.tabPage2.Controls.Add(this.metatile_selection);
       this.tabPage2.Controls.Add(this.bg_ID_entry);
@@ -286,6 +296,62 @@ namespace RabiRibi_Editor
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
+      // warp_graphic_checkbox
+      // 
+      this.warp_graphic_checkbox.Checked = true;
+      this.warp_graphic_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_graphic_checkbox.Location = new System.Drawing.Point(6, 450);
+      this.warp_graphic_checkbox.Name = "warp_graphic_checkbox";
+      this.warp_graphic_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_graphic_checkbox.TabIndex = 26;
+      this.warp_graphic_checkbox.Text = "Create Warp Graphic";
+      this.warp_graphic_checkbox.UseVisualStyleBackColor = true;
+      this.warp_graphic_checkbox.Visible = false;
+      // 
+      // warp_local_id_selection
+      // 
+      this.warp_local_id_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_local_id_selection.FormattingEnabled = true;
+      this.warp_local_id_selection.Location = new System.Drawing.Point(6, 420);
+      this.warp_local_id_selection.Name = "warp_local_id_selection";
+      this.warp_local_id_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_local_id_selection.TabIndex = 25;
+      this.warp_local_id_selection.Visible = false;
+      // 
+      // warp_exit_checkbox
+      // 
+      this.warp_exit_checkbox.Checked = true;
+      this.warp_exit_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_exit_checkbox.Location = new System.Drawing.Point(6, 390);
+      this.warp_exit_checkbox.Name = "warp_exit_checkbox";
+      this.warp_exit_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_exit_checkbox.TabIndex = 24;
+      this.warp_exit_checkbox.Text = "Create Warp Exit";
+      this.warp_exit_checkbox.UseVisualStyleBackColor = true;
+      this.warp_exit_checkbox.Visible = false;
+      // 
+      // warp_entrance_checkbox
+      // 
+      this.warp_entrance_checkbox.Checked = true;
+      this.warp_entrance_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.warp_entrance_checkbox.Location = new System.Drawing.Point(6, 300);
+      this.warp_entrance_checkbox.Name = "warp_entrance_checkbox";
+      this.warp_entrance_checkbox.Size = new System.Drawing.Size(218, 24);
+      this.warp_entrance_checkbox.TabIndex = 23;
+      this.warp_entrance_checkbox.Text = "Create Warp Entrance";
+      this.warp_entrance_checkbox.UseVisualStyleBackColor = true;
+      this.warp_entrance_checkbox.Visible = false;
+      // 
+      // warp_map_selection
+      // 
+      this.warp_map_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_map_selection.FormattingEnabled = true;
+      this.warp_map_selection.Location = new System.Drawing.Point(6, 330);
+      this.warp_map_selection.Name = "warp_map_selection";
+      this.warp_map_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_map_selection.TabIndex = 22;
+      this.warp_map_selection.Visible = false;
+      // 
       // event_category_selection
       // 
       this.event_category_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -304,44 +370,15 @@ namespace RabiRibi_Editor
       this.event_category_selection.Visible = false;
       this.event_category_selection.SelectedIndexChanged += new System.EventHandler(this.Event_category_selectionSelectedIndexChanged);
       // 
-      // warp_event_selection
+      // warp_destination_selection
       // 
-      this.warp_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.warp_event_selection.FormattingEnabled = true;
-      this.warp_event_selection.Items.AddRange(new object[] {
-                  "select a warp event ...",
-                  "112 Warp graphic (3 tiles below)",
-                  "208 Warp entrance",
-                  "209 Warp ID 0",
-                  "210 Warp ID 1",
-                  "211 Warp ID 2",
-                  "212 Warp ID 3",
-                  "213 Warp ID 4",
-                  "214 Warp ID 5",
-                  "215 Warp ID 6",
-                  "216 Warp ID 7",
-                  "217 Warp ID 8",
-                  "218 Warp ID 9",
-                  "219 Warp ID 10",
-                  "220 Warp ID 11",
-                  "240 Warp exit",
-                  "241 Warp cross-map off",
-                  "242 Warp cross-map to map 0",
-                  "243 Warp cross-map to map 1",
-                  "244 Warp cross-map to map 2",
-                  "245 Warp cross-map to map 3",
-                  "246 Warp cross-map to map 4",
-                  "247 Warp cross-map to map 5",
-                  "248 Warp cross-map to map 6",
-                  "249 Warp cross-map to map 7",
-                  "250 Warp cross-map to map 8",
-                  "251 Warp cross-map to map 9"});
-      this.warp_event_selection.Location = new System.Drawing.Point(6, 300);
-      this.warp_event_selection.Name = "warp_event_selection";
-      this.warp_event_selection.Size = new System.Drawing.Size(218, 21);
-      this.warp_event_selection.TabIndex = 20;
-      this.warp_event_selection.Visible = false;
-      this.warp_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
+      this.warp_destination_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.warp_destination_selection.FormattingEnabled = true;
+      this.warp_destination_selection.Location = new System.Drawing.Point(6, 360);
+      this.warp_destination_selection.Name = "warp_destination_selection";
+      this.warp_destination_selection.Size = new System.Drawing.Size(218, 21);
+      this.warp_destination_selection.TabIndex = 20;
+      this.warp_destination_selection.Visible = false;
       // 
       // metatile_layer_selection
       // 
@@ -832,7 +869,7 @@ namespace RabiRibi_Editor
       this.Controls.Add(this.tileView1);
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
-      this.MinimumSize = new System.Drawing.Size(650, 500);
+      this.MinimumSize = new System.Drawing.Size(650, 600);
       this.Name = "MainForm";
       this.Text = "RabiRibi_Editor";
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFormFormClosed);
@@ -852,8 +889,13 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.CheckBox warp_graphic_checkbox;
+    private System.Windows.Forms.CheckBox warp_exit_checkbox;
+    private System.Windows.Forms.ComboBox warp_local_id_selection;
+    private System.Windows.Forms.CheckBox warp_entrance_checkbox;
+    private System.Windows.Forms.ComboBox warp_map_selection;
     private System.Windows.Forms.ComboBox event_category_selection;
-    private System.Windows.Forms.ComboBox warp_event_selection;
+    private System.Windows.Forms.ComboBox warp_destination_selection;
     private System.Windows.Forms.ToolStripMenuItem clearLoadedMetatilesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem loadMetatileFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem metatilesToolStripMenuItem;

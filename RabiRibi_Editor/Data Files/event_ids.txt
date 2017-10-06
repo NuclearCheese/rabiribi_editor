@@ -90,3 +90,44 @@
 5010 Type 10 modifier
 5011 Type 11 modifier
 5012 Type 12 modifier
+
+[warps]
+209 Warp ID 0
+210 Warp ID 1
+211 Warp ID 2
+212 Warp ID 3
+213 Warp ID 4
+214 Warp ID 5
+215 Warp ID 6
+216 Warp ID 7
+217 Warp ID 8
+218 Warp ID 9
+219 Warp ID 10
+220 Warp ID 11
+
+[warps2]
+209 Warp ID 0
+210 Warp ID 1
+211 Warp ID 2
+212 Warp ID 3
+213 Warp ID 4
+214 Warp ID 5
+215 Warp ID 6
+216 Warp ID 7
+217 Warp ID 8
+218 Warp ID 9
+219 Warp ID 10
+220 Warp ID 11
+
+[mapwarps]
+241 Warp cross-map off
+242 Warp cross-map to map 0
+243 Warp cross-map to map 1
+244 Warp cross-map to map 2
+245 Warp cross-map to map 3
+246 Warp cross-map to map 4
+247 Warp cross-map to map 5
+248 Warp cross-map to map 6
+249 Warp cross-map to map 7
+250 Warp cross-map to map 8
+251 Warp cross-map to map 9

@@ -301,7 +301,7 @@ namespace RabiRibi_Editor
       
       metatile_layer_selection.SelectedIndex = 1;
       
-      tileView1.Init(level, Process_Tile_Mouse, Process_Right_Click);
+      tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click);
       
       // Load tile graphics
       Load_Tile_Graphics("TILE1_A.png");
@@ -513,6 +513,21 @@ namespace RabiRibi_Editor
               current_target = misc_event_selection;
               continue;
             }
+            else if (line == "[warps]")
+            {
+              current_target = warp_destination_selection;
+              continue;
+            }
+            else if (line == "[warps2]")
+            {
+              current_target = warp_local_id_selection;
+              continue;
+            }
+            else if (line == "[mapwarps]")
+            {
+              current_target = warp_map_selection;
+              continue;
+            }
             short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
             string name = line.Substring(line.IndexOf(' ')).Trim();
             Event_Selection_Item item = new MainForm.Event_Selection_Item(name, id);
@@ -528,7 +543,9 @@ namespace RabiRibi_Editor
       tile_event_selection.SelectedIndex = 0;
       entity_event_selection.SelectedIndex = 0;
       misc_event_selection.SelectedIndex = 0;
-      warp_event_selection.SelectedIndex = 0;
+      warp_destination_selection.SelectedIndex = 0;
+      warp_map_selection.SelectedIndex = 0;
+      warp_local_id_selection.SelectedIndex = 0;
       event_category_selection.SelectedIndex = 0;
     }
 
@@ -571,7 +588,7 @@ namespace RabiRibi_Editor
     {
       if (!event_radio.Checked)
       {
-        warp_event_selection.Visible = misc_event_selection.Visible =
+        warp_destination_selection.Visible = misc_event_selection.Visible =
           music_event_selection.Visible = event_ID_entry.Visible =
           entity_event_selection.Visible = tile_event_selection.Visible = false;
       }
@@ -584,7 +601,10 @@ namespace RabiRibi_Editor
         music_event_selection.Visible = event_category_selection.SelectedIndex == 1;
         tile_event_selection.Visible = event_category_selection.SelectedIndex == 2;
         entity_event_selection.Visible = event_category_selection.SelectedIndex == 3;
-        warp_event_selection.Visible = event_category_selection.SelectedIndex == 4;
+        warp_destination_selection.Visible = warp_map_selection.Visible =
+          warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
+          warp_local_id_selection.Visible = warp_graphic_checkbox.Visible
+          = event_category_selection.SelectedIndex == 4;
         misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
       }
     }
@@ -1000,6 +1020,89 @@ namespace RabiRibi_Editor
       }
       
       CheckUndoEnabled();
+    }
+    
+    void Process_Left_Click(int tile_x, int tile_y)
+    {
+      if (event_radio.Checked)
+      {
+        switch (event_category_selection.SelectedIndex)
+        {
+            // Warp Events
+          case 4:
+            // TODO rest of the warp stuff
+            {
+              List<CommandStack.CommandEntry> cmd_list = new List<CommandStack.CommandEntry>();
+              if (warp_entrance_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if ((tile_x < 2) || (tile_x >= (LevelData.map_tile_width - 2)) ||
+                    (tile_y < 2) || (tile_y >= (LevelData.map_tile_height - 2)))
+                {
+                  MessageBox.Show("Warp entrance cannot be within 2 tiles of the map edge.");
+                  break;
+                }
+                short target_map_id = ((Event_Selection_Item)warp_map_selection.SelectedItem).id;
+                short target_id = ((Event_Selection_Item)warp_destination_selection.SelectedItem).id;
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x - 2, tile_x + 2, tile_y - 2, tile_y + 2);
+                for (int x = 0; x <= 4; x++)
+                {
+                  for (int y = 0; y <= 4; y++)
+                  {
+                    // TODO - don't write events where there is solid collision?
+                    int dx = Math.Abs(2 - x);
+                    int dy = Math.Abs(2 - y);
+                    short data = 208;
+                    if (dx == 2 || dy == 2)
+                    {
+                      data = target_map_id;
+                    }
+                    else if (dx == 1 || dy == 1)
+                    {
+                      data = target_id;
+                    }
+                    cmd.data[x,y] = data;
+                  }
+                }
+                cmd_list.Add(cmd);
+              }
+              if (warp_exit_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if (tile_y < 5)
+                {
+                  MessageBox.Show("Warp exit must be for a warp at least 5 tiles below the map top.");
+                  break;
+                }
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y - 5, tile_y - 4);
+                cmd.data[0, 0] = ((Event_Selection_Item)warp_local_id_selection.SelectedItem).id;
+                cmd.data[0, 1] = 240;
+                cmd_list.Add(cmd);
+              }
+              if (warp_graphic_checkbox.Checked)
+              {
+                // Make sure we're not too close to the edge of the map
+                if (tile_y < 6)
+                {
+                  MessageBox.Show("Warp graphic must be for a warp at least 6 tiles below the map top.");
+                  break;
+                }
+                CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                  (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y - 6, tile_y - 6);
+                cmd.data[0, 0] = 112;
+                cmd_list.Add(cmd);
+              }
+              if (cmd_list.Count > 0)
+              {
+                command_stack.RunCommandList(cmd_list);
+              }
+            }
+            break;
+            // TODO other categories
+        }
+      }
     }
     
     void Process_Right_Click(int tile_x, int tile_y)
