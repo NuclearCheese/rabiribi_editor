@@ -295,7 +295,8 @@ namespace RabiRibi_Editor
                   "Music Events",
                   "Tile Events",
                   "Entities",
-                  "Warp Events"});
+                  "Warp Events",
+                  "Misc. Events"});
       this.event_category_selection.Location = new System.Drawing.Point(6, 266);
       this.event_category_selection.Name = "event_category_selection";
       this.event_category_selection.Size = new System.Drawing.Size(218, 21);
@@ -384,48 +385,11 @@ namespace RabiRibi_Editor
       // 
       this.misc_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.misc_event_selection.FormattingEnabled = true;
-      this.misc_event_selection.Items.AddRange(new object[] {
-                  "select a misc. event ...",
-                  "32 Warp stone",
-                  "34 Start point",
-                  "42 Auto save trigger",
-                  "44 Auto save reenable (allows auto save to trigger again)",
-                  "45 Heal point",
-                  "80 Door (goes upward 2 screens on map)",
-                  "81 Door (goes downward 2 screens on map)",
-                  "193 Hide layer 2",
-                  "194 Show layer 2",
-                  "195 Right direction modifier",
-                  "196 Left direction modifier",
-                  "198 Up direction modifier",
-                  "199 Down direction modifier",
-                  "200 Red laser delay 1 (place below)",
-                  "201 Red laser delay 2 (place below)",
-                  "202 Red laser delay 3 (place below)",
-                  "203 Red laser delay 4 (place below)",
-                  "204 Red laser delay 5 (place below)",
-                  "205 Red laser delay 6 (place below)",
-                  "224 Save point",
-                  "250 Easter egg",
-                  "483 Fall damage and reset",
-                  "5001 Type 1 modifier",
-                  "5002 Type 2 modifier",
-                  "5003 Type 3 modifier",
-                  "5004 Type 4 modifier",
-                  "5005 Type 5 modifier",
-                  "5006 Type 6 modifier",
-                  "5007 Type 7 modifier",
-                  "5008 Type 8 modifier",
-                  "5009 Type 9 modifier",
-                  "5010 Type 10 modifier",
-                  "5011 Type 11 modifier",
-                  "5012 Type 12 modifier"});
       this.misc_event_selection.Location = new System.Drawing.Point(6, 300);
       this.misc_event_selection.Name = "misc_event_selection";
       this.misc_event_selection.Size = new System.Drawing.Size(218, 21);
       this.misc_event_selection.TabIndex = 15;
       this.misc_event_selection.Visible = false;
-      this.misc_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // entity_event_selection
       // 
@@ -553,81 +517,22 @@ namespace RabiRibi_Editor
       this.tile_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.tile_event_selection.DropDownWidth = 300;
       this.tile_event_selection.FormattingEnabled = true;
-      this.tile_event_selection.Items.AddRange(new object[] {
-                  "select a tile event ...",
-                  "1 Wood block (break with hammer)",
-                  "2 Bomb block",
-                  "3 Bomb chain block",
-                  "6 Fairy block (break with magic)",
-                  "7 Ice block (break by touch with Fire Orb)",
-                  "8 Cracked block (break when stepped on)",
-                  "30 Low Item % block (disappears at >10% item collection)",
-                  "108 Rainbow Crystal gate (solid until crystal boss is defeated)",
-                  "109 Ignore adjacent Spikes",
-                  "110 Pandora gate (solid until Pandora is defeated)",
-                  "160 Boss gate (blocks exit during boss fight)",
-                  "192 Reset breakable blocks",
-                  "197 Spike block",
-                  "237 Timer block",
-                  "238 Timer item (use type to set duration)",
-                  "455 Keke Bunny Gate (used in Keke Bunny fight)",
-                  "432 Break after post game clear?",
-                  "512 Hall of Memory DLC area red blocks",
-                  "513 Hall of Memory DLC area blue blocks",
-                  "514 Hall of Memory DLC area green blocks",
-                  "515 Hall of Memory DLC area purple blocks"});
       this.tile_event_selection.Location = new System.Drawing.Point(6, 300);
       this.tile_event_selection.Name = "tile_event_selection";
       this.tile_event_selection.Size = new System.Drawing.Size(218, 21);
       this.tile_event_selection.TabIndex = 13;
       this.tile_event_selection.Visible = false;
-      this.tile_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // music_event_selection
       // 
       this.music_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.music_event_selection.DropDownWidth = 250;
       this.music_event_selection.FormattingEnabled = true;
-      this.music_event_selection.Items.AddRange(new object[] {
-                  "select a music event ...",
-                  "128 No Music (disable currently playing music)",
-                  "129 Adventure Starts Here",
-                  "130 Spectral Cave",
-                  "131 Forgotten Cave",
-                  "132 Underwater Ambient",
-                  "133 Library Ambient",
-                  "134 Forgotten Cave II",
-                  "135 Starting Forest Night / Nightwalker",
-                  "136 Bounce Bounce",
-                  "137 Rabi Rabi Beach",
-                  "138 Pandora\'s Palace",
-                  "139 Rabi Rabi Ravine",
-                  "140 Home Sweet Home",
-                  "141 Rabi Rabi Park",
-                  "142 Inside UPRPRC",
-                  "143 Sky Island Town",
-                  "144 Winter Wonderland",
-                  "145 Cyberspace.exe",
-                  "146 Evernight Peak",
-                  "147 Exotic Laboratory",
-                  "148 Golden Riverbank",
-                  "149 Floating Graveyard",
-                  "150 System Interior II",
-                  "151 Aurora Palace",
-                  "152 Speicher Galerie",
-                  "153 Deep Under The Sea (Natural Aquarium)",
-                  "154 Sky-High Bridge",
-                  "155 Warp Destination",
-                  "156 Volcanic Caverns",
-                  "157 Plurkwood",
-                  "158 Another D (Hall of Memories)",
-                  "159 Icy Summit"});
       this.music_event_selection.Location = new System.Drawing.Point(6, 300);
       this.music_event_selection.Name = "music_event_selection";
       this.music_event_selection.Size = new System.Drawing.Size(218, 21);
       this.music_event_selection.TabIndex = 12;
       this.music_event_selection.Visible = false;
-      this.music_event_selection.SelectedIndexChanged += new System.EventHandler(this.Event_selectionSelectedIndexChanged);
       // 
       // item_selection
       // 

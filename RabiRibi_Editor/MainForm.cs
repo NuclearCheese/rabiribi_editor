@@ -50,6 +50,36 @@ namespace RabiRibi_Editor
     
     List<Metatile> metatile_list;
     
+    // TODO make this configurable for the user
+    const bool show_event_ids = true;
+    
+    /// <summary>
+    /// Simple container class to contain both event names and IDs within the
+    /// event selection lists.
+    /// </summary>
+    class Event_Selection_Item
+    {
+      public string name;
+      public short id;
+      public Event_Selection_Item(string event_name, short event_id)
+      {
+        name = event_name;
+        id = event_id;
+      }
+      
+      public override string ToString()
+      {
+        if (show_event_ids)
+        {
+          return id.ToString() + " " + name;
+        }
+        else
+        {
+          return name;
+        }
+      }
+    }
+    
     public MainForm()
     {
       //
@@ -453,6 +483,44 @@ namespace RabiRibi_Editor
       
       // TODO other tools (what else?)
       
+      // Load event IDs
+      // TODO TEST
+      using (var resource = this.GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.event_ids.txt"))
+      {
+        using (var input = new StreamReader(resource))
+        {
+          ComboBox current_target = null;
+          while (!input.EndOfStream)
+          {
+            //music_event_selection.Items.Add(input.ReadLine());
+            string line = input.ReadLine().Trim();
+            if (line == "")
+            {
+              continue;
+            }
+            else if (line == "[music]")
+            {
+              current_target = music_event_selection;
+              continue;
+            }
+            else if (line == "[tile]")
+            {
+              current_target = tile_event_selection;
+              continue;
+            }
+            else if (line == "[misc]")
+            {
+              current_target = misc_event_selection;
+              continue;
+            }
+            short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
+            string name = line.Substring(line.IndexOf(' ')).Trim();
+            Event_Selection_Item item = new MainForm.Event_Selection_Item(name, id);
+            current_target.Items.Add(item);
+          }
+        }
+      }
+      
       room_type_selection.SelectedIndex = 0;
       room_color_selection.SelectedIndex = 0;
       item_selection.SelectedIndex = 0;
@@ -501,11 +569,6 @@ namespace RabiRibi_Editor
     
     void Update_Event_Tool_Visibilities()
     {
-      //warp_event_selection.Visible = misc_event_selection.Visible
-      //  = entity_event_selection.Visible = tile_event_selection.Visible
-      //  = music_event_selection.Visible = event_ID_entry.Visible
-      //  = event_radio.Checked;
-      // TODO update event tool visibilities based on event category selection
       if (!event_radio.Checked)
       {
         warp_event_selection.Visible = misc_event_selection.Visible =
@@ -514,11 +577,15 @@ namespace RabiRibi_Editor
       }
       else
       {
+        // TODO maybe make these ID connections less fragile?
+        // Right now we use these IDs in a few different places - is there a
+        // good way to force them to be consistent?
         event_ID_entry.Visible = event_category_selection.SelectedIndex == 0;
         music_event_selection.Visible = event_category_selection.SelectedIndex == 1;
         tile_event_selection.Visible = event_category_selection.SelectedIndex == 2;
         entity_event_selection.Visible = event_category_selection.SelectedIndex == 3;
         warp_event_selection.Visible = event_category_selection.SelectedIndex == 4;
+        misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
       }
     }
     
@@ -746,9 +813,34 @@ namespace RabiRibi_Editor
         {
             // Raw ID
           case 0:
-            short data;
-            if (short.TryParse(event_ID_entry.Text, out data))
             {
+              short data;
+              if (short.TryParse(event_ID_entry.Text, out data))
+              {
+                CommandStack.CommandEntry cmd =
+                  new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                                left_tile, right_tile, top_tile, bottom_tile);
+                for (int j = 0; j < cmd.data.GetLength(0); j++)
+                {
+                  for (int k = 0; k < cmd.data.GetLength(1); k++)
+                  {
+                    cmd.data[j,k] = data;
+                  }
+                }
+                command_stack.RunCommnd(cmd);
+              }
+              else
+              {
+                MessageBox.Show("Invalid event ID!");
+              }
+            }
+            break;
+            
+            // Music Events
+          case 1:
+            {
+              short data = ((Event_Selection_Item)music_event_selection.SelectedItem).id;
+              
               CommandStack.CommandEntry cmd =
                 new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
                                               left_tile, right_tile, top_tile, bottom_tile);
@@ -761,15 +853,44 @@ namespace RabiRibi_Editor
               }
               command_stack.RunCommnd(cmd);
             }
-            else
+            break;
+            
+            // Tile Events
+          case 2:
             {
-              MessageBox.Show("Invalid event ID!");
+              short data = ((Event_Selection_Item)tile_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
             }
             break;
             
-            // Music selection
-          case 1:
-            // TODO
+            // Misc Events
+          case 5:
+            {
+              short data = ((Event_Selection_Item)misc_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommnd(cmd);
+            }
             break;
             
             // TODO other categories
