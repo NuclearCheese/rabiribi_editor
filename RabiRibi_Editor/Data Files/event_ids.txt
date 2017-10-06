@@ -39,6 +39,7 @@
 6 Fairy block (break with magic)
 7 Ice block (break by touch with Fire Orb)
 8 Cracked block (break when stepped on)
+9 Low difficulty block (Normal and below only)
 30 Low Item % block (disappears at >10% item collection)
 108 Rainbow Crystal gate (solid until crystal boss is defeated)
 109 Ignore adjacent Spikes
@@ -63,33 +64,17 @@
 45 Heal point
 80 Door (goes upward 2 screens on map)
 81 Door (goes downward 2 screens on map)
+100 Dark Zone
+101 No Dark Zone
+102 Remove water
+103 Add water (level below)
+104 Water level marker
+105 Add water (level above)
 193 Hide layers 2 and 6
 194 Show layers 2 and 6
-195 Right direction modifier
-196 Left direction modifier
-198 Up direction modifier
-199 Down direction modifier
-200 Red laser delay 1 (place below)
-201 Red laser delay 2 (place below)
-202 Red laser delay 3 (place below)
-203 Red laser delay 4 (place below)
-204 Red laser delay 5 (place below)
-205 Red laser delay 6 (place below)
 224 Save point
 250 Easter egg
 483 Fall damage and reset
-5001 Type 1 modifier
-5002 Type 2 modifier
-5003 Type 3 modifier
-5004 Type 4 modifier
-5005 Type 5 modifier
-5006 Type 6 modifier
-5007 Type 7 modifier
-5008 Type 8 modifier
-5009 Type 9 modifier
-5010 Type 10 modifier
-5011 Type 11 modifier
-5012 Type 12 modifier
 
 [warps]
 209 Warp ID 0
@@ -436,6 +421,7 @@ type 5 Blue
 type 6 Purple
 type 7 Silver
 1164 Bunny ghost (type affects damage)
+1169 Hall of Memories DLC area blue orb obstacle
 1174 Hall of Memories DLC area purple laser
 dir left
 dir right
