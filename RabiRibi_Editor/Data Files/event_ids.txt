@@ -131,3 +131,313 @@
 249 Warp cross-map to map 7
 250 Warp cross-map to map 8
 251 Warp cross-map to map 9
+
+[entity]
+1003 Four-way fire bar
+1004 Three-way fire bar
+1005 Spike ball
+dir 0 left
+dir up
+dir down
+1006 Super spike ball
+dir 0 left
+dir up
+dir down
+1007 Wall climber
+dir 0 right
+dir left
+dir up
+dir down
+1008 Blue death laser
+dir 0 left
+dir right
+1009 Prologue Cocoa
+1010 Pixel face
+1011 Rumi
+1012 Ashuri
+1013 Rita
+1014 Ribbon
+1015 Forgotten Cave Cocoa
+1016 Computer Cicini
+1017 Various objects
+type 0 Cicini's desk
+type 12 Spring
+1018 Cicini
+1019 Red laser
+laser
+dir 0 left
+dir right
+dir up
+dir down
+1020 Saya
+1021 Syaro
+1022 Pandora
+type 0 Regular
+type 1 Shadow
+1023 Nieve
+1024 Nixie
+1025 Aruraune
+1027 "Into Town"
+1028 Interactable NPC (needs type)
+1030 Seana
+1031 Lilith
+1032 Vanilla
+type 0 Normal
+type 1 acts like Chocolate
+1033 Chocolate
+type 1 Normal
+type 0 acts like Vanilla
+1035 Illusion Alius
+type 0 Illusion Alius I
+type 1 Illusion Alius II
+type 2 Illusion Alius III
+type 3 Illusion Alius IV
+1036 Kotri
+type 0 Pink
+type 1 Blue
+type 2 Red
+1037 Noah
+1038 Irisu
+1039 Miriam
+1043 Miru
+1045 Rita 2
+type 0 Normal
+type 5 Shadow
+1046 Lili/Pixie
+type 0 Lili
+type 1 Pixie
+1053 Noah 3
+1054 Keke Bunny
+1055 Mr. Tako
+type 0 Sitting
+type 3 Standing
+1056 Ordinary Cat
+type 0 Blue
+type 1 Red
+1096 Pink bunny slime
+type 0 Normal
+type 5 Big
+type 6 Large
+type 7 Huge
+1097 Flower
+type 0 Normal
+type 1 Blue, shoots bubbles
+type 2 Red, shoots lasers
+type 5 Big
+type 6 Large
+type 7 Huge
+1098 Ball mouse
+1099 Bee
+1100 Rafflesia
+type 0 Red
+type 1 Green
+1011 Wisp
+type 0 Wisp
+type 2 Exploding Pumpkin
+1102 Duck
+1103 Mushroom
+type 0 Normal
+type 5 Big
+type 6 Large
+type 7 Huge
+1104 Dog
+1105 Brown Mushroom
+type 0 Normal
+type 5 Big
+type 6 Large
+type 7 Huge
+1106 Worm
+type 0 Normal
+type 1 Shoots
+1107 Cactus
+1108 Eagle
+type 0 Normal
+type 1 Shoots
+1109 Blob charger
+type 0 Blue
+type 1 Pink
+1110 UPRPRC member with overalls & pink hair
+1111 Purple bunny slime
+type 0 Normal, shoots
+type 5 Big
+type 6 Large
+type 7 Huge
+1112 Egg
+type 0 Yellow
+type 1 Blue, shoots
+type 2 Yellow, shoots
+1113 Dice
+type 0 1 pip?
+type 1 2 pips?
+type 2 3 pips?
+type 3 4 pips?
+type 4 5 pips?
+type 5 6 pips?
+1114 UPRPRC fairy
+type 0 Blue
+type 1 Red
+type 2 Yellow
+type 3 Green
+type 4 Purple
+type 5 Gray
+1115 Card soldier
+1116 Bunny thwomp
+type 0 Down
+type 1 Left
+type 2 Up
+type 3 Right
+type 4 No movement
+1117 UPRPRC hugger
+type 0 Red
+type 1 Green
+type 2 Blue
+type 3 Yellow
+1118 UPRPRC swimsuit gunner
+type 0 Red
+type 1 Blue
+type 2 Yellow
+type 3 Green
+1119 UPRPRC debuff mage
+type 0 Blue
+type 1 Red
+type 2 Green
+type 3 Yellow
+1120 UPRPRC bomber
+type 0 Red
+type 1 Blue
+type 2 Purple
+type 3 Green
+1124 Open box
+1125 Vehicle
+dir 0 left
+dir right
+1126 Skinny otaku
+type 0 Green
+type 1 Yellow
+type 2 Blue
+1127 Fat otaku
+type 0 Red
+type 1 Black
+1128 Sandbag
+1129 STG fairy
+1130 Fake rock
+type 0 Rock
+type 1 Snow rock
+1131 Rock-tossing mole
+1132 Five-way lab turret
+type 0 Down
+type 1 Left
+type 2 Right
+type 3 Up
+1133 Tall lab bot
+type 0 Normal
+type 1 Mr. Big Box
+type 5 Fires lasers that turn
+1134 Flying lab bot
+1135 Small lab bot
+type 0 Normal
+type 1 Mini lab bot
+1136 Robot maid
+type 0 Pink
+type 1 Blue
+type 2 Yellow
+type 3 Green
+type 4 Rainbow Maid
+1137 Spider
+type 0 Drops down when close
+type 1 Already dropped down
+1138 Riverbank running swarmers
+type 0 Normal
+type 1 Halloween
+1139 Hug fairy
+type 0 Blue
+type 1 Yellow
+type 2 Red
+type 3 Green
+1140 Cyber Cube
+type 0 Blue
+type 1 Green
+type 2 Yellow
+type 3 Red
+type 4 Silver
+1141 Irisu clone
+1142 Rainbow Crystal boss core
+1143 Rainbow Crystal boss part
+1144 UPRPRC tank
+type 0 Yellow
+type 1 Blue
+type 2 Green
+1145 Bouncy cat
+type 0 Gray
+type 1 Blue
+type 2 Halloween
+1146 Spark ball
+type 0 Rainbow
+type 1 Blue
+type 2 Yellow
+type 3 Green
+type 4 Rainbow, slow
+1147 UPRPRC mage
+type 0 Blue
+type 1 Red
+type 2 Green
+type 3 Yellow
+1148 Snow ball
+type 0 Normal
+type 1 Fragment
+1149 Elemental magic ball
+type 0 Light blue
+type 1 Dark blue
+type 2 Red
+1150 UPRPRC fairy, white suit/ears
+type 0 Blue
+type 1 Red
+type 2 Yellow
+type 3 Green
+type 4 Purple
+type 5 Gray
+1151 Pyramid eye
+1152 Pyramid laser
+type 0 Moves horizontally
+type 1 Moves vertically
+1153 UPRPRC speed-up mage
+1154 City NPC (type affects appearance)
+type 0 Salary man
+1155 Aurora Palace laser
+1156 Meaty bone
+type 0 Boomerang shot
+type 1 Exploding shot
+type 5 Large
+type 6 Huge
+1157 Plurkwood bullet spitter
+1158 Plurkwood mouth slime
+type 0 Normal
+type 5 Large
+type 6 Huge
+1159 Plurkwood bat
+type 0 Movement pattern 1
+type 1 Movement pattern 2
+type 2 Movement pattern 3
+type 3 Movement pattern 4
+type 4 Stationary
+1160 Fish
+type 0 Yellow
+type 1 Blue
+type 2 Green
+1161 Mummy ball
+1162 Five floating energy swords
+1163 Library crystal
+type 0 Red
+type 1 Orange
+type 2 Yellow
+type 3 Green
+type 4 Cyan
+type 5 Blue
+type 6 Purple
+type 7 Silver
+1164 Bunny ghost (type affects damage)
+1174 Hall of Memories DLC area purple laser
+dir left
+dir right
+dir up
+dir down

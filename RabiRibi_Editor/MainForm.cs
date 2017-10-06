@@ -61,10 +61,18 @@ namespace RabiRibi_Editor
     {
       public string name;
       public short id;
+      
+      public List<Event_Selection_Item> direction_list;
+      public List<Event_Selection_Item> type_list;
+      public bool laser_delay;
+      
       public Event_Selection_Item(string event_name, short event_id)
       {
         name = event_name;
         id = event_id;
+        direction_list = new List<MainForm.Event_Selection_Item>();
+        type_list = new List<MainForm.Event_Selection_Item>();
+        laser_delay = false;
       }
       
       public override string ToString()
@@ -283,6 +291,9 @@ namespace RabiRibi_Editor
     {
       base.OnLoad(e);
       
+      try
+      {
+      
       // If this is the first time running this version, pull settings from
       // any previous versions.
       if (Settings1.Default.upgradeRequired)
@@ -490,6 +501,7 @@ namespace RabiRibi_Editor
         using (var input = new StreamReader(resource))
         {
           ComboBox current_target = null;
+          Event_Selection_Item item = null;
           while (!input.EndOfStream)
           {
             //music_event_selection.Items.Add(input.ReadLine());
@@ -528,13 +540,70 @@ namespace RabiRibi_Editor
               current_target = warp_map_selection;
               continue;
             }
+            else if (line == "[entity]")
+            {
+              current_target = entity_event_selection;
+              continue;
+            }
+            else if (line.StartsWith("dir"))
+            {
+              line = line.Substring(4).Trim();
+              bool zero_id = false;
+              if (line.StartsWith("0"))
+              {
+                zero_id = true;
+                line = line.Substring(2).Trim();
+              }
+              if (line == "left")
+              {
+                item.direction_list.Add(new Event_Selection_Item("left", (short)(zero_id ? 0 : 196)));
+              }
+              if (line == "right")
+              {
+                item.direction_list.Add(new Event_Selection_Item("right", (short)(zero_id ? 0 : 195)));
+              }
+              if (line == "up")
+              {
+                item.direction_list.Add(new Event_Selection_Item("up", (short)(zero_id ? 0 : 198)));
+              }
+              if (line == "down")
+              {
+                item.direction_list.Add(new Event_Selection_Item("down", (short)(zero_id ? 0 : 199)));
+              }
+              continue;
+            }
+            else if (line.StartsWith("type"))
+            {
+              line = line.Substring(5).Trim();
+              short subtype_id = short.Parse(line.Substring(0, line.IndexOf(' ')));
+              if (subtype_id != 0)
+              {
+                subtype_id += 5000;
+              }
+              line = line.Substring(line.IndexOf(' ')).Trim();
+              item.type_list.Add(new Event_Selection_Item(line, subtype_id));
+              continue;
+            }
+            else if (line == "laser")
+            {
+              item.laser_delay = true;
+              continue;
+            }
             short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
             string name = line.Substring(line.IndexOf(' ')).Trim();
-            Event_Selection_Item item = new MainForm.Event_Selection_Item(name, id);
+            item = new MainForm.Event_Selection_Item(name, id);
             current_target.Items.Add(item);
           }
         }
       }
+      
+      for (int i = 0; i < 6; i++)
+      {
+        entity_laser_delay_selection.Items.Add
+          (new Event_Selection_Item("Laser delay " + i.ToString(),
+                                    (short)(i > 0 ? i + 200 : 0)));
+      }
+      entity_laser_delay_selection.SelectedIndex = 0;
       
       room_type_selection.SelectedIndex = 0;
       room_color_selection.SelectedIndex = 0;
@@ -547,6 +616,13 @@ namespace RabiRibi_Editor
       warp_map_selection.SelectedIndex = 0;
       warp_local_id_selection.SelectedIndex = 0;
       event_category_selection.SelectedIndex = 0;
+      }
+      catch (Exception E)
+      {
+        MessageBox.Show("An exception occurred while initializing the editor!\n"
+                        + "The editor will now close.\n\n" + E.ToString());
+        Close();
+      }
     }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -607,6 +683,7 @@ namespace RabiRibi_Editor
           = event_category_selection.SelectedIndex == 4;
         misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
       }
+      Update_Entity_Selection_Visibility();
     }
     
     /// <summary>
@@ -1028,6 +1105,58 @@ namespace RabiRibi_Editor
       {
         switch (event_category_selection.SelectedIndex)
         {
+            // Entity Events
+          case 3:
+            {
+              List<short> entity_values = new List<short>();
+              var entity_object = ((Event_Selection_Item)entity_event_selection.SelectedItem);
+              if (entity_object.type_list.Count > 0)
+              {
+                var type_object = ((Event_Selection_Item)entity_type_selection.SelectedItem);
+                if (type_object.id > 0)
+                {
+                  entity_values.Add(type_object.id);
+                }
+              }
+              if (entity_object.direction_list.Count > 0)
+              {
+                var dir_object = ((Event_Selection_Item)entity_dir_selection.SelectedItem);
+                if (dir_object.id > 0)
+                {
+                  entity_values.Add(dir_object.id);
+                }
+              }
+              entity_values.Add(entity_object.id);
+              if (tile_y < (entity_values.Count - 1))
+              {
+                MessageBox.Show("Entity needs more space above to fit modifiers.");
+                break;
+              }
+              if (entity_object.laser_delay)
+              {
+                short laser_delay = ((Event_Selection_Item)entity_laser_delay_selection.SelectedItem).id;
+                if (laser_delay > 0)
+                {
+                  if (tile_y == (LevelData.map_tile_height - 1))
+                  {
+                    MessageBox.Show("Entity needs more space below to fit modifiers.");
+                    break;
+                  }
+                  tile_y += 1;
+                  entity_values.Add(laser_delay);
+                }
+              }
+              CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                (CommandStack.CommandType.Write_Event, tile_x, tile_x,
+                 tile_y - (entity_values.Count - 1), tile_y);
+              for (int i = 0; i < entity_values.Count; i++)
+              {
+                cmd.data[0, i] = entity_values[i];
+              }
+              command_stack.RunCommnd(cmd);
+            }
+            break;
+            
             // Warp Events
           case 4:
             // TODO rest of the warp stuff
@@ -1483,6 +1612,57 @@ namespace RabiRibi_Editor
     void Event_category_selectionSelectedIndexChanged(object sender, EventArgs e)
     {
       Update_Event_Tool_Visibilities();
+    }
+    
+    void Entity_event_selectionSelectedIndexChanged(object sender, EventArgs e)
+    {
+      Update_Entity_Selection_Visibility();
+    }
+    
+    void Update_Entity_Selection_Visibility()
+    {
+      if ((!event_radio.Checked) ||(event_category_selection.SelectedIndex != 3))
+      {
+        entity_type_selection.Visible = entity_dir_selection.Visible =
+          entity_laser_delay_selection.Visible = false;
+      }
+      else
+      {
+        entity_type_selection.Items.Clear();
+        var type_list = ((Event_Selection_Item)entity_event_selection.SelectedItem).type_list;
+        if (type_list.Count > 0)
+        {
+          entity_type_selection.Visible = true;
+          foreach (var entry in type_list)
+          {
+            entity_type_selection.Items.Add(entry);
+          }
+          entity_type_selection.SelectedIndex = 0;
+        }
+        else
+        {
+          entity_type_selection.Visible = false;
+        }
+        
+        entity_dir_selection.Items.Clear();
+        var dir_list = ((Event_Selection_Item)entity_event_selection.SelectedItem).direction_list;
+        if (dir_list.Count > 0)
+        {
+          entity_dir_selection.Visible = true;
+          foreach (var entry in dir_list)
+          {
+            entity_dir_selection.Items.Add(entry);
+          }
+          entity_dir_selection.SelectedIndex = 0;
+        }
+        else
+        {
+          entity_dir_selection.Visible = false;
+        }
+        
+        entity_laser_delay_selection.Visible =
+          ((Event_Selection_Item)entity_event_selection.SelectedItem).laser_delay;
+      }
     }
   }
 }
