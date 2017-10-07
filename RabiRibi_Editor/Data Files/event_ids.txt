@@ -427,3 +427,66 @@ dir left
 dir right
 dir up
 dir down
+
+[environment]
+5500 Palm tree (place 3 tiles above ground)
+5501 Palm tree (place 3 tiles above ground)
+5502 Rock
+5503 Blue sales cart (place 2 tiles above ground)
+5504 Red sales cart (place 2 tiles above ground)
+5505 Green sales cart (place 2 tiles above ground)
+5506 Yellow umbrella (place 2 tiles above ground)
+5507 Blue umbrella (place 2 tiles above ground)
+5508 Red umbrella (place 2 tiles above ground)
+5509 Green umbrella (place 2 tiles above ground)
+5510 Blue/Red town signpost (place 2 tiles above ground)
+5511 Green/Purple town signpost (place 2 tiles above ground)
+5512 Window
+5515 Shop desk
+5516 Snowy tree (place 3 tiles above ground)
+5517 Rock pile (place 1 tile above ground)
+5518 Small rock pile (place 1 tile above ground)
+5519 Rock pile (place 1 tile above ground)
+5520 Crystal
+5521 Crystal
+5522 Crystal
+5523 Crystal
+5524 Crystal
+5525 Crystal
+5526 Crystal
+5527 Crystal
+5528 Crystal
+5529 Crystal
+5530 Tombstone (place 1 tile above ground)
+5531 Tombstone (place 1 tile above ground)
+5532 Tombstone (place 1 tile above ground)
+5533 Tombstone (place 1 tile above ground)
+5534 Tombstone (place 1 tile above ground)
+5535 Tombstone (place 1 tile above ground)
+5536 Tombstone (place 1 tile above ground)
+5537 Tombstone (place 1 tile above ground)
+5538 Tombstone (place 1 tile above ground)
+5539 Tombstone (place 1 tile above ground)
+5541 Bookshelf (place 2 tiles above ground)
+5542 Wide bookshelf (place 2 tiles above ground)
+5543 Couch (place 2 tiles above ground)
+5544 Lamp
+5545 Small table (place 2 tiles above ground)
+5546 Stacked books (place 2 tiles above ground)
+5547 Desk (place 2 tiles above ground)
+5548 Bunny picture (place 2 tiles above)
+5549 Bunny picture (place 2 tiles above)
+5550 Bunny picture (place 2 tiles above)
+5551 Bunny picture (place 2 tiles above)
+5552 Door (place 2 tiles above ground)
+5553 Bunny statue (place 2 tiles above ground)
+5554 Potted plant (place 2 tiles above ground)
+5556 Lightpost (place 2 tiles above ground)
+5557 Casket (place 2 tiles above ground)
+5558 Lit candle
+5559 Pyramid door (place 2 tiles above ground)
+5560 Lit candle on stand (place 2 tiles above ground)
+5561 Large tree (place 4 tiles above ground)
+5562 Bushes (place 2 tiles above ground)
+5568 Rumi's house (place 3 tiles above ground)
+5569 Mr. Tako's desk
