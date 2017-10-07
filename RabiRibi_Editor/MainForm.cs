@@ -547,6 +547,11 @@ namespace RabiRibi_Editor
                 current_target = entity_event_selection;
                 continue;
               }
+              else if (line == "[environment]")
+              {
+                current_target = environment_event_selection;
+                continue;
+              }
               
               // Add a direction modified entry to the most recent event
               else if (line.StartsWith("dir"))
@@ -627,6 +632,7 @@ namespace RabiRibi_Editor
         warp_map_selection.SelectedIndex = 0;
         warp_local_id_selection.SelectedIndex = 0;
         event_category_selection.SelectedIndex = 0;
+        environment_event_selection.SelectedIndex = 0;
       }
       catch (Exception E)
       {
@@ -680,7 +686,7 @@ namespace RabiRibi_Editor
           warp_destination_selection.Visible = warp_map_selection.Visible =
           warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
           warp_local_id_selection.Visible = misc_event_selection.Visible = 
-          warp_graphic_checkbox.Visible = false;
+          environment_event_selection.Visible = warp_graphic_checkbox.Visible = false;
       }
       else
       {
@@ -696,6 +702,7 @@ namespace RabiRibi_Editor
           warp_local_id_selection.Visible = warp_graphic_checkbox.Visible
           = event_category_selection.SelectedIndex == 4;
         misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
+        environment_event_selection.Visible = event_category_selection.SelectedIndex == 6;
       }
       Update_Entity_Selection_Visibility();
     }
@@ -1237,6 +1244,17 @@ namespace RabiRibi_Editor
               {
                 command_stack.RunCommandList(cmd_list);
               }
+            }
+            break;
+            
+            // Environmental Events
+          case 6:
+            {
+              short data = ((Event_Selection_Item)environment_event_selection.SelectedItem).id;
+              CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
+                (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y, tile_y);
+              cmd.data[0,0] = data;
+              command_stack.RunCommnd(cmd);
             }
             break;
         }

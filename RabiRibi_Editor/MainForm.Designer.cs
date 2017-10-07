@@ -55,6 +55,8 @@ namespace RabiRibi_Editor
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.environment_event_selection = new System.Windows.Forms.ComboBox();
+      this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
       this.entity_dir_selection = new System.Windows.Forms.ComboBox();
       this.entity_type_selection = new System.Windows.Forms.ComboBox();
       this.warp_graphic_checkbox = new System.Windows.Forms.CheckBox();
@@ -86,7 +88,6 @@ namespace RabiRibi_Editor
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
       this.metatile_layer_label = new System.Windows.Forms.Label();
-      this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -264,6 +265,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.environment_event_selection);
       this.tabPage2.Controls.Add(this.entity_laser_delay_selection);
       this.tabPage2.Controls.Add(this.entity_dir_selection);
       this.tabPage2.Controls.Add(this.entity_type_selection);
@@ -301,6 +303,27 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // environment_event_selection
+      // 
+      this.environment_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.environment_event_selection.DropDownWidth = 300;
+      this.environment_event_selection.FormattingEnabled = true;
+      this.environment_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.environment_event_selection.Name = "environment_event_selection";
+      this.environment_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.environment_event_selection.TabIndex = 30;
+      this.environment_event_selection.Visible = false;
+      // 
+      // entity_laser_delay_selection
+      // 
+      this.entity_laser_delay_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.entity_laser_delay_selection.FormattingEnabled = true;
+      this.entity_laser_delay_selection.Location = new System.Drawing.Point(6, 390);
+      this.entity_laser_delay_selection.Name = "entity_laser_delay_selection";
+      this.entity_laser_delay_selection.Size = new System.Drawing.Size(218, 21);
+      this.entity_laser_delay_selection.TabIndex = 29;
+      this.entity_laser_delay_selection.Visible = false;
       // 
       // entity_dir_selection
       // 
@@ -388,7 +411,8 @@ namespace RabiRibi_Editor
                   "Tile Events",
                   "Entities",
                   "Warp Events",
-                  "Misc. Events"});
+                  "Misc. Events",
+                  "Environment Objects"});
       this.event_category_selection.Location = new System.Drawing.Point(6, 266);
       this.event_category_selection.Name = "event_category_selection";
       this.event_category_selection.Size = new System.Drawing.Size(218, 21);
@@ -447,6 +471,7 @@ namespace RabiRibi_Editor
       // misc_event_selection
       // 
       this.misc_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.misc_event_selection.DropDownWidth = 300;
       this.misc_event_selection.FormattingEnabled = true;
       this.misc_event_selection.Location = new System.Drawing.Point(6, 300);
       this.misc_event_selection.Name = "misc_event_selection";
@@ -775,16 +800,6 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Text = "Selectable layer:";
       this.metatile_layer_label.Visible = false;
       // 
-      // entity_laser_delay_selection
-      // 
-      this.entity_laser_delay_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.entity_laser_delay_selection.FormattingEnabled = true;
-      this.entity_laser_delay_selection.Location = new System.Drawing.Point(6, 390);
-      this.entity_laser_delay_selection.Name = "entity_laser_delay_selection";
-      this.entity_laser_delay_selection.Size = new System.Drawing.Size(218, 21);
-      this.entity_laser_delay_selection.TabIndex = 29;
-      this.entity_laser_delay_selection.Visible = false;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -816,6 +831,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox environment_event_selection;
     private System.Windows.Forms.ComboBox entity_laser_delay_selection;
     private System.Windows.Forms.ComboBox entity_dir_selection;
     private System.Windows.Forms.ComboBox entity_type_selection;
