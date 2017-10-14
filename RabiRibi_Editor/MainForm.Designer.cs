@@ -54,6 +54,9 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.set_zoom_button = new System.Windows.Forms.Button();
+      this.zoom_level_textbox = new System.Windows.Forms.TextBox();
+      this.zoom_label = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.environment_event_selection = new System.Windows.Forms.ComboBox();
       this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
@@ -91,6 +94,7 @@ namespace RabiRibi_Editor
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
+      this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).BeginInit();
       this.collision_tile_panel.SuspendLayout();
@@ -261,6 +265,9 @@ namespace RabiRibi_Editor
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.set_zoom_button);
+      this.tabPage1.Controls.Add(this.zoom_level_textbox);
+      this.tabPage1.Controls.Add(this.zoom_label);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -268,6 +275,37 @@ namespace RabiRibi_Editor
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // set_zoom_button
+      // 
+      this.set_zoom_button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.set_zoom_button.Location = new System.Drawing.Point(153, 480);
+      this.set_zoom_button.Name = "set_zoom_button";
+      this.set_zoom_button.Size = new System.Drawing.Size(75, 23);
+      this.set_zoom_button.TabIndex = 2;
+      this.set_zoom_button.Text = "Set Zoom";
+      this.set_zoom_button.UseVisualStyleBackColor = true;
+      this.set_zoom_button.Click += new System.EventHandler(this.ZoomLevelTextChanged);
+      // 
+      // zoom_level_textbox
+      // 
+      this.zoom_level_textbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.zoom_level_textbox.Location = new System.Drawing.Point(59, 482);
+      this.zoom_level_textbox.Name = "zoom_level_textbox";
+      this.zoom_level_textbox.Size = new System.Drawing.Size(88, 20);
+      this.zoom_level_textbox.TabIndex = 1;
+      this.zoom_level_textbox.Text = "1.0";
+      this.zoom_level_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Zoom_level_textboxKeyDown);
+      // 
+      // zoom_label
+      // 
+      this.zoom_label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.zoom_label.Location = new System.Drawing.Point(16, 485);
+      this.zoom_label.Name = "zoom_label";
+      this.zoom_label.Size = new System.Drawing.Size(37, 23);
+      this.zoom_label.TabIndex = 0;
+      this.zoom_label.Text = "Zoom:";
       // 
       // tabPage2
       // 
@@ -887,6 +925,8 @@ namespace RabiRibi_Editor
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.tabControl1.ResumeLayout(false);
+      this.tabPage1.ResumeLayout(false);
+      this.tabPage1.PerformLayout();
       this.tabPage2.ResumeLayout(false);
       this.tabPage2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).EndInit();
@@ -904,6 +944,9 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.Button set_zoom_button;
+    private System.Windows.Forms.Label zoom_label;
+    private System.Windows.Forms.TextBox zoom_level_textbox;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.ComboBox environment_event_selection;
     private System.Windows.Forms.ComboBox entity_laser_delay_selection;

@@ -1671,5 +1671,48 @@ namespace RabiRibi_Editor
           ((Event_Selection_Item)entity_event_selection.SelectedItem).laser_delay;
       }
     }
+    
+    void ZoomLevelTextChanged(object sender, EventArgs e)
+    {
+      float new_zoom;
+      
+      const float min_zoom = 0.5f;
+      const float max_zoom = 4.0f;
+      
+      if (float.TryParse(zoom_level_textbox.Text, out new_zoom))
+      {
+        // Don't zoom too far out, as it'll make redraws take way too long.
+        // Also set a 'reasonable' upper bound on the zoom.
+        if ((new_zoom >= min_zoom) && (new_zoom <= max_zoom))
+        {
+          tileView1.zoom = new_zoom;
+          tileView1.Invalidate();
+        }
+        else
+        {
+          MessageBox.Show("Zoom must be between " + min_zoom.ToString() +
+                          " and " + max_zoom.ToString());
+        }
+      }
+      else
+      {
+        MessageBox.Show("Could not parse the zoom value!");
+      }
+    }
+    
+    void Zoom_level_textboxKeyDown(object sender, KeyEventArgs e)
+    {
+      // The only purpose of this handler is to catch the Enter key and update
+      // the zoom.
+      if (e.KeyCode == Keys.Enter)
+      {
+        ZoomLevelTextChanged(null, null);
+        
+        // Disable passing the event to the underlying control.  This is done
+        // just to suppress the 'ding' noise it would otherwise make.
+        e.Handled = true;
+        e.SuppressKeyPress = true;
+      }
+    }
   }
 }
