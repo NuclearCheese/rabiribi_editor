@@ -312,7 +312,9 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click);
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover);
+        
+        infoView1.level = level;
         
         // Load tile graphics
         Load_Tile_Graphics("TILE1_A.png");
@@ -340,6 +342,7 @@ namespace RabiRibi_Editor
             }
           }
           c.Left = 10;
+          c.Width = 90;
           c.Checked = true;
           c.CheckedChanged += new EventHandler(LayerVisibleChanged);
           layer_checkboxes[i] = c;
@@ -354,51 +357,51 @@ namespace RabiRibi_Editor
         event_layer_checkbox = new CheckBox();
         event_layer_checkbox.Parent = tabPage1;
         event_layer_checkbox.Text = "Event IDs";
-        event_layer_checkbox.Top = 190;
-        event_layer_checkbox.Left = 10;
+        event_layer_checkbox.Top = 10;
+        event_layer_checkbox.Left = 110;
         event_layer_checkbox.Checked = false;
         event_layer_checkbox.CheckedChanged += new EventHandler(event_layer_checkbox_CheckedChanged);
         item_layer_checkbox = new CheckBox();
         item_layer_checkbox.Parent = tabPage1;
         item_layer_checkbox.Text = "Item IDs";
-        item_layer_checkbox.Top = 210;
-        item_layer_checkbox.Left = 10;
+        item_layer_checkbox.Top = 30;
+        item_layer_checkbox.Left = 110;
         item_layer_checkbox.Checked = false;
         item_layer_checkbox.CheckedChanged += new EventHandler(item_layer_checkbox_CheckedChanged);
         
         room_type_checkbox = new CheckBox();
         room_type_checkbox.Parent = tabPage1;
         room_type_checkbox.Text = "Room types";
-        room_type_checkbox.Top = 250;
-        room_type_checkbox.Left = 10;
+        room_type_checkbox.Top = 70;
+        room_type_checkbox.Left = 110;
         room_type_checkbox.Checked = false;
         room_type_checkbox.CheckedChanged += new EventHandler(room_type_checkbox_CheckedChanged);
         room_color_checkbox = new CheckBox();
         room_color_checkbox.Parent = tabPage1;
         room_color_checkbox.Text = "Room colors";
-        room_color_checkbox.Top = 270;
-        room_color_checkbox.Left = 10;
+        room_color_checkbox.Top = 90;
+        room_color_checkbox.Left = 110;
         room_color_checkbox.Checked = false;
         room_color_checkbox.CheckedChanged += new EventHandler(room_color_checkbox_CheckedChanged);
         room_bg_checkbox = new CheckBox();
         room_bg_checkbox.Parent = tabPage1;
         room_bg_checkbox.Text = "Room BGs";
-        room_bg_checkbox.Top = 290;
-        room_bg_checkbox.Left = 10;
+        room_bg_checkbox.Top = 110;
+        room_bg_checkbox.Left = 110;
         room_bg_checkbox.Checked = false;
         room_bg_checkbox.CheckedChanged += new EventHandler(room_bg_checkbox_CheckedChanged);
         
         tile_grid_checkbox = new CheckBox();
         tile_grid_checkbox.Parent = tabPage1;
         tile_grid_checkbox.Text = "Tile Grid";
-        tile_grid_checkbox.Top = 330;
+        tile_grid_checkbox.Top = 190;
         tile_grid_checkbox.Left = 10;
         tile_grid_checkbox.Checked = false;
         tile_grid_checkbox.CheckedChanged += new EventHandler(tile_grid_checkbox_CheckedChanged);
         screen_grid_checkbox = new CheckBox();
         screen_grid_checkbox.Parent = tabPage1;
         screen_grid_checkbox.Text = "Screen Grid";
-        screen_grid_checkbox.Top = 350;
+        screen_grid_checkbox.Top = 210;
         screen_grid_checkbox.Left = 10;
         screen_grid_checkbox.Checked = false;
         screen_grid_checkbox.CheckedChanged += new EventHandler(screen_grid_checkbox_CheckedChanged);
@@ -1361,6 +1364,13 @@ namespace RabiRibi_Editor
         int map_y = LevelData.Tile_Y_To_Map_Y(tile_y);
         bg_ID_entry.Text = level.room_bg_data[map_x, map_y].ToString();
       }
+    }
+    
+    void Process_Hover(int tile_x, int tile_y)
+    {
+      infoView1.x = tile_x;
+      infoView1.y = tile_y;
+      infoView1.Invalidate();
     }
     
     /// <summary>

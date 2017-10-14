@@ -54,6 +54,7 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.infoView1 = new RabiRibi_Editor.InfoView();
       this.set_zoom_button = new System.Windows.Forms.Button();
       this.zoom_level_textbox = new System.Windows.Forms.TextBox();
       this.zoom_label = new System.Windows.Forms.Label();
@@ -90,8 +91,8 @@ namespace RabiRibi_Editor
       this.tile_picturebox_panel = new System.Windows.Forms.Panel();
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
-      this.metatile_layer_label = new System.Windows.Forms.Label();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.metatile_layer_label = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -265,6 +266,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.infoView1);
       this.tabPage1.Controls.Add(this.set_zoom_button);
       this.tabPage1.Controls.Add(this.zoom_level_textbox);
       this.tabPage1.Controls.Add(this.zoom_label);
@@ -275,6 +277,17 @@ namespace RabiRibi_Editor
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // infoView1
+      // 
+      this.infoView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.infoView1.Location = new System.Drawing.Point(6, 261);
+      this.infoView1.Name = "infoView1";
+      this.infoView1.Size = new System.Drawing.Size(219, 215);
+      this.infoView1.TabIndex = 3;
+      this.infoView1.Text = "infoView1";
       // 
       // set_zoom_button
       // 
@@ -339,7 +352,6 @@ namespace RabiRibi_Editor
       this.tabPage2.Controls.Add(this.hflip_checkbox);
       this.tabPage2.Controls.Add(this.tile_picturebox_panel);
       this.tabPage2.Controls.Add(this.tools_panel);
-      this.tabPage2.Controls.Add(this.metatile_layer_label);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -877,15 +889,6 @@ namespace RabiRibi_Editor
       this.tools_panel.Size = new System.Drawing.Size(214, 255);
       this.tools_panel.TabIndex = 0;
       // 
-      // metatile_layer_label
-      // 
-      this.metatile_layer_label.Location = new System.Drawing.Point(6, 290);
-      this.metatile_layer_label.Name = "metatile_layer_label";
-      this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
-      this.metatile_layer_label.TabIndex = 18;
-      this.metatile_layer_label.Text = "Selectable layer:";
-      this.metatile_layer_label.Visible = false;
-      // 
       // splitContainer1
       // 
       this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -909,6 +912,13 @@ namespace RabiRibi_Editor
       this.splitContainer1.Size = new System.Drawing.Size(942, 542);
       this.splitContainer1.SplitterDistance = 697;
       this.splitContainer1.TabIndex = 6;
+      // 
+      // metatile_layer_label
+      // 
+      this.metatile_layer_label.Location = new System.Drawing.Point(0, 0);
+      this.metatile_layer_label.Name = "metatile_layer_label";
+      this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
+      this.metatile_layer_label.TabIndex = 0;
       // 
       // MainForm
       // 
@@ -944,6 +954,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private RabiRibi_Editor.InfoView infoView1;
     private System.Windows.Forms.Button set_zoom_button;
     private System.Windows.Forms.Label zoom_label;
     private System.Windows.Forms.TextBox zoom_level_textbox;

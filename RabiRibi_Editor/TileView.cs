@@ -62,9 +62,11 @@ namespace RabiRibi_Editor
     public delegate void Process_Mouse_Delegate(int old_tx, int old_ty, int new_tx, int new_ty);
     Process_Mouse_Delegate mouse_callback;
     
-    public delegate void Single_Tile_Click_Delegate(int tile_x, int tile_y);
-    Single_Tile_Click_Delegate left_click_callback;
-    Single_Tile_Click_Delegate right_click_callback;
+    public delegate void Single_Tile_Delegate(int tile_x, int tile_y);
+    Single_Tile_Delegate left_click_callback;
+    Single_Tile_Delegate right_click_callback;
+    
+    Single_Tile_Delegate hover_callback;
     
     Brush[] room_type_brushes;
     Dictionary<int, Brush> room_color_brushes;
@@ -87,7 +89,7 @@ namespace RabiRibi_Editor
       collision_graphics = coll_gfx;
     }
     
-    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Click_Delegate lc_callback, Single_Tile_Click_Delegate rc_callback)
+    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Delegate lc_callback, Single_Tile_Delegate rc_callback, Single_Tile_Delegate hv_callback)
     {
       level = level_data;
       
@@ -203,6 +205,7 @@ namespace RabiRibi_Editor
       mouse_callback = callback;
       left_click_callback = lc_callback;
       right_click_callback = rc_callback;
+      hover_callback = hv_callback;
     }
     
     /// <summary>
@@ -255,11 +258,11 @@ namespace RabiRibi_Editor
       
       // Determine the actual bounds to draw by checking the invalidated
       // area of the control.
-      int tile_draw_min_x = scroll_x + (int)((e.ClipRectangle.Left / 32) / zoom);
-      int tile_draw_max_x = scroll_x + (int)(((e.ClipRectangle.Right + 31) / 32) / zoom);
+      int tile_draw_min_x = scroll_x + (int)((e.ClipRectangle.Left / 32.0f) / zoom);
+      int tile_draw_max_x = scroll_x + (int)(((e.ClipRectangle.Right + 31) / 32.0f) / zoom);
       
-      int tile_draw_min_y = scroll_y + (int)((e.ClipRectangle.Top / 32) / zoom);
-      int tile_draw_max_y = scroll_y + (int)(((e.ClipRectangle.Bottom + 31) / 32) / zoom);
+      int tile_draw_min_y = scroll_y + (int)((e.ClipRectangle.Top / 32.0f) / zoom);
+      int tile_draw_max_y = scroll_y + (int)(((e.ClipRectangle.Bottom + 31) / 32.0f) / zoom);
       
       // Expand to the full size of a room to redraw room-size layers
       if (room_bg_visible || room_type_visible || room_color_visible)
@@ -656,6 +659,16 @@ namespace RabiRibi_Editor
           mouse_callback(left_tile, top_tile, right_tile, bottom_tile);
         }
       }
+    }
+    
+    protected override void OnMouseMove(System.Windows.Forms.MouseEventArgs e)
+    {
+      base.OnMouseMove(e);
+      
+      int tile_x = (int)(e.X / 32.0f / zoom) + scroll_x;
+      int tile_y = (int)(e.Y / 32.0f / zoom) + scroll_y;
+      
+      hover_callback(tile_x, tile_y);
     }
   }
 }
