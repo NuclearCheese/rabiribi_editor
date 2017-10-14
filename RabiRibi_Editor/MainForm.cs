@@ -312,7 +312,7 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover);
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size);
         
         infoView1.level = level;
         
@@ -636,6 +636,8 @@ namespace RabiRibi_Editor
         warp_local_id_selection.SelectedIndex = 0;
         event_category_selection.SelectedIndex = 0;
         environment_event_selection.SelectedIndex = 0;
+        
+        Update_Scrollbar_Size();
       }
       catch (Exception E)
       {
@@ -858,15 +860,15 @@ namespace RabiRibi_Editor
       }
     }
     
-    void HScrollBar1Scroll(object sender, ScrollEventArgs e)
+    void HScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_x = e.NewValue;
+      tileView1.scroll_x = hScrollBar1.Value;
       tileView1.Invalidate();
     }
     
-    void VScrollBar1Scroll(object sender, ScrollEventArgs e)
+    void VScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_y = e.NewValue;
+      tileView1.scroll_y = vScrollBar1.Value;
       tileView1.Invalidate();
     }
     
@@ -1696,6 +1698,7 @@ namespace RabiRibi_Editor
         if ((new_zoom >= min_zoom) && (new_zoom <= max_zoom))
         {
           tileView1.zoom = new_zoom;
+          Update_Scrollbar_Size();
           tileView1.Invalidate();
         }
         else
@@ -1722,6 +1725,24 @@ namespace RabiRibi_Editor
         // just to suppress the 'ding' noise it would otherwise make.
         e.Handled = true;
         e.SuppressKeyPress = true;
+      }
+    }
+    
+    void Update_Scrollbar_Size()
+    {
+      // Standard behavior for the scrollbars in Winforms is that they will
+      // normally only ever scroll up until (Maximum - LargeChange + 1).
+      // This logic updates the LargeChange based on the size of the view, and
+      // pushes back from the right/bottom edge if needed.
+      hScrollBar1.LargeChange = (int)(tileView1.Width / tileView1.zoom / 32.0f);
+      if (hScrollBar1.Value > ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1))
+      {
+        hScrollBar1.Value = ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1);
+      }
+      vScrollBar1.LargeChange = (int)(tileView1.Height / tileView1.zoom / 32.0f);
+      if (vScrollBar1.Value > ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1))
+      {
+        vScrollBar1.Value = ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1);
       }
     }
   }

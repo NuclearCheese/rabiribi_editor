@@ -68,6 +68,9 @@ namespace RabiRibi_Editor
     
     Single_Tile_Delegate hover_callback;
     
+    public delegate void Resize_Delegate();
+    Resize_Delegate resize_callback = null;
+    
     Brush[] room_type_brushes;
     Dictionary<int, Brush> room_color_brushes;
     
@@ -89,7 +92,8 @@ namespace RabiRibi_Editor
       collision_graphics = coll_gfx;
     }
     
-    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Delegate lc_callback, Single_Tile_Delegate rc_callback, Single_Tile_Delegate hv_callback)
+    internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Delegate lc_callback, Single_Tile_Delegate rc_callback, Single_Tile_Delegate hv_callback,
+                       Resize_Delegate rs_callback)
     {
       level = level_data;
       
@@ -206,6 +210,7 @@ namespace RabiRibi_Editor
       left_click_callback = lc_callback;
       right_click_callback = rc_callback;
       hover_callback = hv_callback;
+      resize_callback = rs_callback;
     }
     
     /// <summary>
@@ -393,6 +398,15 @@ namespace RabiRibi_Editor
         // upper-left tile, then steps across in room-sizes increments
         int tile_x = scroll_x - (scroll_x % LevelData.screen_width_in_tiles);
         int draw_x = (scroll_x % LevelData.screen_width_in_tiles) * -32;
+        
+        int end_y = effective_height;
+        int tile_final_y = scroll_y + (effective_height / 32);
+        if (tile_final_y > (LevelData.map_tile_height - 1))
+        {
+          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
+          end_y -= (end_y % 32);
+        }
+        
         while (draw_x < effective_width)
         {
           int tile_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(scroll_y));
@@ -408,7 +422,12 @@ namespace RabiRibi_Editor
               short data = level.room_type_data[map_x, map_y];
               if (data > 0 && data < room_type_brushes.Length)
               {
-                e.Graphics.FillRectangle(room_type_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, 32 * LevelData.screen_height_in_tiles);
+                int draw_height = 32 * (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y));
+                if (draw_y + draw_height > end_y)
+                {
+                  draw_height = end_y - draw_y;
+                }
+                e.Graphics.FillRectangle(room_type_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, draw_height);
               }
             }
             
@@ -430,6 +449,15 @@ namespace RabiRibi_Editor
         // upper-left tile, then steps across in room-sizes increments
         int tile_x = scroll_x - (scroll_x % LevelData.screen_width_in_tiles);
         int draw_x = (scroll_x % LevelData.screen_width_in_tiles) * -32;
+        
+        int end_y = effective_height;
+        int tile_final_y = scroll_y + (effective_height / 32);
+        if (tile_final_y > (LevelData.map_tile_height - 1))
+        {
+          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
+          end_y -= (end_y % 32);
+        }
+        
         while (draw_x < effective_width)
         {
           int tile_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(scroll_y));
@@ -445,7 +473,12 @@ namespace RabiRibi_Editor
               short data = level.room_color_data[map_x, map_y];
               if (room_color_brushes.ContainsKey(data))
               {
-                e.Graphics.FillRectangle(room_color_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, 32 * LevelData.screen_height_in_tiles);
+                int draw_height = 32 * (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y));
+                if (draw_y + draw_height > end_y)
+                {
+                  draw_height = end_y - draw_y;
+                }
+                e.Graphics.FillRectangle(room_color_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, draw_height);
               }
             }
             
@@ -498,13 +531,29 @@ namespace RabiRibi_Editor
       
       if (show_tile_grid)
       {
-        for (int x = 0; x < effective_width; x += 32)
+        int end_x = effective_width;
+        int tile_final_x = scroll_x + (effective_width / 32);
+        if (tile_final_x > (LevelData.map_tile_width - 1))
         {
-          e.Graphics.DrawLine(tile_grid_pen, x, 0, x, effective_height);
+          end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
+          end_x -= (end_x % 32);
         }
-        for (int y = 0; y < effective_height; y += 32)
+        
+        int end_y = effective_height;
+        int tile_final_y = scroll_y + (effective_height / 32);
+        if (tile_final_y > (LevelData.map_tile_height - 1))
         {
-          e.Graphics.DrawLine(tile_grid_pen, 0, y, effective_width, y);
+          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
+          end_y -= (end_y % 32);
+        }
+        
+        for (int x = 0; x <= end_x; x += 32)
+        {
+          e.Graphics.DrawLine(tile_grid_pen, x, 0, x, end_y);
+        }
+        for (int y = 0; y <= end_y; y += 32)
+        {
+          e.Graphics.DrawLine(tile_grid_pen, 0, y, end_x, y);
         }
       }
       
@@ -513,18 +562,34 @@ namespace RabiRibi_Editor
       // between multiple screens that are conjoined.
       if (show_screen_grid)
       {
-        for (int x = (scroll_x % LevelData.screen_width_in_tiles) * -32; x < effective_width; x += (32 * LevelData.screen_width_in_tiles))
+        int end_x = effective_width;
+        int tile_final_x = scroll_x + (effective_width / 32);
+        if (tile_final_x > (LevelData.map_tile_width - 1))
         {
-          e.Graphics.DrawLine(screen_grid_pen, x, 0, x, effective_height);
+          end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
+          end_x -= (end_x % 32);
+        }
+        
+        int end_y = effective_height;
+        int tile_final_y = scroll_y + (effective_height / 32);
+        if (tile_final_y > (LevelData.map_tile_height - 1))
+        {
+          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
+          end_y -= (end_y % 32);
+        }
+        
+        for (int x = (scroll_x % LevelData.screen_width_in_tiles) * -32; x < end_x; x += (32 * LevelData.screen_width_in_tiles))
+        {
+          e.Graphics.DrawLine(screen_grid_pen, x, 0, x, end_y);
         }
         int draw_y = 0;
-        for (int y = scroll_y; y <= (scroll_y + (effective_height / 32)); y++)
+        for (int y = scroll_y; y <= (scroll_y + (end_y / 32)); y++)
         {
           int map_y = LevelData.Tile_Y_To_Map_Y(y);
           int test_y = LevelData.Map_Y_To_Tile_Y(map_y);
           if (test_y == y)
           {
-            e.Graphics.DrawLine(screen_grid_pen, 0, draw_y, effective_width, draw_y);
+            e.Graphics.DrawLine(screen_grid_pen, 0, draw_y, end_x, draw_y);
           }
           draw_y += 32;
         }
@@ -669,6 +734,16 @@ namespace RabiRibi_Editor
       int tile_y = (int)(e.Y / 32.0f / zoom) + scroll_y;
       
       hover_callback(tile_x, tile_y);
+    }
+    
+    protected override void OnResize(EventArgs e)
+    {
+      base.OnResize(e);
+      
+      if (resize_callback != null)
+      {
+        resize_callback();
+      }
     }
   }
 }

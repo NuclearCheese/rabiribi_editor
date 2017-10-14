@@ -238,7 +238,7 @@ namespace RabiRibi_Editor
       this.hScrollBar1.Name = "hScrollBar1";
       this.hScrollBar1.Size = new System.Drawing.Size(681, 16);
       this.hScrollBar1.TabIndex = 3;
-      this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScrollBar1Scroll);
+      this.hScrollBar1.ValueChanged += new System.EventHandler(this.HScrollBar1Scroll);
       // 
       // vScrollBar1
       // 
@@ -249,7 +249,7 @@ namespace RabiRibi_Editor
       this.vScrollBar1.Name = "vScrollBar1";
       this.vScrollBar1.Size = new System.Drawing.Size(16, 526);
       this.vScrollBar1.TabIndex = 4;
-      this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.VScrollBar1Scroll);
+      this.vScrollBar1.ValueChanged += new System.EventHandler(this.VScrollBar1Scroll);
       // 
       // tabControl1
       // 
