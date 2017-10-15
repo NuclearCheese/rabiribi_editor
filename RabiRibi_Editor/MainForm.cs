@@ -650,7 +650,7 @@ namespace RabiRibi_Editor
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.room_bg_visible = room_bg_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void tool_selection_changed(object sendor, EventArgs e)
@@ -667,7 +667,7 @@ namespace RabiRibi_Editor
         room_type_checkbox.Checked = false;
       }
       tileView1.room_color_visible = room_color_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void room_type_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -679,7 +679,7 @@ namespace RabiRibi_Editor
         room_color_checkbox.Checked = false;
       }
       tileView1.room_type_visible = room_type_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void Update_Event_Tool_Visibilities()
@@ -690,7 +690,7 @@ namespace RabiRibi_Editor
           tile_event_selection.Visible = entity_event_selection.Visible =
           warp_destination_selection.Visible = warp_map_selection.Visible =
           warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
-          warp_local_id_selection.Visible = misc_event_selection.Visible = 
+          warp_local_id_selection.Visible = misc_event_selection.Visible =
           environment_event_selection.Visible = warp_graphic_checkbox.Visible = false;
       }
       else
@@ -752,13 +752,13 @@ namespace RabiRibi_Editor
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.item_layer_visible = item_layer_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void event_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.event_layer_visible = event_layer_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void screen_grid_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -776,7 +776,7 @@ namespace RabiRibi_Editor
     void collision_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.collision_layer_visible = collision_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void LayerVisibleChanged(object sender, EventArgs e)
@@ -785,7 +785,7 @@ namespace RabiRibi_Editor
       {
         tileView1.tile_layers_visible[i] = layer_checkboxes[i].Checked;
       }
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void OpenToolStripMenuItemClick(object sender, EventArgs e)
@@ -847,7 +847,7 @@ namespace RabiRibi_Editor
               }
             }
             
-            tileView1.Invalidate();
+            tileView1.InvalidateAllTiles();
           }
           catch (Exception E)
           {
@@ -1536,7 +1536,7 @@ namespace RabiRibi_Editor
         {
           Load_Tile_Graphics(od.FileName);
           tile_picturebox.Invalidate();
-          tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
           Settings1.Default.lastTilePath = Path.GetDirectoryName(od.FileName);
         }
       }
@@ -1565,7 +1565,7 @@ namespace RabiRibi_Editor
         {
           Load_Collision_Graphics(od.FileName);
           collision_tiles.Invalidate();
-          tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
           
           Settings1.Default.lastCollisionPath = Path.GetDirectoryName(od.FileName);
         }
@@ -1699,7 +1699,8 @@ namespace RabiRibi_Editor
         {
           tileView1.zoom = new_zoom;
           Update_Scrollbar_Size();
-          tileView1.Invalidate();
+          //tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
         }
         else
         {

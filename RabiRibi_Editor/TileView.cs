@@ -77,6 +77,26 @@ namespace RabiRibi_Editor
     Pen tile_grid_pen;
     Pen screen_grid_pen;
     
+    // The below are used for the bitmap cache - this keeps a cache of images
+    // representing the rooms in a level to improve draw times.
+    struct Map_Coordinate
+    {
+      public int x;
+      public int y;
+    }
+    
+    class Bitmap_Cache
+    {
+      public Bitmap b;
+      public bool up_to_date;
+    }
+    
+    Dictionary<Map_Coordinate, Bitmap_Cache> bitmap_dict = new Dictionary<Map_Coordinate, Bitmap_Cache>();
+    
+    // This represents how far off screen a room must be scrolled before its
+    // cache entry can be reused for another room.
+    const int map_bound_buffer = 2;
+    
     public TileView()
     {
       this.DoubleBuffered = true;
@@ -223,6 +243,28 @@ namespace RabiRibi_Editor
     /// <param name="bottom">Bottommost tile index</param>
     internal void InvalidateTiles(int left, int right, int top, int bottom)
     {
+      // Invalidate cached room bitmaps
+      int map_x = left / 20;
+      int end_map_x = (right + 19) / 20;
+      int end_map_y = LevelData.Tile_Y_To_Map_Y(bottom);
+      while (map_x <= end_map_x)
+      {
+        int map_y = LevelData.Tile_Y_To_Map_Y(top);
+        while (map_y <= end_map_y)
+        {
+          Map_Coordinate m;
+          m.x = map_x;
+          m.y = map_y;
+          if (bitmap_dict.ContainsKey(m))
+          {
+            bitmap_dict[m].up_to_date = false;
+          }
+          
+          map_y++;
+        }
+        map_x++;
+      }
+      
       // If showing a room-size layer, expand to include the the full size of
       // all rooms included in this tile range.
       if (room_bg_visible || room_color_visible || room_type_visible)
@@ -247,6 +289,201 @@ namespace RabiRibi_Editor
       Invalidate(new Rectangle(x, y, width, height));
     }
     
+    /// <summary>
+    /// Invalidate all cached room bitmaps, forcing a redraw of the entire
+    /// view.
+    /// </summary>
+    internal void InvalidateAllTiles()
+    {
+      foreach (var entry in bitmap_dict)
+      {
+        entry.Value.up_to_date = false;
+      }
+      Invalidate();
+    }
+    
+    void Draw_Room(int map_x, int map_y, Bitmap b)
+    {
+      int tile_start_x = map_x * 20;
+      int tile_start_y = LevelData.Map_Y_To_Tile_Y(map_y);
+      
+      using (var gfx = Graphics.FromImage(b))
+      {
+        gfx.Clear(Color.Black);
+        
+        int draw_x = 0;
+        for (int x = tile_start_x; x < tile_start_x + 20; x++, draw_x += 32)
+        {
+          if ((x < 0) || (x >= LevelData.map_tile_width))
+          {
+            continue;
+          }
+          int draw_y = 0;
+          for (int y = tile_start_y; y < LevelData.Map_Y_To_Tile_Y(map_y + 1); y++, draw_y += 32)
+          {
+            if ((y < 0) || (y >= LevelData.map_tile_height))
+            {
+              continue;
+            }
+            
+            // Draw the tile layers
+            foreach (int layer in layer_draw_order)
+            {
+              if (tile_layers_visible[layer])
+              {
+                int data = level.tile_data[layer][x, y];
+                if (data != 0)
+                {
+                  int tile_index = data;
+                  bool horiz_flip = false;
+                  bool vert_flip = false;
+                  if (tile_index < 0)
+                  {
+                    tile_index = -tile_index;
+                    horiz_flip = true;
+                  }
+                  if (tile_index >= 5000)
+                  {
+                    tile_index -= 5000;
+                    vert_flip = true;
+                  }
+                  int tile_source_x = (tile_index % 32) * 32;
+                  int tile_source_y = (tile_index / 32) * 32;
+                  temp_gfx.Clear(Color.Transparent);
+                  temp_gfx.DrawImage
+                    (tileset_graphics, new Rectangle(0, 0, 32, 32),
+                     tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
+                  if (horiz_flip)
+                  {
+                    if (vert_flip)
+                    {
+                      temp.RotateFlip(RotateFlipType.RotateNoneFlipXY);
+                    }
+                    else
+                    {
+                      temp.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    }
+                  }
+                  else if (vert_flip)
+                  {
+                    temp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                  }
+                  gfx.DrawImage(temp, draw_x, draw_y);
+                }
+              }
+            }
+            
+            if (collision_layer_visible)
+            {
+              int data = level.collision_data[x, y];
+              if (data != 0)
+              {
+                int tile_source_x = (data % 32) * 32;
+                int tile_source_y = (data / 32) * 32;
+                gfx.DrawImage
+                  (collision_graphics, new Rectangle(draw_x, draw_y, 32, 32),
+                   tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
+              }
+            }
+            
+            if (event_layer_visible)
+            {
+              int data = level.event_data[x, y];
+              if (data != 0)
+              {
+                gfx.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
+                               draw_x, draw_y);
+              }
+            }
+            
+            if (item_layer_visible)
+            {
+              int data = level.item_data[x, y];
+              if (data != 0)
+              {
+                gfx.DrawString(data.ToString(), DefaultFont,
+                               Brushes.Turquoise, draw_x, draw_y + 12);
+              }
+            }
+          }
+        }
+        
+        if (room_type_visible)
+        {
+          short data = level.room_type_data[map_x, map_y];
+          if (data > 0 && data < room_type_brushes.Length)
+          {
+            gfx.FillRectangle(room_type_brushes[data], 0, 0, b.Width, b.Height);
+          }
+        }
+        
+        if (room_color_visible)
+        {
+          short data = level.room_color_data[map_x, map_y];
+          if (room_color_brushes.ContainsKey(data))
+          {
+            gfx.FillRectangle(room_color_brushes[data], 0, 0, b.Width, b.Height);
+          }
+        }
+        
+        if (room_bg_visible)
+        {
+          short data = level.room_bg_data[map_x, map_y];
+          gfx.DrawString("Room BG: " + data.ToString(),
+                         DefaultFont, Brushes.Wheat, 0, 0);
+        }
+      }
+    }
+    
+    /// <summary>
+    /// Finds an appropriate bitmap object for the specified room, either by
+    /// reusing one from a cache entry we don't need to keep around or by
+    /// creating a new one.
+    /// </summary>
+    /// <param name="map_x">Map X</param>
+    /// <param name="map_y">Map Y</param>
+    /// <returns>Bitmap object</returns>
+    Bitmap Find_Cache_Bitmap(int map_x, int map_y)
+    {
+      int desired_height = (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y)) * 32;
+      
+      int view_min_x = (scroll_x / LevelData.screen_width_in_tiles) - map_bound_buffer;
+      int view_max_x = (int)((scroll_x + (Width / zoom / 32)) / LevelData.screen_width_in_tiles) + map_bound_buffer;
+      int view_min_y = LevelData.Tile_Y_To_Map_Y(scroll_y) - map_bound_buffer;
+      int view_max_y = LevelData.Tile_Y_To_Map_Y(scroll_y + (int)(Height / zoom / 32)) + map_bound_buffer;
+      
+      Map_Coordinate m;
+      m.x = 0;
+      m.y = 0;
+      bool found = false;
+      foreach (var entry in bitmap_dict)
+      {
+        m = entry.Key;
+        if ((m.x < view_min_x) || (m.x > view_max_x) ||
+            (m.y < view_min_y) || (m.y > view_max_y))
+        {
+          if (entry.Value.b.Height == desired_height)
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      
+      Bitmap b;
+      
+      if (found)
+      {
+        b = bitmap_dict[m].b;
+        bitmap_dict.Remove(m);
+      }
+      else
+      {
+        b = new Bitmap(LevelData.screen_width_in_tiles * 32, desired_height);
+      }
+      return b;
+    }
+    
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
     {
       e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
@@ -259,288 +496,70 @@ namespace RabiRibi_Editor
         return;
       }
       
-      // TODO this is kinda slow when the window is big - ways to optimize?
-      
-      // Determine the actual bounds to draw by checking the invalidated
-      // area of the control.
-      int tile_draw_min_x = scroll_x + (int)((e.ClipRectangle.Left / 32.0f) / zoom);
-      int tile_draw_max_x = scroll_x + (int)(((e.ClipRectangle.Right + 31) / 32.0f) / zoom);
-      
-      int tile_draw_min_y = scroll_y + (int)((e.ClipRectangle.Top / 32.0f) / zoom);
-      int tile_draw_max_y = scroll_y + (int)(((e.ClipRectangle.Bottom + 31) / 32.0f) / zoom);
-      
-      // Expand to the full size of a room to redraw room-size layers
-      if (room_bg_visible || room_type_visible || room_color_visible)
+      // Draw the rooms to the view.
+      int map_x = scroll_x / 20;
+      int draw_x = ((map_x * 20) - scroll_x) * 32;
+      while (draw_x < (Width / zoom))
       {
-        tile_draw_min_x -= tile_draw_min_x % LevelData.screen_width_in_tiles;
-        tile_draw_max_x = tile_draw_max_x + (LevelData.screen_width_in_tiles - 1);
-        tile_draw_max_x -= tile_draw_max_x % LevelData.screen_width_in_tiles;
-        
-        tile_draw_min_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(tile_draw_min_y));
-        tile_draw_max_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(tile_draw_max_y) + 1);
-      }
-      
-      int effective_width = (int)(Width / zoom);
-      int effective_height = (int)(Height / zoom);
-      
-      int tile_draw_x = scroll_x;
-      for (int draw_x = 0; draw_x < effective_width; draw_x += 32)
-      {
-        if ((tile_draw_x >= tile_draw_min_x) &&
-            (tile_draw_x <= tile_draw_max_x))
+        int map_y = LevelData.Tile_Y_To_Map_Y(scroll_y);
+        int draw_y = (LevelData.Map_Y_To_Tile_Y(map_y) - scroll_y) * 32;
+        while (draw_y < (Height / zoom))
         {
-          int tile_draw_y = scroll_y;
-          for (int draw_y = 0; draw_y < effective_height; draw_y += 32)
+          Map_Coordinate m;
+          Bitmap_Cache c;
+          m.x = map_x;
+          m.y = map_y;
+          if (bitmap_dict.ContainsKey(m))
           {
-            if ((tile_draw_y >= tile_draw_min_y) &&
-                (tile_draw_y <= tile_draw_max_y))
-            {
-              // Draw the tile layers
-              foreach (int layer in layer_draw_order)
-              {
-                if (tile_layers_visible[layer])
-                {
-                  int data = level.tile_data[layer][tile_draw_x, tile_draw_y];
-                  if (data != 0)
-                  {
-                    int tile_index = data;
-                    bool horiz_flip = false;
-                    bool vert_flip = false;
-                    if (tile_index < 0)
-                    {
-                      tile_index = -tile_index;
-                      horiz_flip = true;
-                    }
-                    if (tile_index >= 5000)
-                    {
-                      tile_index -= 5000;
-                      vert_flip = true;
-                    }
-                    int tile_source_x = (tile_index % 32) * 32;
-                    int tile_source_y = (tile_index / 32) * 32;
-                    temp_gfx.Clear(Color.Transparent);
-                    temp_gfx.DrawImage
-                      (tileset_graphics, new Rectangle(0, 0, 32, 32),
-                       tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
-                    if (horiz_flip)
-                    {
-                      if (vert_flip)
-                      {
-                        temp.RotateFlip(RotateFlipType.RotateNoneFlipXY);
-                      }
-                      else
-                      {
-                        temp.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                      }
-                    }
-                    else if (vert_flip)
-                    {
-                      temp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                    }
-                    e.Graphics.DrawImage(temp, draw_x, draw_y);
-                  }
-                }
-              }
-              
-              if (collision_layer_visible)
-              {
-                int data = level.collision_data[tile_draw_x, tile_draw_y];
-                if (data != 0)
-                {
-                  int tile_source_x = (data % 32) * 32;
-                  int tile_source_y = (data / 32) * 32;
-                  e.Graphics.DrawImage
-                    (collision_graphics, new Rectangle(draw_x, draw_y, 32, 32),
-                     tile_source_x, tile_source_y, 32, 32, GraphicsUnit.Pixel);
-                }
-              }
-              
-              if (event_layer_visible)
-              {
-                int data = level.event_data[tile_draw_x, tile_draw_y];
-                if (data != 0)
-                {
-                  e.Graphics.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
-                                        draw_x, draw_y);
-                }
-              }
-              
-              if (item_layer_visible)
-              {
-                int data = level.item_data[tile_draw_x, tile_draw_y];
-                if (data != 0)
-                {
-                  e.Graphics.DrawString(data.ToString(), DefaultFont,
-                                        Brushes.Turquoise, draw_x, draw_y + 12);
-                }
-              }
-            }
-            
-            tile_draw_y++;
-            if (tile_draw_y >= LevelData.map_tile_height)
-            {
-              break;
-            }
+            // We already have a bitmap object cached for this room.
+            c = bitmap_dict[m];
+          }
+          else
+          {
+            // We need to create a bitmap object cache entry for this room.
+            Bitmap b;
+            b = Find_Cache_Bitmap(map_x, map_y);
+            c = new TileView.Bitmap_Cache();
+            c.b = b;
+            c.up_to_date = false;
+            bitmap_dict[m] = c;
+          }
+          
+          // Update the room image, if needed.
+          if (!c.up_to_date)
+          {
+            Draw_Room(map_x, map_y, c.b);
+            c.up_to_date = true;
+          }
+          
+          e.Graphics.DrawImage(c.b, draw_x, draw_y);
+          draw_y += (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y)) * 32;
+          map_y++;
+          if (LevelData.Map_Y_To_Tile_Y(map_y) >= LevelData.map_tile_height)
+          {
+            break;
           }
         }
-        tile_draw_x++;
-        if (tile_draw_x >= LevelData.map_tile_width)
+        map_x++;
+        if (map_x >= level.room_bg_data.GetLength(0))
         {
           break;
         }
-      }
-      
-      // TODO - room type and room color draw routines don't fill in the 12th row
-      // Every 4th row of map data has an extra row.
-      if (room_type_visible)
-      {
-        // This calculates the upper-left corner of the room containing the
-        // upper-left tile, then steps across in room-sizes increments
-        int tile_x = scroll_x - (scroll_x % LevelData.screen_width_in_tiles);
-        int draw_x = (scroll_x % LevelData.screen_width_in_tiles) * -32;
-        
-        int end_y = effective_height;
-        int tile_final_y = scroll_y + (effective_height / 32);
-        if (tile_final_y > (LevelData.map_tile_height - 1))
-        {
-          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
-          end_y -= (end_y % 32);
-        }
-        
-        while (draw_x < effective_width)
-        {
-          int tile_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(scroll_y));
-          int draw_y = (tile_y - scroll_y) * 32;
-          while (draw_y < effective_height)
-          {
-            int map_x = tile_x / LevelData.screen_width_in_tiles;
-            int map_y = LevelData.Tile_Y_To_Map_Y(tile_y);
-            
-            if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                map_y >= 0 && map_y < LevelData.map_screen_height)
-            {
-              short data = level.room_type_data[map_x, map_y];
-              if (data > 0 && data < room_type_brushes.Length)
-              {
-                int draw_height = 32 * (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y));
-                if (draw_y + draw_height > end_y)
-                {
-                  draw_height = end_y - draw_y;
-                }
-                e.Graphics.FillRectangle(room_type_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, draw_height);
-              }
-            }
-            
-            // Advance tile Y until we reach the next map Y
-            while (LevelData.Tile_Y_To_Map_Y(tile_y) == map_y)
-            {
-              tile_y++;
-              draw_y += 32;
-            }
-          }
-          draw_x += 32 * LevelData.screen_width_in_tiles;
-          tile_x += LevelData.screen_width_in_tiles;
-        }
-      }
-      
-      if (room_color_visible)
-      {
-        // This calculates the upper-left corner of the room containing the
-        // upper-left tile, then steps across in room-sizes increments
-        int tile_x = scroll_x - (scroll_x % LevelData.screen_width_in_tiles);
-        int draw_x = (scroll_x % LevelData.screen_width_in_tiles) * -32;
-        
-        int end_y = effective_height;
-        int tile_final_y = scroll_y + (effective_height / 32);
-        if (tile_final_y > (LevelData.map_tile_height - 1))
-        {
-          end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
-          end_y -= (end_y % 32);
-        }
-        
-        while (draw_x < effective_width)
-        {
-          int tile_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(scroll_y));
-          int draw_y = (tile_y - scroll_y) * 32;
-          while (draw_y < effective_height)
-          {
-            int map_x = tile_x / LevelData.screen_width_in_tiles;
-            int map_y = LevelData.Tile_Y_To_Map_Y(tile_y);
-            
-            if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                map_y >= 0 && map_y < LevelData.map_screen_height)
-            {
-              short data = level.room_color_data[map_x, map_y];
-              if (room_color_brushes.ContainsKey(data))
-              {
-                int draw_height = 32 * (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y));
-                if (draw_y + draw_height > end_y)
-                {
-                  draw_height = end_y - draw_y;
-                }
-                e.Graphics.FillRectangle(room_color_brushes[data], draw_x, draw_y, 32 * LevelData.screen_width_in_tiles, draw_height);
-              }
-            }
-            
-            // Advance tile Y until we reach the next map Y
-            while (LevelData.Tile_Y_To_Map_Y(tile_y) == map_y)
-            {
-              tile_y++;
-              draw_y += 32;
-            }
-          }
-          draw_x += 32 * LevelData.screen_width_in_tiles;
-          tile_x += LevelData.screen_width_in_tiles;
-        }
-      }
-      
-      if (room_bg_visible)
-      {
-        // TODO a better way to represent this?
-        // Right now it just prints a string with the BG index
-        int tile_x = scroll_x - (scroll_x % LevelData.screen_width_in_tiles);
-        int draw_x = (scroll_x % LevelData.screen_width_in_tiles) * -32;
-        while (draw_x < effective_width)
-        {
-          int tile_y = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(scroll_y));
-          int draw_y = (tile_y - scroll_y) * 32;
-          while (draw_y < effective_height)
-          {
-            int map_x = tile_x / LevelData.screen_width_in_tiles;
-            int map_y = LevelData.Tile_Y_To_Map_Y(tile_y);
-            
-            if (map_x >= 0 && map_x < LevelData.map_screen_width &&
-                map_y >= 0 && map_y < LevelData.map_screen_height)
-            {
-              short data = level.room_bg_data[map_x, map_y];
-              e.Graphics.DrawString("Room BG: " + data.ToString(),
-                                    DefaultFont, Brushes.Wheat, draw_x, draw_y);
-            }
-            
-            // Advance tile Y until we reach the next map Y
-            while (LevelData.Tile_Y_To_Map_Y(tile_y) == map_y)
-            {
-              tile_y++;
-              draw_y += 32;
-            }
-          }
-          draw_x += 32 * LevelData.screen_width_in_tiles;
-          tile_x += LevelData.screen_width_in_tiles;
-        }
+        draw_x += 32 * 20;
       }
       
       if (show_tile_grid)
       {
-        int end_x = effective_width;
-        int tile_final_x = scroll_x + (effective_width / 32);
+        int end_x = (int)(Width / zoom);
+        int tile_final_x = scroll_x + (end_x / 32);
         if (tile_final_x > (LevelData.map_tile_width - 1))
         {
           end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
           end_x -= (end_x % 32);
         }
         
-        int end_y = effective_height;
-        int tile_final_y = scroll_y + (effective_height / 32);
+        int end_y = (int)(Height / zoom);
+        int tile_final_y = scroll_y + (end_y / 32);
         if (tile_final_y > (LevelData.map_tile_height - 1))
         {
           end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
@@ -562,16 +581,16 @@ namespace RabiRibi_Editor
       // between multiple screens that are conjoined.
       if (show_screen_grid)
       {
-        int end_x = effective_width;
-        int tile_final_x = scroll_x + (effective_width / 32);
+        int end_x = (int)(Width / zoom);
+        int tile_final_x = scroll_x + (end_x / 32);
         if (tile_final_x > (LevelData.map_tile_width - 1))
         {
           end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
           end_x -= (end_x % 32);
         }
         
-        int end_y = effective_height;
-        int tile_final_y = scroll_y + (effective_height / 32);
+        int end_y = (int)(Height / zoom);
+        int tile_final_y = scroll_y + (end_y / 32);
         if (tile_final_y > (LevelData.map_tile_height - 1))
         {
           end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
