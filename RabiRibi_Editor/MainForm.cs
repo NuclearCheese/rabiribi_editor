@@ -312,7 +312,9 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click);
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size);
+        
+        infoView1.level = level;
         
         // Load tile graphics
         Load_Tile_Graphics("TILE1_A.png");
@@ -340,6 +342,7 @@ namespace RabiRibi_Editor
             }
           }
           c.Left = 10;
+          c.Width = 90;
           c.Checked = true;
           c.CheckedChanged += new EventHandler(LayerVisibleChanged);
           layer_checkboxes[i] = c;
@@ -354,51 +357,51 @@ namespace RabiRibi_Editor
         event_layer_checkbox = new CheckBox();
         event_layer_checkbox.Parent = tabPage1;
         event_layer_checkbox.Text = "Event IDs";
-        event_layer_checkbox.Top = 190;
-        event_layer_checkbox.Left = 10;
+        event_layer_checkbox.Top = 10;
+        event_layer_checkbox.Left = 110;
         event_layer_checkbox.Checked = false;
         event_layer_checkbox.CheckedChanged += new EventHandler(event_layer_checkbox_CheckedChanged);
         item_layer_checkbox = new CheckBox();
         item_layer_checkbox.Parent = tabPage1;
         item_layer_checkbox.Text = "Item IDs";
-        item_layer_checkbox.Top = 210;
-        item_layer_checkbox.Left = 10;
+        item_layer_checkbox.Top = 30;
+        item_layer_checkbox.Left = 110;
         item_layer_checkbox.Checked = false;
         item_layer_checkbox.CheckedChanged += new EventHandler(item_layer_checkbox_CheckedChanged);
         
         room_type_checkbox = new CheckBox();
         room_type_checkbox.Parent = tabPage1;
         room_type_checkbox.Text = "Room types";
-        room_type_checkbox.Top = 250;
-        room_type_checkbox.Left = 10;
+        room_type_checkbox.Top = 70;
+        room_type_checkbox.Left = 110;
         room_type_checkbox.Checked = false;
         room_type_checkbox.CheckedChanged += new EventHandler(room_type_checkbox_CheckedChanged);
         room_color_checkbox = new CheckBox();
         room_color_checkbox.Parent = tabPage1;
         room_color_checkbox.Text = "Room colors";
-        room_color_checkbox.Top = 270;
-        room_color_checkbox.Left = 10;
+        room_color_checkbox.Top = 90;
+        room_color_checkbox.Left = 110;
         room_color_checkbox.Checked = false;
         room_color_checkbox.CheckedChanged += new EventHandler(room_color_checkbox_CheckedChanged);
         room_bg_checkbox = new CheckBox();
         room_bg_checkbox.Parent = tabPage1;
         room_bg_checkbox.Text = "Room BGs";
-        room_bg_checkbox.Top = 290;
-        room_bg_checkbox.Left = 10;
+        room_bg_checkbox.Top = 110;
+        room_bg_checkbox.Left = 110;
         room_bg_checkbox.Checked = false;
         room_bg_checkbox.CheckedChanged += new EventHandler(room_bg_checkbox_CheckedChanged);
         
         tile_grid_checkbox = new CheckBox();
         tile_grid_checkbox.Parent = tabPage1;
         tile_grid_checkbox.Text = "Tile Grid";
-        tile_grid_checkbox.Top = 330;
+        tile_grid_checkbox.Top = 190;
         tile_grid_checkbox.Left = 10;
         tile_grid_checkbox.Checked = false;
         tile_grid_checkbox.CheckedChanged += new EventHandler(tile_grid_checkbox_CheckedChanged);
         screen_grid_checkbox = new CheckBox();
         screen_grid_checkbox.Parent = tabPage1;
         screen_grid_checkbox.Text = "Screen Grid";
-        screen_grid_checkbox.Top = 350;
+        screen_grid_checkbox.Top = 210;
         screen_grid_checkbox.Left = 10;
         screen_grid_checkbox.Checked = false;
         screen_grid_checkbox.CheckedChanged += new EventHandler(screen_grid_checkbox_CheckedChanged);
@@ -633,6 +636,10 @@ namespace RabiRibi_Editor
         warp_local_id_selection.SelectedIndex = 0;
         event_category_selection.SelectedIndex = 0;
         environment_event_selection.SelectedIndex = 0;
+        
+        Update_Scrollbar_Size();
+        Application.Idle += Idle_Handler;
+        Application.ApplicationExit += Application_Exit_Handler;
       }
       catch (Exception E)
       {
@@ -641,11 +648,30 @@ namespace RabiRibi_Editor
         Close();
       }
     }
+    
+    void Idle_Handler(Object sender, EventArgs e)
+    {
+      if (tileView1.Idle())
+      {
+        // The tile viewer's Idle() returns true if it has more to draw.
+        // In this case, we want to raise the idle event again, to ensure we
+        // continue to cache bitmaps if nothing else is happening.
+        // We call DoEvents first to prioritize any other events in the queue.
+        Application.DoEvents();
+        Application.RaiseIdle(e);
+      }
+    }
+    
+    void Application_Exit_Handler(Object sendor, EventArgs e)
+    {
+      Application.Idle -= Idle_Handler;
+      Application.ApplicationExit -= Application_Exit_Handler;
+    }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.room_bg_visible = room_bg_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void tool_selection_changed(object sendor, EventArgs e)
@@ -662,7 +688,7 @@ namespace RabiRibi_Editor
         room_type_checkbox.Checked = false;
       }
       tileView1.room_color_visible = room_color_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void room_type_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -674,7 +700,7 @@ namespace RabiRibi_Editor
         room_color_checkbox.Checked = false;
       }
       tileView1.room_type_visible = room_type_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void Update_Event_Tool_Visibilities()
@@ -685,7 +711,7 @@ namespace RabiRibi_Editor
           tile_event_selection.Visible = entity_event_selection.Visible =
           warp_destination_selection.Visible = warp_map_selection.Visible =
           warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
-          warp_local_id_selection.Visible = misc_event_selection.Visible = 
+          warp_local_id_selection.Visible = misc_event_selection.Visible =
           environment_event_selection.Visible = warp_graphic_checkbox.Visible = false;
       }
       else
@@ -747,13 +773,13 @@ namespace RabiRibi_Editor
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.item_layer_visible = item_layer_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void event_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.event_layer_visible = event_layer_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void screen_grid_checkbox_CheckedChanged(object sender, EventArgs e)
@@ -771,7 +797,7 @@ namespace RabiRibi_Editor
     void collision_checkbox_CheckedChanged(object sender, EventArgs e)
     {
       tileView1.collision_layer_visible = collision_checkbox.Checked;
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
 
     void LayerVisibleChanged(object sender, EventArgs e)
@@ -780,7 +806,7 @@ namespace RabiRibi_Editor
       {
         tileView1.tile_layers_visible[i] = layer_checkboxes[i].Checked;
       }
-      tileView1.Invalidate();
+      tileView1.InvalidateAllTiles();
     }
     
     void OpenToolStripMenuItemClick(object sender, EventArgs e)
@@ -842,7 +868,7 @@ namespace RabiRibi_Editor
               }
             }
             
-            tileView1.Invalidate();
+            tileView1.InvalidateAllTiles();
           }
           catch (Exception E)
           {
@@ -855,15 +881,15 @@ namespace RabiRibi_Editor
       }
     }
     
-    void HScrollBar1Scroll(object sender, ScrollEventArgs e)
+    void HScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_x = e.NewValue;
+      tileView1.scroll_x = hScrollBar1.Value;
       tileView1.Invalidate();
     }
     
-    void VScrollBar1Scroll(object sender, ScrollEventArgs e)
+    void VScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_y = e.NewValue;
+      tileView1.scroll_y = vScrollBar1.Value;
       tileView1.Invalidate();
     }
     
@@ -906,7 +932,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = actual_tile;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
       }
       
@@ -922,7 +948,7 @@ namespace RabiRibi_Editor
             cmd.data[j,k] = selected_collision;
           }
         }
-        command_stack.RunCommnd(cmd);
+        command_stack.RunCommand(cmd);
       }
       
       if (event_radio.Checked)
@@ -945,7 +971,7 @@ namespace RabiRibi_Editor
                     cmd.data[j,k] = data;
                   }
                 }
-                command_stack.RunCommnd(cmd);
+                command_stack.RunCommand(cmd);
               }
               else
               {
@@ -969,7 +995,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -988,7 +1014,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -1007,7 +1033,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
         }
@@ -1028,7 +1054,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = data;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1058,7 +1084,7 @@ namespace RabiRibi_Editor
             cmd.data[j,k] = (short)room_type_selection.SelectedIndex;
           }
         }
-        command_stack.RunCommnd(cmd);
+        command_stack.RunCommand(cmd);
       }
       
       if (room_color_radio.Checked)
@@ -1082,7 +1108,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = selected_index;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1107,7 +1133,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = selected_index;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1172,7 +1198,7 @@ namespace RabiRibi_Editor
               {
                 cmd.data[0, i] = entity_values[i];
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -1254,7 +1280,7 @@ namespace RabiRibi_Editor
               CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
                 (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y, tile_y);
               cmd.data[0,0] = data;
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
         }
@@ -1361,6 +1387,13 @@ namespace RabiRibi_Editor
         int map_y = LevelData.Tile_Y_To_Map_Y(tile_y);
         bg_ID_entry.Text = level.room_bg_data[map_x, map_y].ToString();
       }
+    }
+    
+    void Process_Hover(int tile_x, int tile_y)
+    {
+      infoView1.x = tile_x;
+      infoView1.y = tile_y;
+      infoView1.Invalidate();
     }
     
     /// <summary>
@@ -1524,7 +1557,7 @@ namespace RabiRibi_Editor
         {
           Load_Tile_Graphics(od.FileName);
           tile_picturebox.Invalidate();
-          tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
           Settings1.Default.lastTilePath = Path.GetDirectoryName(od.FileName);
         }
       }
@@ -1553,7 +1586,7 @@ namespace RabiRibi_Editor
         {
           Load_Collision_Graphics(od.FileName);
           collision_tiles.Invalidate();
-          tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
           
           Settings1.Default.lastCollisionPath = Path.GetDirectoryName(od.FileName);
         }
@@ -1669,6 +1702,69 @@ namespace RabiRibi_Editor
         
         entity_laser_delay_selection.Visible =
           ((Event_Selection_Item)entity_event_selection.SelectedItem).laser_delay;
+      }
+    }
+    
+    void ZoomLevelTextChanged(object sender, EventArgs e)
+    {
+      float new_zoom;
+      
+      const float min_zoom = 0.5f;
+      const float max_zoom = 4.0f;
+      
+      if (float.TryParse(zoom_level_textbox.Text, out new_zoom))
+      {
+        // Don't zoom too far out, as it'll make redraws take way too long.
+        // Also set a 'reasonable' upper bound on the zoom.
+        if ((new_zoom >= min_zoom) && (new_zoom <= max_zoom))
+        {
+          tileView1.zoom = new_zoom;
+          Update_Scrollbar_Size();
+          //tileView1.Invalidate();
+          tileView1.InvalidateAllTiles();
+        }
+        else
+        {
+          MessageBox.Show("Zoom must be between " + min_zoom.ToString() +
+                          " and " + max_zoom.ToString());
+        }
+      }
+      else
+      {
+        MessageBox.Show("Could not parse the zoom value!");
+      }
+    }
+    
+    void Zoom_level_textboxKeyDown(object sender, KeyEventArgs e)
+    {
+      // The only purpose of this handler is to catch the Enter key and update
+      // the zoom.
+      if (e.KeyCode == Keys.Enter)
+      {
+        ZoomLevelTextChanged(null, null);
+        
+        // Disable passing the event to the underlying control.  This is done
+        // just to suppress the 'ding' noise it would otherwise make.
+        e.Handled = true;
+        e.SuppressKeyPress = true;
+      }
+    }
+    
+    void Update_Scrollbar_Size()
+    {
+      // Standard behavior for the scrollbars in Winforms is that they will
+      // normally only ever scroll up until (Maximum - LargeChange + 1).
+      // This logic updates the LargeChange based on the size of the view, and
+      // pushes back from the right/bottom edge if needed.
+      hScrollBar1.LargeChange = (int)(tileView1.Width / tileView1.zoom / 32.0f);
+      if (hScrollBar1.Value > ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1))
+      {
+        hScrollBar1.Value = ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1);
+      }
+      vScrollBar1.LargeChange = (int)(tileView1.Height / tileView1.zoom / 32.0f);
+      if (vScrollBar1.Value > ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1))
+      {
+        vScrollBar1.Value = ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1);
       }
     }
   }

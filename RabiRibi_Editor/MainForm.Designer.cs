@@ -54,6 +54,10 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.infoView1 = new RabiRibi_Editor.InfoView();
+      this.set_zoom_button = new System.Windows.Forms.Button();
+      this.zoom_level_textbox = new System.Windows.Forms.TextBox();
+      this.zoom_label = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.environment_event_selection = new System.Windows.Forms.ComboBox();
       this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
@@ -87,9 +91,11 @@ namespace RabiRibi_Editor
       this.tile_picturebox_panel = new System.Windows.Forms.Panel();
       this.tile_picturebox = new System.Windows.Forms.PictureBox();
       this.tools_panel = new System.Windows.Forms.Panel();
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.metatile_layer_label = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
+      this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).BeginInit();
       this.collision_tile_panel.SuspendLayout();
@@ -97,6 +103,10 @@ namespace RabiRibi_Editor
       ((System.ComponentModel.ISupportInitialize)(this.tile_preview)).BeginInit();
       this.tile_picturebox_panel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.tile_picturebox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -213,9 +223,9 @@ namespace RabiRibi_Editor
       this.tileView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                   | System.Windows.Forms.AnchorStyles.Left) 
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tileView1.Location = new System.Drawing.Point(13, 28);
+      this.tileView1.Location = new System.Drawing.Point(0, -1);
       this.tileView1.Name = "tileView1";
-      this.tileView1.Size = new System.Drawing.Size(659, 517);
+      this.tileView1.Size = new System.Drawing.Size(681, 527);
       this.tileView1.TabIndex = 2;
       this.tileView1.Text = "tileView1";
       // 
@@ -223,45 +233,92 @@ namespace RabiRibi_Editor
       // 
       this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.hScrollBar1.Location = new System.Drawing.Point(13, 548);
+      this.hScrollBar1.Location = new System.Drawing.Point(0, 526);
       this.hScrollBar1.Maximum = 499;
       this.hScrollBar1.Name = "hScrollBar1";
-      this.hScrollBar1.Size = new System.Drawing.Size(659, 16);
+      this.hScrollBar1.Size = new System.Drawing.Size(681, 16);
       this.hScrollBar1.TabIndex = 3;
-      this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScrollBar1Scroll);
+      this.hScrollBar1.ValueChanged += new System.EventHandler(this.HScrollBar1Scroll);
       // 
       // vScrollBar1
       // 
       this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.vScrollBar1.Location = new System.Drawing.Point(675, 28);
+      this.vScrollBar1.Location = new System.Drawing.Point(681, 0);
       this.vScrollBar1.Maximum = 199;
       this.vScrollBar1.Name = "vScrollBar1";
-      this.vScrollBar1.Size = new System.Drawing.Size(16, 512);
+      this.vScrollBar1.Size = new System.Drawing.Size(16, 526);
       this.vScrollBar1.TabIndex = 4;
-      this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.VScrollBar1Scroll);
+      this.vScrollBar1.ValueChanged += new System.EventHandler(this.VScrollBar1Scroll);
       // 
       // tabControl1
       // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
-      this.tabControl1.Location = new System.Drawing.Point(695, 28);
+      this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(235, 536);
+      this.tabControl1.Size = new System.Drawing.Size(239, 542);
       this.tabControl1.TabIndex = 5;
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.infoView1);
+      this.tabPage1.Controls.Add(this.set_zoom_button);
+      this.tabPage1.Controls.Add(this.zoom_level_textbox);
+      this.tabPage1.Controls.Add(this.zoom_label);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(227, 510);
+      this.tabPage1.Size = new System.Drawing.Size(231, 516);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // infoView1
+      // 
+      this.infoView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.infoView1.Location = new System.Drawing.Point(6, 261);
+      this.infoView1.Name = "infoView1";
+      this.infoView1.Size = new System.Drawing.Size(219, 215);
+      this.infoView1.TabIndex = 3;
+      this.infoView1.Text = "infoView1";
+      // 
+      // set_zoom_button
+      // 
+      this.set_zoom_button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.set_zoom_button.Location = new System.Drawing.Point(153, 480);
+      this.set_zoom_button.Name = "set_zoom_button";
+      this.set_zoom_button.Size = new System.Drawing.Size(75, 23);
+      this.set_zoom_button.TabIndex = 2;
+      this.set_zoom_button.Text = "Set Zoom";
+      this.set_zoom_button.UseVisualStyleBackColor = true;
+      this.set_zoom_button.Click += new System.EventHandler(this.ZoomLevelTextChanged);
+      // 
+      // zoom_level_textbox
+      // 
+      this.zoom_level_textbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.zoom_level_textbox.Location = new System.Drawing.Point(59, 482);
+      this.zoom_level_textbox.Name = "zoom_level_textbox";
+      this.zoom_level_textbox.Size = new System.Drawing.Size(88, 20);
+      this.zoom_level_textbox.TabIndex = 1;
+      this.zoom_level_textbox.Text = "1.0";
+      this.zoom_level_textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Zoom_level_textboxKeyDown);
+      // 
+      // zoom_label
+      // 
+      this.zoom_label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.zoom_label.Location = new System.Drawing.Point(16, 485);
+      this.zoom_label.Name = "zoom_label";
+      this.zoom_label.Size = new System.Drawing.Size(37, 23);
+      this.zoom_label.TabIndex = 0;
+      this.zoom_label.Text = "Zoom:";
       // 
       // tabPage2
       // 
@@ -295,17 +352,18 @@ namespace RabiRibi_Editor
       this.tabPage2.Controls.Add(this.hflip_checkbox);
       this.tabPage2.Controls.Add(this.tile_picturebox_panel);
       this.tabPage2.Controls.Add(this.tools_panel);
-      this.tabPage2.Controls.Add(this.metatile_layer_label);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(227, 510);
+      this.tabPage2.Size = new System.Drawing.Size(231, 516);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
       // environment_event_selection
       // 
+      this.environment_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.environment_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.environment_event_selection.DropDownWidth = 300;
       this.environment_event_selection.FormattingEnabled = true;
@@ -317,6 +375,8 @@ namespace RabiRibi_Editor
       // 
       // entity_laser_delay_selection
       // 
+      this.entity_laser_delay_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.entity_laser_delay_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.entity_laser_delay_selection.FormattingEnabled = true;
       this.entity_laser_delay_selection.Location = new System.Drawing.Point(6, 390);
@@ -327,6 +387,8 @@ namespace RabiRibi_Editor
       // 
       // entity_dir_selection
       // 
+      this.entity_dir_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.entity_dir_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.entity_dir_selection.FormattingEnabled = true;
       this.entity_dir_selection.Location = new System.Drawing.Point(6, 360);
@@ -337,6 +399,8 @@ namespace RabiRibi_Editor
       // 
       // entity_type_selection
       // 
+      this.entity_type_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.entity_type_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.entity_type_selection.FormattingEnabled = true;
       this.entity_type_selection.Location = new System.Drawing.Point(6, 330);
@@ -359,6 +423,8 @@ namespace RabiRibi_Editor
       // 
       // warp_local_id_selection
       // 
+      this.warp_local_id_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.warp_local_id_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.warp_local_id_selection.FormattingEnabled = true;
       this.warp_local_id_selection.Location = new System.Drawing.Point(6, 420);
@@ -393,6 +459,8 @@ namespace RabiRibi_Editor
       // 
       // warp_map_selection
       // 
+      this.warp_map_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.warp_map_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.warp_map_selection.FormattingEnabled = true;
       this.warp_map_selection.Location = new System.Drawing.Point(6, 330);
@@ -403,6 +471,8 @@ namespace RabiRibi_Editor
       // 
       // event_category_selection
       // 
+      this.event_category_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.event_category_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.event_category_selection.FormattingEnabled = true;
       this.event_category_selection.Items.AddRange(new object[] {
@@ -422,6 +492,8 @@ namespace RabiRibi_Editor
       // 
       // warp_destination_selection
       // 
+      this.warp_destination_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.warp_destination_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.warp_destination_selection.FormattingEnabled = true;
       this.warp_destination_selection.Location = new System.Drawing.Point(6, 360);
@@ -432,6 +504,8 @@ namespace RabiRibi_Editor
       // 
       // metatile_layer_selection
       // 
+      this.metatile_layer_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.metatile_layer_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.metatile_layer_selection.FormattingEnabled = true;
       this.metatile_layer_selection.Items.AddRange(new object[] {
@@ -450,6 +524,8 @@ namespace RabiRibi_Editor
       // 
       // metatile_selection
       // 
+      this.metatile_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.metatile_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.metatile_selection.FormattingEnabled = true;
       this.metatile_selection.Items.AddRange(new object[] {
@@ -462,6 +538,8 @@ namespace RabiRibi_Editor
       // 
       // bg_ID_entry
       // 
+      this.bg_ID_entry.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.bg_ID_entry.Location = new System.Drawing.Point(118, 268);
       this.bg_ID_entry.Name = "bg_ID_entry";
       this.bg_ID_entry.Size = new System.Drawing.Size(100, 20);
@@ -470,6 +548,8 @@ namespace RabiRibi_Editor
       // 
       // misc_event_selection
       // 
+      this.misc_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.misc_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.misc_event_selection.DropDownWidth = 300;
       this.misc_event_selection.FormattingEnabled = true;
@@ -481,6 +561,8 @@ namespace RabiRibi_Editor
       // 
       // entity_event_selection
       // 
+      this.entity_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.entity_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.entity_event_selection.DropDownWidth = 375;
       this.entity_event_selection.FormattingEnabled = true;
@@ -493,6 +575,8 @@ namespace RabiRibi_Editor
       // 
       // tile_event_selection
       // 
+      this.tile_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tile_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.tile_event_selection.DropDownWidth = 300;
       this.tile_event_selection.FormattingEnabled = true;
@@ -504,6 +588,8 @@ namespace RabiRibi_Editor
       // 
       // music_event_selection
       // 
+      this.music_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.music_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.music_event_selection.DropDownWidth = 250;
       this.music_event_selection.FormattingEnabled = true;
@@ -515,6 +601,8 @@ namespace RabiRibi_Editor
       // 
       // item_selection
       // 
+      this.item_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.item_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.item_selection.DropDownWidth = 325;
       this.item_selection.FormattingEnabled = true;
@@ -614,6 +702,8 @@ namespace RabiRibi_Editor
       // 
       // room_color_selection
       // 
+      this.room_color_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.room_color_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.room_color_selection.FormattingEnabled = true;
       this.room_color_selection.Items.AddRange(new object[] {
@@ -666,6 +756,8 @@ namespace RabiRibi_Editor
       // 
       // room_type_selection
       // 
+      this.room_type_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.room_type_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.room_type_selection.FormattingEnabled = true;
       this.room_type_selection.Items.AddRange(new object[] {
@@ -683,6 +775,8 @@ namespace RabiRibi_Editor
       // 
       // item_ID_entry
       // 
+      this.item_ID_entry.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.item_ID_entry.Location = new System.Drawing.Point(118, 268);
       this.item_ID_entry.Name = "item_ID_entry";
       this.item_ID_entry.Size = new System.Drawing.Size(100, 20);
@@ -691,6 +785,8 @@ namespace RabiRibi_Editor
       // 
       // event_ID_entry
       // 
+      this.event_ID_entry.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.event_ID_entry.Location = new System.Drawing.Point(118, 300);
       this.event_ID_entry.Name = "event_ID_entry";
       this.event_ID_entry.Size = new System.Drawing.Size(100, 20);
@@ -708,14 +804,15 @@ namespace RabiRibi_Editor
       // 
       // collision_tile_panel
       // 
-      this.collision_tile_panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                  | System.Windows.Forms.AnchorStyles.Left)));
+      this.collision_tile_panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.collision_tile_panel.AutoScroll = true;
       this.collision_tile_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.collision_tile_panel.Controls.Add(this.collision_tiles);
       this.collision_tile_panel.Location = new System.Drawing.Point(6, 304);
       this.collision_tile_panel.Name = "collision_tile_panel";
-      this.collision_tile_panel.Size = new System.Drawing.Size(218, 203);
+      this.collision_tile_panel.Size = new System.Drawing.Size(218, 209);
       this.collision_tile_panel.TabIndex = 5;
       this.collision_tile_panel.Visible = false;
       // 
@@ -762,14 +859,15 @@ namespace RabiRibi_Editor
       // 
       // tile_picturebox_panel
       // 
-      this.tile_picturebox_panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                  | System.Windows.Forms.AnchorStyles.Left)));
+      this.tile_picturebox_panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tile_picturebox_panel.AutoScroll = true;
       this.tile_picturebox_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.tile_picturebox_panel.Controls.Add(this.tile_picturebox);
       this.tile_picturebox_panel.Location = new System.Drawing.Point(7, 304);
       this.tile_picturebox_panel.Name = "tile_picturebox_panel";
-      this.tile_picturebox_panel.Size = new System.Drawing.Size(214, 200);
+      this.tile_picturebox_panel.Size = new System.Drawing.Size(214, 206);
       this.tile_picturebox_panel.TabIndex = 1;
       this.tile_picturebox_panel.Visible = false;
       // 
@@ -791,24 +889,43 @@ namespace RabiRibi_Editor
       this.tools_panel.Size = new System.Drawing.Size(214, 255);
       this.tools_panel.TabIndex = 0;
       // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                  | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+      this.splitContainer1.Location = new System.Drawing.Point(0, 28);
+      this.splitContainer1.Name = "splitContainer1";
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.vScrollBar1);
+      this.splitContainer1.Panel1.Controls.Add(this.tileView1);
+      this.splitContainer1.Panel1.Controls.Add(this.hScrollBar1);
+      this.splitContainer1.Panel1MinSize = 100;
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+      this.splitContainer1.Panel2MinSize = 235;
+      this.splitContainer1.Size = new System.Drawing.Size(942, 542);
+      this.splitContainer1.SplitterDistance = 697;
+      this.splitContainer1.TabIndex = 6;
+      // 
       // metatile_layer_label
       // 
-      this.metatile_layer_label.Location = new System.Drawing.Point(6, 290);
+      this.metatile_layer_label.Location = new System.Drawing.Point(0, 0);
       this.metatile_layer_label.Name = "metatile_layer_label";
       this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
-      this.metatile_layer_label.TabIndex = 18;
-      this.metatile_layer_label.Text = "Selectable layer:";
-      this.metatile_layer_label.Visible = false;
+      this.metatile_layer_label.TabIndex = 0;
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(942, 573);
-      this.Controls.Add(this.tabControl1);
-      this.Controls.Add(this.vScrollBar1);
-      this.Controls.Add(this.hScrollBar1);
-      this.Controls.Add(this.tileView1);
+      this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
       this.MinimumSize = new System.Drawing.Size(650, 600);
@@ -818,6 +935,8 @@ namespace RabiRibi_Editor
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.tabControl1.ResumeLayout(false);
+      this.tabPage1.ResumeLayout(false);
+      this.tabPage1.PerformLayout();
       this.tabPage2.ResumeLayout(false);
       this.tabPage2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).EndInit();
@@ -828,9 +947,18 @@ namespace RabiRibi_Editor
       this.tile_picturebox_panel.ResumeLayout(false);
       this.tile_picturebox_panel.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.tile_picturebox)).EndInit();
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+      this.splitContainer1.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private RabiRibi_Editor.InfoView infoView1;
+    private System.Windows.Forms.Button set_zoom_button;
+    private System.Windows.Forms.Label zoom_label;
+    private System.Windows.Forms.TextBox zoom_level_textbox;
+    private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.ComboBox environment_event_selection;
     private System.Windows.Forms.ComboBox entity_laser_delay_selection;
     private System.Windows.Forms.ComboBox entity_dir_selection;

@@ -152,7 +152,7 @@ namespace RabiRibi_Editor
     /// stack.
     /// </summary>
     /// <param name="command">Command to execute</param>
-    internal void RunCommnd(CommandEntry command)
+    internal void RunCommand(CommandEntry command)
     {
       List<CommandEntry> temp = new List<CommandStack.CommandEntry>();
       temp.Add(command);
