@@ -93,6 +93,10 @@ namespace RabiRibi_Editor
     
     Dictionary<Map_Coordinate, Bitmap_Cache> bitmap_dict = new Dictionary<Map_Coordinate, Bitmap_Cache>();
     
+    // If true, the draw code didn't have time to redraw all rooms.  We'll
+    // draw more when the idle handler is called.
+    bool more_redraws_needed = false;
+    
     // This represents how far off screen a room must be scrolled before its
     // cache entry can be reused for another room.
     const int map_bound_buffer = 2;
@@ -484,6 +488,96 @@ namespace RabiRibi_Editor
       return b;
     }
     
+    bool Cache_Bitmap_If_Needed(int map_x, int map_y)
+    {
+      if ((map_x < 0) || (map_x >= (level.room_bg_data.GetLength(0))) ||
+          (map_y < 0) || (map_y >= (level.room_bg_data.GetLength(1))))
+      {
+        return false;
+      }
+      Map_Coordinate m;
+      m.x = map_x;
+      m.y = map_y;
+      if (!bitmap_dict.ContainsKey(m))
+      {
+        Bitmap_Cache c = new Bitmap_Cache();
+        c.b = Find_Cache_Bitmap(map_x, map_y);
+        Draw_Room(map_x, map_y, c.b);
+        c.up_to_date = true;
+        bitmap_dict[m] = c;
+        return true;
+      }
+      if (!bitmap_dict[m].up_to_date)
+      {
+        Draw_Room(map_x, map_y, bitmap_dict[m].b);
+        bitmap_dict[m].up_to_date = true;
+        return true;
+      }
+      
+      return false;
+    }
+    
+    internal bool Idle()
+    {
+      if (more_redraws_needed)
+      {
+        more_redraws_needed = false;
+        Invalidate();
+        return true;
+      }
+      else
+      {
+        // Check if we can fill in a border rooms ahead of time
+        int view_min_x = (scroll_x / LevelData.screen_width_in_tiles);
+        int view_max_x = (int)((scroll_x + (Width / zoom / 32)) / LevelData.screen_width_in_tiles);
+        int view_min_y = LevelData.Tile_Y_To_Map_Y(scroll_y);
+        int view_max_y = LevelData.Tile_Y_To_Map_Y(scroll_y + (int)(Height / zoom / 32));
+        
+        bool found = false;
+        for (int border = 1; border <= map_bound_buffer; border++)
+        {
+          int left_x = view_min_x - border;
+          int right_x = view_max_x + border;
+          int top_y = view_min_y - border;
+          int bottom_y = view_max_y + border;
+          
+          for (int x = left_x; x <= right_x; x++)
+          {
+            found = Cache_Bitmap_If_Needed(x, top_y);
+            if (found)
+            {
+              break;
+            }
+            
+            found = Cache_Bitmap_If_Needed(x, bottom_y);
+            if (found)
+            {
+              break;
+            }
+          }
+          if (found)
+          {
+            break;
+          }
+          
+          for (int y = top_y; y <= bottom_y; y++)
+          {
+            found = Cache_Bitmap_If_Needed(left_x, y);
+            if (found)
+            {
+              break;
+            }
+            found = Cache_Bitmap_If_Needed(right_x, y);
+            if (found)
+            {
+              break;
+            }
+          }
+        }
+        return found;
+      }
+    }
+    
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
     {
       e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
@@ -495,6 +589,10 @@ namespace RabiRibi_Editor
       {
         return;
       }
+      
+      DateTime t = DateTime.Now;
+      
+      more_redraws_needed = false;
       
       // Draw the rooms to the view.
       int map_x = scroll_x / 20;
@@ -526,13 +624,25 @@ namespace RabiRibi_Editor
           }
           
           // Update the room image, if needed.
-          if (!c.up_to_date)
+          bool draw_bitmap = c.up_to_date;
+          if ((!c.up_to_date) && (!more_redraws_needed))
           {
-            Draw_Room(map_x, map_y, c.b);
-            c.up_to_date = true;
+            if (((TimeSpan)(DateTime.Now - t)).TotalSeconds < 0.25)
+            {
+              Draw_Room(map_x, map_y, c.b);
+              c.up_to_date = true;
+              draw_bitmap = true;
+            }
+            else
+            {
+              more_redraws_needed = true;
+            }
           }
           
-          e.Graphics.DrawImage(c.b, draw_x, draw_y);
+          if (draw_bitmap)
+          {
+            e.Graphics.DrawImage(c.b, draw_x, draw_y);
+          }
           draw_y += (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y)) * 32;
           map_y++;
           if (LevelData.Map_Y_To_Tile_Y(map_y) >= LevelData.map_tile_height)

@@ -638,6 +638,8 @@ namespace RabiRibi_Editor
         environment_event_selection.SelectedIndex = 0;
         
         Update_Scrollbar_Size();
+        Application.Idle += Idle_Handler;
+        Application.ApplicationExit += Application_Exit_Handler;
       }
       catch (Exception E)
       {
@@ -645,6 +647,25 @@ namespace RabiRibi_Editor
                         + "The editor will now close.\n\n" + E.ToString());
         Close();
       }
+    }
+    
+    void Idle_Handler(Object sender, EventArgs e)
+    {
+      if (tileView1.Idle())
+      {
+        // The tile viewer's Idle() returns true if it has more to draw.
+        // In this case, we want to raise the idle event again, to ensure we
+        // continue to cache bitmaps if nothing else is happening.
+        // We call DoEvents first to prioritize any other events in the queue.
+        Application.DoEvents();
+        Application.RaiseIdle(e);
+      }
+    }
+    
+    void Application_Exit_Handler(Object sendor, EventArgs e)
+    {
+      Application.Idle -= Idle_Handler;
+      Application.ApplicationExit -= Application_Exit_Handler;
     }
 
     void room_bg_checkbox_CheckedChanged(object sender, EventArgs e)
