@@ -932,7 +932,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = actual_tile;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
       }
       
@@ -948,7 +948,7 @@ namespace RabiRibi_Editor
             cmd.data[j,k] = selected_collision;
           }
         }
-        command_stack.RunCommnd(cmd);
+        command_stack.RunCommand(cmd);
       }
       
       if (event_radio.Checked)
@@ -971,7 +971,7 @@ namespace RabiRibi_Editor
                     cmd.data[j,k] = data;
                   }
                 }
-                command_stack.RunCommnd(cmd);
+                command_stack.RunCommand(cmd);
               }
               else
               {
@@ -995,7 +995,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -1014,7 +1014,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -1033,7 +1033,7 @@ namespace RabiRibi_Editor
                   cmd.data[j,k] = data;
                 }
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
         }
@@ -1054,7 +1054,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = data;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1084,7 +1084,7 @@ namespace RabiRibi_Editor
             cmd.data[j,k] = (short)room_type_selection.SelectedIndex;
           }
         }
-        command_stack.RunCommnd(cmd);
+        command_stack.RunCommand(cmd);
       }
       
       if (room_color_radio.Checked)
@@ -1108,7 +1108,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = selected_index;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1133,7 +1133,7 @@ namespace RabiRibi_Editor
               cmd.data[j,k] = selected_index;
             }
           }
-          command_stack.RunCommnd(cmd);
+          command_stack.RunCommand(cmd);
         }
         else
         {
@@ -1198,7 +1198,7 @@ namespace RabiRibi_Editor
               {
                 cmd.data[0, i] = entity_values[i];
               }
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
             
@@ -1280,7 +1280,7 @@ namespace RabiRibi_Editor
               CommandStack.CommandEntry cmd = new CommandStack.CommandEntry
                 (CommandStack.CommandType.Write_Event, tile_x, tile_x, tile_y, tile_y);
               cmd.data[0,0] = data;
-              command_stack.RunCommnd(cmd);
+              command_stack.RunCommand(cmd);
             }
             break;
         }
