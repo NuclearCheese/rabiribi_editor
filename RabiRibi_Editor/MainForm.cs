@@ -1720,8 +1720,7 @@ namespace RabiRibi_Editor
         {
           tileView1.zoom = new_zoom;
           Update_Scrollbar_Size();
-          //tileView1.Invalidate();
-          tileView1.InvalidateAllTiles();
+          tileView1.Invalidate();
         }
         else
         {
