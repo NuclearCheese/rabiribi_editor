@@ -1705,28 +1705,34 @@ namespace RabiRibi_Editor
       }
     }
     
+    void UpdateZoom(float new_zoom)
+    {
+      const float min_zoom = 0.2f;
+      const float max_zoom = 4.0f;
+      
+      if (new_zoom < min_zoom)
+      {
+        new_zoom = min_zoom;
+      }
+      if (new_zoom > max_zoom)
+      {
+        new_zoom = max_zoom;
+      }
+      zoom_level_textbox.Text = new_zoom.ToString();
+      zoom_track_bar.Value = (int)(new_zoom * 10);
+      
+      tileView1.zoom = new_zoom;
+      Update_Scrollbar_Size();
+      tileView1.Invalidate();
+    }
+    
     void ZoomLevelTextChanged(object sender, EventArgs e)
     {
       float new_zoom;
       
-      const float min_zoom = 0.5f;
-      const float max_zoom = 4.0f;
-      
       if (float.TryParse(zoom_level_textbox.Text, out new_zoom))
       {
-        // Don't zoom too far out, as it'll make redraws take way too long.
-        // Also set a 'reasonable' upper bound on the zoom.
-        if ((new_zoom >= min_zoom) && (new_zoom <= max_zoom))
-        {
-          tileView1.zoom = new_zoom;
-          Update_Scrollbar_Size();
-          tileView1.Invalidate();
-        }
-        else
-        {
-          MessageBox.Show("Zoom must be between " + min_zoom.ToString() +
-                          " and " + max_zoom.ToString());
-        }
+        UpdateZoom(new_zoom);
       }
       else
       {
@@ -1765,6 +1771,12 @@ namespace RabiRibi_Editor
       {
         vScrollBar1.Value = ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1);
       }
+    }
+    
+    void ZoomTrackBarScroll(object sender, EventArgs e)
+    {
+      float new_zoom = zoom_track_bar.Value / 10.0f;
+      UpdateZoom(new_zoom);
     }
   }
 }
