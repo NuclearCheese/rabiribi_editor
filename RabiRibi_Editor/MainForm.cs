@@ -640,6 +640,14 @@ namespace RabiRibi_Editor
         Update_Scrollbar_Size();
         Application.Idle += Idle_Handler;
         Application.ApplicationExit += Application_Exit_Handler;
+        
+        // Note - needed to override the typical behavior on the trackbar
+        // for scrolling.  If we don't do this, scrolling while the trackbar
+        // is focused goes by its own increment, making things inconsistent.
+        // Note that some other controls still have normal use of the scroll
+        // wheel - apparently holding the Control key overrides this and sends
+        // the scroll to the form itself.
+        zoom_track_bar.MouseWheel += new MouseEventHandler(zoom_track_bar_MouseWheel);
       }
       catch (Exception E)
       {
@@ -647,6 +655,13 @@ namespace RabiRibi_Editor
                         + "The editor will now close.\n\n" + E.ToString());
         Close();
       }
+    }
+
+    void zoom_track_bar_MouseWheel(object sender, MouseEventArgs e)
+    {
+      OnMouseWheel(e);
+      HandledMouseEventArgs ee = (HandledMouseEventArgs)e;
+      ee.Handled = true;
     }
     
     void Idle_Handler(Object sender, EventArgs e)
@@ -1802,6 +1817,16 @@ namespace RabiRibi_Editor
         y_result = vScrollBar1.Maximum - vScrollBar1.LargeChange + 1;
       }
       vScrollBar1.Value = y_result;
+    }
+    
+    protected override void OnMouseWheel(MouseEventArgs e)
+    {
+      base.OnMouseWheel(e);
+      
+      const float scroll_per_increment = 0.2f;
+      
+      // TODO TEST
+      UpdateZoom(tileView1.zoom + ((e.Delta / 120.0f) * scroll_per_increment));
     }
   }
 }
