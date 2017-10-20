@@ -55,6 +55,7 @@ namespace RabiRibi_Editor
     int mouse_down_x;
     int mouse_down_y;
     bool send_mouse_event = false;
+    bool mouse_scroll_event = false;
     
     // callback for sending tile clicks to the main window for processing
     // note that this control tracks mouse down and mouse up, so that the user
@@ -65,6 +66,7 @@ namespace RabiRibi_Editor
     public delegate void Single_Tile_Delegate(int tile_x, int tile_y);
     Single_Tile_Delegate left_click_callback;
     Single_Tile_Delegate right_click_callback;
+    Single_Tile_Delegate scroll_callback;
     
     Single_Tile_Delegate hover_callback;
     
@@ -117,7 +119,7 @@ namespace RabiRibi_Editor
     }
     
     internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Delegate lc_callback, Single_Tile_Delegate rc_callback, Single_Tile_Delegate hv_callback,
-                       Resize_Delegate rs_callback)
+                       Resize_Delegate rs_callback, Single_Tile_Delegate sc_callback)
     {
       level = level_data;
       
@@ -235,6 +237,7 @@ namespace RabiRibi_Editor
       right_click_callback = rc_callback;
       hover_callback = hv_callback;
       resize_callback = rs_callback;
+      scroll_callback = sc_callback;
     }
     
     /// <summary>
@@ -734,36 +737,49 @@ namespace RabiRibi_Editor
       if (e.Button == System.Windows.Forms.MouseButtons.Left)
       {
         // Note where the left mouse started, so that we can report the full
-        // range of the input when it is released.
+        // range of the input later.
         mouse_down_x = e.X;
         mouse_down_y = e.Y;
-        send_mouse_event = true;
         
-        // Also trigger the left click callback.
-        int tile_x = (int)((e.X / scale_factor) + scroll_x);
-        if (tile_x < 0)
+        if (ModifierKeys == System.Windows.Forms.Keys.Control)
         {
-          tile_x = 0;
+          // With control held, the user is scrolling the screen instead of
+          // trying to edit the level.
+          send_mouse_event = false;
+          mouse_scroll_event = true;
         }
-        else if (tile_x >= LevelData.map_tile_width)
+        else
         {
-          tile_x = LevelData.map_tile_width - 1;
+          send_mouse_event = true;
+          mouse_scroll_event = false;
+          
+          // Also trigger the left click callback.
+          int tile_x = (int)((e.X / scale_factor) + scroll_x);
+          if (tile_x < 0)
+          {
+            tile_x = 0;
+          }
+          else if (tile_x >= LevelData.map_tile_width)
+          {
+            tile_x = LevelData.map_tile_width - 1;
+          }
+          int tile_y = (int)((e.Y / scale_factor) + scroll_y);
+          if (tile_y < 0)
+          {
+            tile_y = 0;
+          }
+          else if (tile_y >= LevelData.map_tile_height)
+          {
+            tile_y = LevelData.map_tile_height - 1;
+          }
+          left_click_callback(tile_x, tile_y);
         }
-        int tile_y = (int)((e.Y / scale_factor) + scroll_y);
-        if (tile_y < 0)
-        {
-          tile_y = 0;
-        }
-        else if (tile_y >= LevelData.map_tile_height)
-        {
-          tile_y = LevelData.map_tile_height - 1;
-        }
-        left_click_callback(tile_x, tile_y);
       }
       else if (e.Button == System.Windows.Forms.MouseButtons.Right)
       {
         // Right button down is used to select the tile below the cursor.
         send_mouse_event = false;
+        mouse_scroll_event = false;
         int tile_x = (int)((e.X / scale_factor) + scroll_x);
         if (tile_x < 0)
         {
@@ -863,6 +879,25 @@ namespace RabiRibi_Editor
       int tile_y = (int)(e.Y / 32.0f / zoom) + scroll_y;
       
       hover_callback(tile_x, tile_y);
+      
+      if ((e.Button == System.Windows.Forms.MouseButtons.Left) &&
+          mouse_scroll_event)
+      {
+        // Determine how many tiles we've scrolled.
+        int tile_delta_x = -(int)((e.X - mouse_down_x) / 32.0f / zoom);
+        int tile_delta_y = -(int)((e.Y - mouse_down_y) / 32.0f / zoom);
+        if ((tile_delta_x != 0) || (tile_delta_y != 0))
+        {
+          // Send a scroll update
+          // Note - we don't bother updating local values here, since they're
+          // going to be updated by the logic in the callback anyway.
+          scroll_callback(tile_delta_x, tile_delta_y);
+          
+          // Update the base coordinates to reflect the new scroll.
+          mouse_down_x -= (int)(tile_delta_x * 32.0f * zoom);
+          mouse_down_y -= (int)(tile_delta_y * 32.0f * zoom);
+        }
+      }
     }
     
     protected override void OnResize(EventArgs e)

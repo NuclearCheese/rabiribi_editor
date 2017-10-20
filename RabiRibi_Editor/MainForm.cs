@@ -312,7 +312,7 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size);
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size, UpdateScroll);
         
         infoView1.level = level;
         
@@ -1777,6 +1777,31 @@ namespace RabiRibi_Editor
     {
       float new_zoom = zoom_track_bar.Value / 10.0f;
       UpdateZoom(new_zoom);
+    }
+    
+    void UpdateScroll(int delta_x, int delta_y)
+    {
+      int x_result = hScrollBar1.Value + delta_x;
+      if (x_result < 0)
+      {
+        x_result = 0;
+      }
+      else if (x_result > (hScrollBar1.Maximum - hScrollBar1.LargeChange + 1))
+      {
+        x_result = hScrollBar1.Maximum - hScrollBar1.LargeChange + 1;
+      }
+      hScrollBar1.Value = x_result;
+      
+      int y_result = vScrollBar1.Value + delta_y;
+      if (y_result < 0)
+      {
+        y_result = 0;
+      }
+      else if (y_result > (vScrollBar1.Maximum - vScrollBar1.LargeChange + 1))
+      {
+        y_result = vScrollBar1.Maximum - vScrollBar1.LargeChange + 1;
+      }
+      vScrollBar1.Value = y_result;
     }
   }
 }
