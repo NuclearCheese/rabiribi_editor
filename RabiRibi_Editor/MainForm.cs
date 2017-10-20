@@ -312,7 +312,7 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size);
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size, UpdateScroll);
         
         infoView1.level = level;
         
@@ -640,6 +640,14 @@ namespace RabiRibi_Editor
         Update_Scrollbar_Size();
         Application.Idle += Idle_Handler;
         Application.ApplicationExit += Application_Exit_Handler;
+        
+        // Note - needed to override the typical behavior on the trackbar
+        // for scrolling.  If we don't do this, scrolling while the trackbar
+        // is focused goes by its own increment, making things inconsistent.
+        // Note that some other controls still have normal use of the scroll
+        // wheel - apparently holding the Control key overrides this and sends
+        // the scroll to the form itself.
+        zoom_track_bar.MouseWheel += new MouseEventHandler(zoom_track_bar_MouseWheel);
       }
       catch (Exception E)
       {
@@ -647,6 +655,13 @@ namespace RabiRibi_Editor
                         + "The editor will now close.\n\n" + E.ToString());
         Close();
       }
+    }
+
+    void zoom_track_bar_MouseWheel(object sender, MouseEventArgs e)
+    {
+      OnMouseWheel(e);
+      HandledMouseEventArgs ee = (HandledMouseEventArgs)e;
+      ee.Handled = true;
     }
     
     void Idle_Handler(Object sender, EventArgs e)
@@ -1705,28 +1720,34 @@ namespace RabiRibi_Editor
       }
     }
     
+    void UpdateZoom(float new_zoom)
+    {
+      const float min_zoom = 0.2f;
+      const float max_zoom = 4.0f;
+      
+      if (new_zoom < min_zoom)
+      {
+        new_zoom = min_zoom;
+      }
+      if (new_zoom > max_zoom)
+      {
+        new_zoom = max_zoom;
+      }
+      zoom_level_textbox.Text = new_zoom.ToString();
+      zoom_track_bar.Value = (int)(new_zoom * 10);
+      
+      tileView1.zoom = new_zoom;
+      Update_Scrollbar_Size();
+      tileView1.Invalidate();
+    }
+    
     void ZoomLevelTextChanged(object sender, EventArgs e)
     {
       float new_zoom;
       
-      const float min_zoom = 0.5f;
-      const float max_zoom = 4.0f;
-      
       if (float.TryParse(zoom_level_textbox.Text, out new_zoom))
       {
-        // Don't zoom too far out, as it'll make redraws take way too long.
-        // Also set a 'reasonable' upper bound on the zoom.
-        if ((new_zoom >= min_zoom) && (new_zoom <= max_zoom))
-        {
-          tileView1.zoom = new_zoom;
-          Update_Scrollbar_Size();
-          tileView1.Invalidate();
-        }
-        else
-        {
-          MessageBox.Show("Zoom must be between " + min_zoom.ToString() +
-                          " and " + max_zoom.ToString());
-        }
+        UpdateZoom(new_zoom);
       }
       else
       {
@@ -1765,6 +1786,47 @@ namespace RabiRibi_Editor
       {
         vScrollBar1.Value = ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1);
       }
+    }
+    
+    void ZoomTrackBarScroll(object sender, EventArgs e)
+    {
+      float new_zoom = zoom_track_bar.Value / 10.0f;
+      UpdateZoom(new_zoom);
+    }
+    
+    void UpdateScroll(int delta_x, int delta_y)
+    {
+      int x_result = hScrollBar1.Value + delta_x;
+      if (x_result < 0)
+      {
+        x_result = 0;
+      }
+      else if (x_result > (hScrollBar1.Maximum - hScrollBar1.LargeChange + 1))
+      {
+        x_result = hScrollBar1.Maximum - hScrollBar1.LargeChange + 1;
+      }
+      hScrollBar1.Value = x_result;
+      
+      int y_result = vScrollBar1.Value + delta_y;
+      if (y_result < 0)
+      {
+        y_result = 0;
+      }
+      else if (y_result > (vScrollBar1.Maximum - vScrollBar1.LargeChange + 1))
+      {
+        y_result = vScrollBar1.Maximum - vScrollBar1.LargeChange + 1;
+      }
+      vScrollBar1.Value = y_result;
+    }
+    
+    protected override void OnMouseWheel(MouseEventArgs e)
+    {
+      base.OnMouseWheel(e);
+      
+      const float scroll_per_increment = 0.2f;
+      
+      // TODO TEST
+      UpdateZoom(tileView1.zoom + ((e.Delta / 120.0f) * scroll_per_increment));
     }
   }
 }

@@ -54,6 +54,7 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.zoom_track_bar = new System.Windows.Forms.TrackBar();
       this.infoView1 = new RabiRibi_Editor.InfoView();
       this.set_zoom_button = new System.Windows.Forms.Button();
       this.zoom_level_textbox = new System.Windows.Forms.TextBox();
@@ -96,6 +97,7 @@ namespace RabiRibi_Editor
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.zoom_track_bar)).BeginInit();
       this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).BeginInit();
       this.collision_tile_panel.SuspendLayout();
@@ -266,6 +268,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.zoom_track_bar);
       this.tabPage1.Controls.Add(this.infoView1);
       this.tabPage1.Controls.Add(this.set_zoom_button);
       this.tabPage1.Controls.Add(this.zoom_level_textbox);
@@ -278,21 +281,34 @@ namespace RabiRibi_Editor
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
       // 
+      // zoom_track_bar
+      // 
+      this.zoom_track_bar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.zoom_track_bar.Location = new System.Drawing.Point(6, 478);
+      this.zoom_track_bar.Maximum = 40;
+      this.zoom_track_bar.Name = "zoom_track_bar";
+      this.zoom_track_bar.Size = new System.Drawing.Size(219, 42);
+      this.zoom_track_bar.TabIndex = 4;
+      this.zoom_track_bar.TickFrequency = 10;
+      this.zoom_track_bar.Value = 10;
+      this.zoom_track_bar.Scroll += new System.EventHandler(this.ZoomTrackBarScroll);
+      // 
       // infoView1
       // 
       this.infoView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                   | System.Windows.Forms.AnchorStyles.Left) 
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.infoView1.Location = new System.Drawing.Point(6, 261);
+      this.infoView1.Location = new System.Drawing.Point(6, 240);
       this.infoView1.Name = "infoView1";
-      this.infoView1.Size = new System.Drawing.Size(219, 215);
+      this.infoView1.Size = new System.Drawing.Size(219, 209);
       this.infoView1.TabIndex = 3;
       this.infoView1.Text = "infoView1";
       // 
       // set_zoom_button
       // 
       this.set_zoom_button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.set_zoom_button.Location = new System.Drawing.Point(153, 480);
+      this.set_zoom_button.Location = new System.Drawing.Point(150, 453);
       this.set_zoom_button.Name = "set_zoom_button";
       this.set_zoom_button.Size = new System.Drawing.Size(75, 23);
       this.set_zoom_button.TabIndex = 2;
@@ -304,7 +320,7 @@ namespace RabiRibi_Editor
       // 
       this.zoom_level_textbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.zoom_level_textbox.Location = new System.Drawing.Point(59, 482);
+      this.zoom_level_textbox.Location = new System.Drawing.Point(49, 455);
       this.zoom_level_textbox.Name = "zoom_level_textbox";
       this.zoom_level_textbox.Size = new System.Drawing.Size(88, 20);
       this.zoom_level_textbox.TabIndex = 1;
@@ -314,7 +330,7 @@ namespace RabiRibi_Editor
       // zoom_label
       // 
       this.zoom_label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.zoom_label.Location = new System.Drawing.Point(16, 485);
+      this.zoom_label.Location = new System.Drawing.Point(6, 458);
       this.zoom_label.Name = "zoom_label";
       this.zoom_label.Size = new System.Drawing.Size(37, 23);
       this.zoom_label.TabIndex = 0;
@@ -937,6 +953,7 @@ namespace RabiRibi_Editor
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.zoom_track_bar)).EndInit();
       this.tabPage2.ResumeLayout(false);
       this.tabPage2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.collision_preview)).EndInit();
@@ -954,6 +971,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.TrackBar zoom_track_bar;
     private RabiRibi_Editor.InfoView infoView1;
     private System.Windows.Forms.Button set_zoom_button;
     private System.Windows.Forms.Label zoom_label;
