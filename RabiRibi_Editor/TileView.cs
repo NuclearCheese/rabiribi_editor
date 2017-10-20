@@ -597,6 +597,12 @@ namespace RabiRibi_Editor
       
       more_redraws_needed = false;
       
+      // Always force a minimum number of rooms to redraw, even if it goes
+      // over the time limit.  Otherwise, it'll end up in an infinite loop
+      // where it never actually draws all the rooms.
+      int redraws = 0;
+      const int min_redraws = 5;
+      
       // Draw the rooms to the view.
       int map_x = scroll_x / 20;
       int draw_x = ((map_x * 20) - scroll_x) * 32;
@@ -630,7 +636,8 @@ namespace RabiRibi_Editor
           bool draw_bitmap = c.up_to_date;
           if ((!c.up_to_date) && (!more_redraws_needed))
           {
-            if (((TimeSpan)(DateTime.Now - t)).TotalSeconds < 0.25)
+            redraws++;
+            if ((redraws <= min_redraws) || (((TimeSpan)(DateTime.Now - t)).TotalSeconds < 0.25))
             {
               Draw_Room(map_x, map_y, c.b);
               c.up_to_date = true;
