@@ -1825,7 +1825,6 @@ namespace RabiRibi_Editor
       
       const float scroll_per_increment = 0.2f;
       
-      // TODO TEST
       UpdateZoom(tileView1.zoom + ((e.Delta / 120.0f) * scroll_per_increment));
     }
   }
