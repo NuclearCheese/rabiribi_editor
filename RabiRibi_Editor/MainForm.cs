@@ -1720,7 +1720,7 @@ namespace RabiRibi_Editor
       }
     }
     
-    void UpdateZoom(float new_zoom)
+    void UpdateZoom(float new_zoom, bool from_text = false)
     {
       const float min_zoom = 0.2f;
       const float max_zoom = 4.0f;
@@ -1733,8 +1733,15 @@ namespace RabiRibi_Editor
       {
         new_zoom = max_zoom;
       }
-      zoom_level_textbox.Text = new_zoom.ToString();
-      zoom_track_bar.Value = (int)(new_zoom * 10);
+      // If the user entered a number directly, we'll take it as-is.  Otherwise
+      // we'll round it to one decimal place - this prevents getting long
+      // strings of digits due to floating point inaccuraacy.
+      if (!from_text)
+      {
+        new_zoom = (float)(Math.Round(new_zoom, 1));
+        zoom_level_textbox.Text = new_zoom.ToString("0.0");
+      }
+      zoom_track_bar.Value = (int)Math.Round((new_zoom * 10), 1);
       
       tileView1.zoom = new_zoom;
       Update_Scrollbar_Size();
@@ -1747,7 +1754,7 @@ namespace RabiRibi_Editor
       
       if (float.TryParse(zoom_level_textbox.Text, out new_zoom))
       {
-        UpdateZoom(new_zoom);
+        UpdateZoom(new_zoom, true);
       }
       else
       {
