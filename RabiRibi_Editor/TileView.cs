@@ -31,8 +31,11 @@ namespace RabiRibi_Editor
     public float zoom = 1.0f;
     
     // Scroll location, in tiles
-    internal int scroll_x = 0;
-    internal int scroll_y = 0;
+    // Note: these are defined as floats, but used almost everywhere as ints.
+    // This is entirely to allow more precise tracking of the scroll position to
+    // keep the view centered when zooming.
+    internal float scroll_x = 0;
+    internal float scroll_y = 0;
     
     internal bool[] tile_layers_visible = new bool[LevelData.num_tile_layers];
     
@@ -286,10 +289,10 @@ namespace RabiRibi_Editor
         bottom = LevelData.Map_Y_To_Tile_Y(LevelData.Tile_Y_To_Map_Y(bottom) + 1);
       }
       
-      left -= scroll_x;
-      right -= scroll_x;
-      top -= scroll_y;
-      bottom -= scroll_y;
+      left -= (int)scroll_x;
+      right -= (int)scroll_x;
+      top -= (int)scroll_y;
+      bottom -= (int)scroll_y;
       
       int x = (int)(left * 32 * zoom);
       int width = (int)((right - left + 1) * 32 * zoom);
@@ -456,10 +459,10 @@ namespace RabiRibi_Editor
     {
       int desired_height = (LevelData.Map_Y_To_Tile_Y(map_y + 1) - LevelData.Map_Y_To_Tile_Y(map_y)) * 32;
       
-      int view_min_x = (scroll_x / LevelData.screen_width_in_tiles) - map_bound_buffer;
-      int view_max_x = (int)((scroll_x + (Width / zoom / 32)) / LevelData.screen_width_in_tiles) + map_bound_buffer;
-      int view_min_y = LevelData.Tile_Y_To_Map_Y(scroll_y) - map_bound_buffer;
-      int view_max_y = LevelData.Tile_Y_To_Map_Y(scroll_y + (int)(Height / zoom / 32)) + map_bound_buffer;
+      int view_min_x = ((int)(scroll_x) / LevelData.screen_width_in_tiles) - map_bound_buffer;
+      int view_max_x = (int)(((int)(scroll_x) + (Width / zoom / 32)) / LevelData.screen_width_in_tiles) + map_bound_buffer;
+      int view_min_y = LevelData.Tile_Y_To_Map_Y((int)(scroll_y)) - map_bound_buffer;
+      int view_max_y = LevelData.Tile_Y_To_Map_Y((int)(scroll_y) + (int)(Height / zoom / 32)) + map_bound_buffer;
       
       Map_Coordinate m;
       m.x = 0;
@@ -533,10 +536,10 @@ namespace RabiRibi_Editor
       else
       {
         // Check if we can fill in a border rooms ahead of time
-        int view_min_x = (scroll_x / LevelData.screen_width_in_tiles);
-        int view_max_x = (int)((scroll_x + (Width / zoom / 32)) / LevelData.screen_width_in_tiles);
-        int view_min_y = LevelData.Tile_Y_To_Map_Y(scroll_y);
-        int view_max_y = LevelData.Tile_Y_To_Map_Y(scroll_y + (int)(Height / zoom / 32));
+        int view_min_x = ((int)(scroll_x) / LevelData.screen_width_in_tiles);
+        int view_max_x = (int)(((int)(scroll_x) + (Width / zoom / 32)) / LevelData.screen_width_in_tiles);
+        int view_min_y = LevelData.Tile_Y_To_Map_Y((int)(scroll_y));
+        int view_max_y = LevelData.Tile_Y_To_Map_Y((int)(scroll_y) + (int)(Height / zoom / 32));
         
         bool found = false;
         for (int border = 1; border <= map_bound_buffer; border++)
@@ -609,14 +612,14 @@ namespace RabiRibi_Editor
       int max_draw_x = (int)(e.ClipRectangle.Right / zoom);
       
       // Draw the rooms to the view.
-      int map_x = scroll_x / 20;
-      int draw_x = ((map_x * 20) - scroll_x) * 32;
+      int map_x = (int)(scroll_x) / 20;
+      int draw_x = ((map_x * 20) - (int)(scroll_x)) * 32;
       while (draw_x < (Width / zoom))
       {
         if ((draw_x >= min_draw_x) && (draw_x < max_draw_x))
         {
-          int map_y = LevelData.Tile_Y_To_Map_Y(scroll_y);
-          int draw_y = (LevelData.Map_Y_To_Tile_Y(map_y) - scroll_y) * 32;
+          int map_y = LevelData.Tile_Y_To_Map_Y((int)(scroll_y));
+          int draw_y = (LevelData.Map_Y_To_Tile_Y(map_y) - (int)(scroll_y)) * 32;
           while (draw_y < (Height / zoom))
           {
             Map_Coordinate m;
@@ -680,7 +683,7 @@ namespace RabiRibi_Editor
       if (show_tile_grid)
       {
         int end_x = (int)(Width / zoom);
-        int tile_final_x = scroll_x + (end_x / 32);
+        int tile_final_x = (int)(scroll_x) + (end_x / 32);
         if (tile_final_x > (LevelData.map_tile_width - 1))
         {
           end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
@@ -688,7 +691,7 @@ namespace RabiRibi_Editor
         }
         
         int end_y = (int)(Height / zoom);
-        int tile_final_y = scroll_y + (end_y / 32);
+        int tile_final_y = (int)(scroll_y) + (end_y / 32);
         if (tile_final_y > (LevelData.map_tile_height - 1))
         {
           end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
@@ -711,7 +714,7 @@ namespace RabiRibi_Editor
       if (show_screen_grid)
       {
         int end_x = (int)(Width / zoom);
-        int tile_final_x = scroll_x + (end_x / 32);
+        int tile_final_x = (int)(scroll_x) + (end_x / 32);
         if (tile_final_x > (LevelData.map_tile_width - 1))
         {
           end_x -= (tile_final_x - LevelData.map_tile_width) * 32;
@@ -719,19 +722,19 @@ namespace RabiRibi_Editor
         }
         
         int end_y = (int)(Height / zoom);
-        int tile_final_y = scroll_y + (end_y / 32);
+        int tile_final_y = (int)(scroll_y) + (end_y / 32);
         if (tile_final_y > (LevelData.map_tile_height - 1))
         {
           end_y -= (tile_final_y - LevelData.map_tile_height) * 32;
           end_y -= (end_y % 32);
         }
         
-        for (int x = (scroll_x % LevelData.screen_width_in_tiles) * -32; x < end_x; x += (32 * LevelData.screen_width_in_tiles))
+        for (int x = ((int)(scroll_x) % LevelData.screen_width_in_tiles) * -32; x < end_x; x += (32 * LevelData.screen_width_in_tiles))
         {
           e.Graphics.DrawLine(screen_grid_pen, x, 0, x, end_y);
         }
         int draw_y = 0;
-        for (int y = scroll_y; y <= (scroll_y + (end_y / 32)); y++)
+        for (int y = (int)(scroll_y); y <= ((int)(scroll_y) + (end_y / 32)); y++)
         {
           int map_y = LevelData.Tile_Y_To_Map_Y(y);
           int test_y = LevelData.Map_Y_To_Tile_Y(map_y);
@@ -770,7 +773,7 @@ namespace RabiRibi_Editor
           mouse_scroll_event = false;
           
           // Also trigger the left click callback.
-          int tile_x = (int)((e.X / scale_factor) + scroll_x);
+          int tile_x = (int)((e.X / scale_factor) + (int)(scroll_x));
           if (tile_x < 0)
           {
             tile_x = 0;
@@ -779,7 +782,7 @@ namespace RabiRibi_Editor
           {
             tile_x = LevelData.map_tile_width - 1;
           }
-          int tile_y = (int)((e.Y / scale_factor) + scroll_y);
+          int tile_y = (int)((e.Y / scale_factor) + (int)(scroll_y));
           if (tile_y < 0)
           {
             tile_y = 0;
@@ -796,7 +799,7 @@ namespace RabiRibi_Editor
         // Right button down is used to select the tile below the cursor.
         send_mouse_event = false;
         mouse_scroll_event = false;
-        int tile_x = (int)((e.X / scale_factor) + scroll_x);
+        int tile_x = (int)((e.X / scale_factor) + (int)(scroll_x));
         if (tile_x < 0)
         {
           tile_x = 0;
@@ -805,7 +808,7 @@ namespace RabiRibi_Editor
         {
           tile_x = LevelData.map_tile_width - 1;
         }
-        int tile_y = (int)((e.Y / scale_factor) + scroll_y);
+        int tile_y = (int)((e.Y / scale_factor) + (int)(scroll_y));
         if (tile_y < 0)
         {
           tile_y = 0;
@@ -833,7 +836,7 @@ namespace RabiRibi_Editor
           send_mouse_event = false;
           
           // Convert mouse click coordinates to tile coordinates
-          int left_tile = (int)((mouse_down_x / scale_factor) + scroll_x);
+          int left_tile = (int)((mouse_down_x / scale_factor) + (int)(scroll_x));
           if (left_tile < 0)
           {
             left_tile = 0;
@@ -842,7 +845,7 @@ namespace RabiRibi_Editor
           {
             left_tile = LevelData.map_tile_width - 1;
           }
-          int right_tile = (int)((e.X / scale_factor) + scroll_x);
+          int right_tile = (int)((e.X / scale_factor) + (int)(scroll_x));
           if (right_tile < 0)
           {
             right_tile = 0;
@@ -857,7 +860,7 @@ namespace RabiRibi_Editor
             right_tile = left_tile;
             left_tile = tmp;
           }
-          int top_tile = (int)((mouse_down_y / scale_factor) + scroll_y);
+          int top_tile = (int)((mouse_down_y / scale_factor) + (int)(scroll_y));
           if (top_tile < 0)
           {
             top_tile = 0;
@@ -866,7 +869,7 @@ namespace RabiRibi_Editor
           {
             top_tile = LevelData.map_tile_height - 1;
           }
-          int bottom_tile = (int)((e.Y / scale_factor) + scroll_y);
+          int bottom_tile = (int)((e.Y / scale_factor) + (int)(scroll_y));
           if (bottom_tile < 0)
           {
             bottom_tile = 0;
@@ -891,8 +894,8 @@ namespace RabiRibi_Editor
     {
       base.OnMouseMove(e);
       
-      int tile_x = (int)(e.X / 32.0f / zoom) + scroll_x;
-      int tile_y = (int)(e.Y / 32.0f / zoom) + scroll_y;
+      int tile_x = (int)(e.X / 32.0f / zoom) + (int)(scroll_x);
+      int tile_y = (int)(e.Y / 32.0f / zoom) + (int)(scroll_y);
       
       hover_callback(tile_x, tile_y);
       

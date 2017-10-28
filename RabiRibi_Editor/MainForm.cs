@@ -53,6 +53,12 @@ namespace RabiRibi_Editor
     // TODO make this configurable for the user
     const bool show_event_ids = true;
     
+    // If true, the zoom is being adjusted resulting in a scroll update.
+    // Don't trigger scroll writes from the scrollbars, as this will override
+    // the floating point scroll values which allow us to maintain a good center
+    // point on the map.
+    bool scrolling_due_to_zoom = false;
+    
     /// <summary>
     /// Simple container class to contain both event names and IDs within the
     /// event selection lists.
@@ -898,14 +904,20 @@ namespace RabiRibi_Editor
     
     void HScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_x = hScrollBar1.Value;
-      tileView1.Invalidate();
+      if (!scrolling_due_to_zoom)
+      {
+        tileView1.scroll_x = hScrollBar1.Value;
+        tileView1.Invalidate();
+      }
     }
     
     void VScrollBar1Scroll(object sender, EventArgs e)
     {
-      tileView1.scroll_y = vScrollBar1.Value;
-      tileView1.Invalidate();
+      if (!scrolling_due_to_zoom)
+      {
+        tileView1.scroll_y = vScrollBar1.Value;
+        tileView1.Invalidate();
+      }
     }
     
     /// <summary>
@@ -1725,6 +1737,13 @@ namespace RabiRibi_Editor
       const float min_zoom = 0.2f;
       const float max_zoom = 4.0f;
       
+      float old_zoom = tileView1.zoom;
+      
+      float old_center_tile_x = tileView1.scroll_x +
+        (tileView1.Width / old_zoom / 32 / 2);
+      float old_center_tile_y = tileView1.scroll_y +
+        (tileView1.Height / old_zoom / 32 / 2);
+      
       if (new_zoom < min_zoom)
       {
         new_zoom = min_zoom;
@@ -1745,6 +1764,35 @@ namespace RabiRibi_Editor
       
       tileView1.zoom = new_zoom;
       Update_Scrollbar_Size();
+      
+      // Calculate new scroll coordinates to keep the old center
+      scrolling_due_to_zoom = true;
+      float new_scroll_x = old_center_tile_x -
+        (tileView1.Width / new_zoom / 32 / 2);
+      if (new_scroll_x < 0)
+      {
+        new_scroll_x = 0;
+      }
+      else if (new_scroll_x > ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1))
+      {
+        new_scroll_x = ((hScrollBar1.Maximum - hScrollBar1.LargeChange) + 1);
+      }
+      tileView1.scroll_x = new_scroll_x;
+      hScrollBar1.Value = (int)new_scroll_x;
+      float new_scroll_y = old_center_tile_y -
+        (tileView1.Height / new_zoom / 32 / 2);
+      if (new_scroll_y < 0)
+      {
+        new_scroll_y = 0;
+      }
+      else if (new_scroll_y > ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1))
+      {
+        new_scroll_y = ((vScrollBar1.Maximum - vScrollBar1.LargeChange) + 1);
+      }
+      tileView1.scroll_y = new_scroll_y;
+      vScrollBar1.Value = (int)new_scroll_y;
+      scrolling_due_to_zoom = false;
+      
       tileView1.Invalidate();
     }
     
