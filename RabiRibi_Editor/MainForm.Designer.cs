@@ -94,6 +94,7 @@ namespace RabiRibi_Editor
       this.tools_panel = new System.Windows.Forms.Panel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.metatile_layer_label = new System.Windows.Forms.Label();
+      this.newLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -126,6 +127,7 @@ namespace RabiRibi_Editor
       // fileToolStripMenuItem
       // 
       this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                  this.newLevelToolStripMenuItem,
                   this.openToolStripMenuItem,
                   this.saveToolStripMenuItem,
                   this.toolStripSeparator1,
@@ -936,6 +938,14 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
       this.metatile_layer_label.TabIndex = 0;
       // 
+      // newLevelToolStripMenuItem
+      // 
+      this.newLevelToolStripMenuItem.Name = "newLevelToolStripMenuItem";
+      this.newLevelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+      this.newLevelToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.newLevelToolStripMenuItem.Text = "New Level";
+      this.newLevelToolStripMenuItem.Click += new System.EventHandler(this.NewLevelToolStripMenuItemClick);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -971,6 +981,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ToolStripMenuItem newLevelToolStripMenuItem;
     private System.Windows.Forms.TrackBar zoom_track_bar;
     private RabiRibi_Editor.InfoView infoView1;
     private System.Windows.Forms.Button set_zoom_button;
