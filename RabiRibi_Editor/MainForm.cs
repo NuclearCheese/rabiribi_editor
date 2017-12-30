@@ -832,6 +832,11 @@ namespace RabiRibi_Editor
     
     void OpenToolStripMenuItemClick(object sender, EventArgs e)
     {
+      if (!SaveOrDiscardChanges())
+      {
+        return;
+      }
+      
       using (OpenFileDialog od = new OpenFileDialog())
       {
         od.Filter = "RBRB Map Files (*.map)|*.map|All Files|*";
@@ -1484,7 +1489,12 @@ namespace RabiRibi_Editor
       Update_Collision_Preview();
     }
     
-    void SaveToolStripMenuItemClick(object sender, EventArgs e)
+    /// <summary>
+    /// Prompts the user for a file to save the current level data into.
+    /// </summary>
+    /// <returns>Boolean indicating whether the data was successfully
+    /// saved.</returns>
+    bool PromptForSave()
     {
       using (SaveFileDialog sd = new SaveFileDialog())
       {
@@ -1509,6 +1519,9 @@ namespace RabiRibi_Editor
           try
           {
             level.Save_Level(sd.FileName);
+            command_stack.ResetChangeCount();
+            Settings1.Default.lastMapPath = Path.GetDirectoryName(sd.FileName);
+            return true;
           }
           catch (Exception E)
           {
@@ -1518,6 +1531,12 @@ namespace RabiRibi_Editor
           Settings1.Default.lastMapPath = Path.GetDirectoryName(sd.FileName);
         }
       }
+      return false;
+    }
+    
+    void SaveToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      PromptForSave();
     }
     
     void Item_selectionSelectedIndexChanged(object sender, EventArgs e)
@@ -1885,12 +1904,57 @@ namespace RabiRibi_Editor
     
     void NewLevelToolStripMenuItemClick(object sender, EventArgs e)
     {
+      if (!SaveOrDiscardChanges())
+      {
+        return;
+      }
+      
       level.ClearLevelData();
       
       command_stack.ClearUndoStack();
       CheckUndoEnabled();
       
       tileView1.InvalidateAllTiles();
+    }
+    
+    bool SaveOrDiscardChanges()
+    {
+      if (!command_stack.ChangesMade())
+      {
+        return true;
+      }
+      
+      while (true)
+      {
+        var result = MessageBox.Show
+          ("There are unsaved changes.  Do you want to save first?",
+           "Unsaved Changes",
+           MessageBoxButtons.YesNoCancel,
+           MessageBoxIcon.Question);
+        
+        if (result == DialogResult.Cancel)
+        {
+          return false;
+        }
+        if (result == DialogResult.No)
+        {
+          return true;
+        }
+        
+        if (PromptForSave())
+        {
+          return true;
+        }
+      }
+    }
+    
+    void MainFormFormClosing(object sender, FormClosingEventArgs e)
+    {
+      // If there are unsaved changes, prompt the user about it.
+      if (!SaveOrDiscardChanges())
+      {
+        e.Cancel = true;
+      }
     }
   }
 }

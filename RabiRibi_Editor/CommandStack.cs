@@ -138,6 +138,11 @@ namespace RabiRibi_Editor
     BoundedStack undo_stack;
     BoundedStack redo_stack;
     
+    // This tracks the number of changes.  Any action or Redo counts +1, any
+    // Undo counts -1.  If this value is non-zero, then changes have been made
+    // to the currently-loaded level data.
+    int number_of_changes = 0;
+    
     public CommandStack(LevelData l, TileView t)
     {
       level = l;
@@ -171,6 +176,8 @@ namespace RabiRibi_Editor
       {
         RunCommandInternal(command[i]);
       }
+      
+      number_of_changes++;
     }
     
     /// <summary>
@@ -271,6 +278,7 @@ namespace RabiRibi_Editor
         {
           RunCommandInternal(cmd[i]);
         }
+        number_of_changes--;
       }
     }
     
@@ -287,6 +295,7 @@ namespace RabiRibi_Editor
         {
           RunCommandInternal(cmd[i]);
         }
+        number_of_changes++;
       }
     }
     
@@ -308,6 +317,21 @@ namespace RabiRibi_Editor
     {
       undo_stack.Clear();
       redo_stack.Clear();
+      number_of_changes = 0;
+    }
+    
+    internal bool ChangesMade()
+    {
+      return number_of_changes != 0;
+    }
+    
+    /// <summary>
+    /// Resets the change count tracked by the command stack.  This should be
+    /// used when the currently loaded data is saved.
+    /// </summary>
+    internal void ResetChangeCount()
+    {
+      number_of_changes = 0;
     }
   }
 }
