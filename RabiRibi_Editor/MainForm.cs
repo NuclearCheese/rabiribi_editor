@@ -1882,5 +1882,15 @@ namespace RabiRibi_Editor
       
       UpdateZoom(tileView1.zoom + ((e.Delta / 120.0f) * scroll_per_increment));
     }
+    
+    void NewLevelToolStripMenuItemClick(object sender, EventArgs e)
+    {
+      level.ClearLevelData();
+      
+      command_stack.ClearUndoStack();
+      CheckUndoEnabled();
+      
+      tileView1.InvalidateAllTiles();
+    }
   }
 }

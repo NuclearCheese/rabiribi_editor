@@ -80,18 +80,8 @@ namespace RabiRibi_Editor
     internal const int map_screen_width = 25;
     internal const int map_screen_height = 18;
     
-    public LevelData()
+    public void ClearLevelData()
     {
-      tile_data = new short[num_tile_layers][,];
-      for (int i = 0; i < num_tile_layers; i++)
-      {
-        tile_data[i] = new short[map_tile_width,map_tile_height];
-      }
-      collision_data = new short[map_tile_width,map_tile_height];
-      event_data = new short[map_tile_width,map_tile_height];
-      item_data = new short[map_tile_width,map_tile_height];
-      
-      // Default to blanked-out data
       for (int x = 0; x < map_tile_width; x++)
       {
         for (int y = 0; y < map_tile_height; y++)
@@ -106,10 +96,6 @@ namespace RabiRibi_Editor
         }
       }
       
-      room_type_data = new short[map_screen_width, map_screen_height];
-      room_color_data = new short[map_screen_width,map_screen_height];
-      room_bg_data = new short[map_screen_width,map_screen_height];
-      
       for (int x = 0; x < map_screen_width; x++)
       {
         for (int y = 0; y < map_screen_height; y++)
@@ -119,6 +105,26 @@ namespace RabiRibi_Editor
           room_bg_data[x,y] = 0;
         }
       }
+    }
+    
+    public LevelData()
+    {
+      // Allocate the arrays to hold the level data
+      tile_data = new short[num_tile_layers][,];
+      for (int i = 0; i < num_tile_layers; i++)
+      {
+        tile_data[i] = new short[map_tile_width,map_tile_height];
+      }
+      collision_data = new short[map_tile_width,map_tile_height];
+      event_data = new short[map_tile_width,map_tile_height];
+      item_data = new short[map_tile_width,map_tile_height];
+      
+      room_type_data = new short[map_screen_width, map_screen_height];
+      room_color_data = new short[map_screen_width,map_screen_height];
+      room_bg_data = new short[map_screen_width,map_screen_height];
+      
+      // Default to blanked-out data
+      ClearLevelData();
     }
     
     internal void Save_Level(string file)
