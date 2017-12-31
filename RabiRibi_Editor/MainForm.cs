@@ -23,8 +23,6 @@ namespace RabiRibi_Editor
     
     CheckBox[] layer_checkboxes;
     CheckBox collision_checkbox;
-    CheckBox event_layer_checkbox;
-    CheckBox item_layer_checkbox;
     
     CheckBox room_type_checkbox;
     CheckBox room_color_checkbox;
@@ -318,7 +316,13 @@ namespace RabiRibi_Editor
         
         metatile_layer_selection.SelectedIndex = 1;
         
-        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size, UpdateScroll);
+        Bitmap event_graphics;
+        using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.event_icons.png"))
+        {
+          event_graphics = new Bitmap(resource);
+        }
+        
+        tileView1.Init(level, Process_Tile_Mouse, Process_Left_Click, Process_Right_Click, Process_Hover, Update_Scrollbar_Size, UpdateScroll, event_graphics);
         
         infoView1.level = level;
         
@@ -358,41 +362,31 @@ namespace RabiRibi_Editor
         collision_checkbox.Text = "Collision";
         collision_checkbox.Top = 150;
         collision_checkbox.Left = 10;
+        collision_checkbox.Width = 90;
         collision_checkbox.Checked = false;
         collision_checkbox.CheckedChanged += new EventHandler(collision_checkbox_CheckedChanged);
-        event_layer_checkbox = new CheckBox();
-        event_layer_checkbox.Parent = tabPage1;
-        event_layer_checkbox.Text = "Event IDs";
-        event_layer_checkbox.Top = 10;
-        event_layer_checkbox.Left = 110;
-        event_layer_checkbox.Checked = false;
-        event_layer_checkbox.CheckedChanged += new EventHandler(event_layer_checkbox_CheckedChanged);
-        item_layer_checkbox = new CheckBox();
-        item_layer_checkbox.Parent = tabPage1;
-        item_layer_checkbox.Text = "Item IDs";
-        item_layer_checkbox.Top = 30;
-        item_layer_checkbox.Left = 110;
-        item_layer_checkbox.Checked = false;
-        item_layer_checkbox.CheckedChanged += new EventHandler(item_layer_checkbox_CheckedChanged);
+        
+        event_visibility_selection.SelectedIndex = 0;
+        item_visibility_selection.SelectedIndex = 0;
         
         room_type_checkbox = new CheckBox();
         room_type_checkbox.Parent = tabPage1;
         room_type_checkbox.Text = "Room types";
-        room_type_checkbox.Top = 70;
+        room_type_checkbox.Top = 130;
         room_type_checkbox.Left = 110;
         room_type_checkbox.Checked = false;
         room_type_checkbox.CheckedChanged += new EventHandler(room_type_checkbox_CheckedChanged);
         room_color_checkbox = new CheckBox();
         room_color_checkbox.Parent = tabPage1;
         room_color_checkbox.Text = "Room colors";
-        room_color_checkbox.Top = 90;
+        room_color_checkbox.Top = 150;
         room_color_checkbox.Left = 110;
         room_color_checkbox.Checked = false;
         room_color_checkbox.CheckedChanged += new EventHandler(room_color_checkbox_CheckedChanged);
         room_bg_checkbox = new CheckBox();
         room_bg_checkbox.Parent = tabPage1;
         room_bg_checkbox.Text = "Room BGs";
-        room_bg_checkbox.Top = 110;
+        room_bg_checkbox.Top = 170;
         room_bg_checkbox.Left = 110;
         room_bg_checkbox.Checked = false;
         room_bg_checkbox.CheckedChanged += new EventHandler(room_bg_checkbox_CheckedChanged);
@@ -793,13 +787,46 @@ namespace RabiRibi_Editor
 
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
-      tileView1.item_layer_visible = item_layer_checkbox.Checked;
+      // TODO select all options
+      switch (item_visibility_selection.SelectedIndex)
+      {
+        case 0: // Not visible
+          tileView1.item_layer_visible =
+            TileView.EventItemIDVisibilityOptions.NotVisible;
+          break;
+          
+        case 1: // Text
+          tileView1.item_layer_visible =
+            TileView.EventItemIDVisibilityOptions.Text;
+          break;
+          
+        case 2: // Icons
+          tileView1.item_layer_visible =
+            TileView.EventItemIDVisibilityOptions.Icons;
+          break;
+      }
       tileView1.InvalidateAllTiles();
     }
 
     void event_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
-      tileView1.event_layer_visible = event_layer_checkbox.Checked;
+      switch (event_visibility_selection.SelectedIndex)
+      {
+        case 0: // Not visible
+          tileView1.event_layer_visible =
+            TileView.EventItemIDVisibilityOptions.NotVisible;
+          break;
+          
+        case 1: // Text
+          tileView1.event_layer_visible =
+            TileView.EventItemIDVisibilityOptions.Text;
+          break;
+          
+        case 2: // Icons
+          tileView1.event_layer_visible =
+            TileView.EventItemIDVisibilityOptions.Icons;
+          break;
+      }
       tileView1.InvalidateAllTiles();
     }
 
@@ -1955,6 +1982,16 @@ namespace RabiRibi_Editor
       {
         e.Cancel = true;
       }
+    }
+    
+    void Transparent_icons_checkboxCheckedChanged(object sender, EventArgs e)
+    {
+      tileView1.transparent_event_item_icons =
+        transparent_icons_checkbox.Checked;
+      
+      // TODO only invalidate if we're currently showing icons
+      
+      tileView1.InvalidateAllTiles();
     }
   }
 }

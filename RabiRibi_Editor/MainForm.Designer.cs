@@ -55,6 +55,11 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.transparent_icons_checkbox = new System.Windows.Forms.CheckBox();
+      this.item_visibility_selection = new System.Windows.Forms.ComboBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.event_visibility_selection = new System.Windows.Forms.ComboBox();
+      this.label1 = new System.Windows.Forms.Label();
       this.zoom_track_bar = new System.Windows.Forms.TrackBar();
       this.infoView1 = new RabiRibi_Editor.InfoView();
       this.set_zoom_button = new System.Windows.Forms.Button();
@@ -278,6 +283,11 @@ namespace RabiRibi_Editor
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.transparent_icons_checkbox);
+      this.tabPage1.Controls.Add(this.item_visibility_selection);
+      this.tabPage1.Controls.Add(this.label2);
+      this.tabPage1.Controls.Add(this.event_visibility_selection);
+      this.tabPage1.Controls.Add(this.label1);
       this.tabPage1.Controls.Add(this.zoom_track_bar);
       this.tabPage1.Controls.Add(this.infoView1);
       this.tabPage1.Controls.Add(this.set_zoom_button);
@@ -290,6 +300,62 @@ namespace RabiRibi_Editor
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // transparent_icons_checkbox
+      // 
+      this.transparent_icons_checkbox.Checked = true;
+      this.transparent_icons_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.transparent_icons_checkbox.Location = new System.Drawing.Point(110, 92);
+      this.transparent_icons_checkbox.Name = "transparent_icons_checkbox";
+      this.transparent_icons_checkbox.Size = new System.Drawing.Size(125, 24);
+      this.transparent_icons_checkbox.TabIndex = 9;
+      this.transparent_icons_checkbox.Text = "Transparent Icons";
+      this.transparent_icons_checkbox.UseVisualStyleBackColor = true;
+      this.transparent_icons_checkbox.CheckedChanged += new System.EventHandler(this.Transparent_icons_checkboxCheckedChanged);
+      // 
+      // item_visibility_selection
+      // 
+      this.item_visibility_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.item_visibility_selection.FormattingEnabled = true;
+      this.item_visibility_selection.Items.AddRange(new object[] {
+                  "Not visible",
+                  "Text",
+                  "Icons"});
+      this.item_visibility_selection.Location = new System.Drawing.Point(125, 64);
+      this.item_visibility_selection.Name = "item_visibility_selection";
+      this.item_visibility_selection.Size = new System.Drawing.Size(100, 21);
+      this.item_visibility_selection.TabIndex = 8;
+      this.item_visibility_selection.SelectedIndexChanged += new System.EventHandler(this.item_layer_checkbox_CheckedChanged);
+      // 
+      // label2
+      // 
+      this.label2.Location = new System.Drawing.Point(125, 47);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(100, 23);
+      this.label2.TabIndex = 7;
+      this.label2.Text = "Items:";
+      // 
+      // event_visibility_selection
+      // 
+      this.event_visibility_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.event_visibility_selection.FormattingEnabled = true;
+      this.event_visibility_selection.Items.AddRange(new object[] {
+                  "Not visible",
+                  "Text",
+                  "Icons"});
+      this.event_visibility_selection.Location = new System.Drawing.Point(125, 19);
+      this.event_visibility_selection.Name = "event_visibility_selection";
+      this.event_visibility_selection.Size = new System.Drawing.Size(100, 21);
+      this.event_visibility_selection.TabIndex = 6;
+      this.event_visibility_selection.SelectedIndexChanged += new System.EventHandler(this.event_layer_checkbox_CheckedChanged);
+      // 
+      // label1
+      // 
+      this.label1.Location = new System.Drawing.Point(125, 3);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(100, 23);
+      this.label1.TabIndex = 5;
+      this.label1.Text = "Events:";
       // 
       // zoom_track_bar
       // 
@@ -982,6 +1048,11 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.CheckBox transparent_icons_checkbox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.ComboBox item_visibility_selection;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.ComboBox event_visibility_selection;
     private System.Windows.Forms.ToolStripMenuItem newLevelToolStripMenuItem;
     private System.Windows.Forms.TrackBar zoom_track_bar;
     private RabiRibi_Editor.InfoView infoView1;
