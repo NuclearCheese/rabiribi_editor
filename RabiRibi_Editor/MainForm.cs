@@ -504,6 +504,9 @@ namespace RabiRibi_Editor
           {
             ComboBox current_target = null;
             Event_Selection_Item item = null;
+            
+            int event_icon_color_index = 5;
+            
             while (!input.EndOfStream)
             {
               string line = input.ReadLine().Trim();
@@ -518,41 +521,49 @@ namespace RabiRibi_Editor
               else if (line == "[music]")
               {
                 current_target = music_event_selection;
+                event_icon_color_index = 0;
                 continue;
               }
               else if (line == "[tile]")
               {
                 current_target = tile_event_selection;
+                event_icon_color_index = 1;
                 continue;
               }
               else if (line == "[misc]")
               {
                 current_target = misc_event_selection;
+                event_icon_color_index = 5;
                 continue;
               }
               else if (line == "[warps]")
               {
                 current_target = warp_destination_selection;
+                event_icon_color_index = 2;
                 continue;
               }
               else if (line == "[warps2]")
               {
                 current_target = warp_local_id_selection;
+                event_icon_color_index = 2;
                 continue;
               }
               else if (line == "[mapwarps]")
               {
                 current_target = warp_map_selection;
+                event_icon_color_index = 2;
                 continue;
               }
               else if (line == "[entity]")
               {
                 current_target = entity_event_selection;
+                event_icon_color_index = 3;
                 continue;
               }
               else if (line == "[environment]")
               {
                 current_target = environment_event_selection;
+                event_icon_color_index = 4;
                 continue;
               }
               
@@ -606,11 +617,21 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              // Override the default icon index for this event ID
+              else if (line.StartsWith("icon"))
+              {
+                line = line.Substring(5).Trim();
+                int icon_index = int.Parse(line);
+                tileView1.SetEventIcon(item.id, icon_index);
+                continue;
+              }
+              
               // None of the above -> this is a new event definition
               short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
               string name = line.Substring(line.IndexOf(' ')).Trim();
               item = new MainForm.Event_Selection_Item(name, id);
               current_target.Items.Add(item);
+              tileView1.SetEventIcon(id, event_icon_color_index);
             }
           }
         }
@@ -787,7 +808,7 @@ namespace RabiRibi_Editor
 
     void item_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
-      // TODO select all options
+      // Note: this assumes the order of items in the combo box.
       switch (item_visibility_selection.SelectedIndex)
       {
         case 0: // Not visible
@@ -810,6 +831,7 @@ namespace RabiRibi_Editor
 
     void event_layer_checkbox_CheckedChanged(object sender, EventArgs e)
     {
+      // Note: this assumes the order of items in the combo box.
       switch (event_visibility_selection.SelectedIndex)
       {
         case 0: // Not visible
@@ -1989,9 +2011,13 @@ namespace RabiRibi_Editor
       tileView1.transparent_event_item_icons =
         transparent_icons_checkbox.Checked;
       
-      // TODO only invalidate if we're currently showing icons
-      
-      tileView1.InvalidateAllTiles();
+      // Only redraw if we're currently showing events or items as icons.
+      // If neither are icons, redrawing is just a waste of time.
+      if ((tileView1.event_layer_visible == TileView.EventItemIDVisibilityOptions.Icons) ||
+          (tileView1.item_layer_visible == TileView.EventItemIDVisibilityOptions.Icons))
+      {
+        tileView1.InvalidateAllTiles();
+      }
     }
   }
 }

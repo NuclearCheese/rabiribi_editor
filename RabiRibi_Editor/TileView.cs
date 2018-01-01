@@ -23,6 +23,9 @@ namespace RabiRibi_Editor
     
     Bitmap event_icon_graphics;
     
+    Dictionary<int, int> event_icon_color_indices = new
+      Dictionary<int, int>();
+    
     // Temp bitmap to handle flipping tiles
     Bitmap temp;
     Graphics temp_gfx;
@@ -423,6 +426,10 @@ namespace RabiRibi_Editor
                 }
                 else if (event_layer_visible == EventItemIDVisibilityOptions.Icons)
                 {
+                  int icon_image_x =
+                    (event_icon_color_indices.ContainsKey(data) ?
+                     event_icon_color_indices[data] : 5) * 32;
+                  
                   if (transparent_event_item_icons)
                   {
                     var color_matrix = new ColorMatrix();
@@ -431,17 +438,15 @@ namespace RabiRibi_Editor
                     image_attributes.SetColorMatrix
                       (color_matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                     
-                    // TODO determine which icon to use, based on the event ID
-                    
                     gfx.DrawImage
                       (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, 32),
-                       0, 0, 32, 32, GraphicsUnit.Pixel, image_attributes);
+                       icon_image_x, 0, 32, 32, GraphicsUnit.Pixel, image_attributes);
                   }
                   else
                   {
                     gfx.DrawImage
                       (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, 32),
-                       0, 0, 32, 32, GraphicsUnit.Pixel);
+                       icon_image_x, 0, 32, 32, GraphicsUnit.Pixel);
                   }
                 }
               }
@@ -477,6 +482,9 @@ namespace RabiRibi_Editor
                   }
                   else
                   {
+                    // If both events and items are visible as non-transparent
+                    // icons and this position has both, only draw half of the
+                    // item icon so that the event icon is also visible.
                     int draw_height = 32;
                     if ((event_layer_visible == EventItemIDVisibilityOptions.Icons) &&
                         (level.event_data[x, y] != 0))
@@ -1000,6 +1008,11 @@ namespace RabiRibi_Editor
       {
         resize_callback();
       }
+    }
+    
+    internal void SetEventIcon(int event_id, int index)
+    {
+      event_icon_color_indices[event_id] = index;
     }
   }
 }
