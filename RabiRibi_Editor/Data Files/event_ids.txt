@@ -58,12 +58,17 @@
 
 [misc]
 32 Warp stone
+icon 2
 34 Start point
+icon 3
 42 Auto save trigger
 44 Auto save reenable (allows auto save to trigger again)
 45 Heal point
+icon 3
 80 Door (goes upward 2 screens on map)
+icon 2
 81 Door (goes downward 2 screens on map)
+icon 2
 100 Dark Zone
 101 No Dark Zone
 102 Remove water
@@ -73,7 +78,9 @@
 193 Hide layers 2 and 6
 194 Show layers 2 and 6
 224 Save point
+icon 3
 250 Easter egg
+icon 3
 483 Fall damage and reset
 
 [warps]
@@ -116,6 +123,11 @@
 249 Warp cross-map to map 7
 250 Warp cross-map to map 8
 251 Warp cross-map to map 9
+
+[warpnolist]
+208 Warp entrance
+240 Warp exit
+112 Warp stone graphic (3 tiles below)
 
 [entity]
 1003 Four-way fire bar

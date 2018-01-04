@@ -8,6 +8,7 @@
  */
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 
 namespace RabiRibi_Editor
@@ -19,6 +20,11 @@ namespace RabiRibi_Editor
   {
     Bitmap tileset_graphics;
     Bitmap collision_graphics;
+    
+    Bitmap event_icon_graphics;
+    
+    Dictionary<int, int> event_icon_color_indices = new
+      Dictionary<int, int>();
     
     // Temp bitmap to handle flipping tiles
     Bitmap temp;
@@ -44,9 +50,17 @@ namespace RabiRibi_Editor
       0, 3, 4, 1, 5, 6, 2,
     };
     
+    internal enum EventItemIDVisibilityOptions
+    {
+      NotVisible,
+      Text,
+      Icons,
+    }
+    
     internal bool collision_layer_visible = false;
-    internal bool event_layer_visible = false;
-    internal bool item_layer_visible = false;
+    internal EventItemIDVisibilityOptions event_layer_visible = EventItemIDVisibilityOptions.NotVisible;
+    internal EventItemIDVisibilityOptions item_layer_visible = EventItemIDVisibilityOptions.NotVisible;
+    internal bool transparent_event_item_icons = true;
     
     internal bool room_type_visible = false;
     internal bool room_color_visible = false;
@@ -124,9 +138,11 @@ namespace RabiRibi_Editor
     }
     
     internal void Init(LevelData level_data, Process_Mouse_Delegate callback, Single_Tile_Delegate lc_callback, Single_Tile_Delegate rc_callback, Single_Tile_Delegate hv_callback,
-                       Resize_Delegate rs_callback, Single_Tile_Delegate sc_callback)
+                       Resize_Delegate rs_callback, Single_Tile_Delegate sc_callback, Bitmap event_graphics)
     {
       level = level_data;
+      
+      event_icon_graphics = event_graphics;
       
       // Set up a temp bitmap object, used to flip tiles before drawing them
       // to the main screen.
@@ -398,23 +414,88 @@ namespace RabiRibi_Editor
               }
             }
             
-            if (event_layer_visible)
+            if (event_layer_visible != EventItemIDVisibilityOptions.NotVisible)
             {
               int data = level.event_data[x, y];
               if (data != 0)
               {
-                gfx.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
-                               draw_x, draw_y);
+                if (event_layer_visible == EventItemIDVisibilityOptions.Text)
+                {
+                  gfx.DrawString(data.ToString(), DefaultFont, Brushes.Wheat,
+                                 draw_x, draw_y);
+                }
+                else if (event_layer_visible == EventItemIDVisibilityOptions.Icons)
+                {
+                  int icon_image_x =
+                    (event_icon_color_indices.ContainsKey(data) ?
+                     event_icon_color_indices[data] : 5) * 32;
+                  
+                  if (transparent_event_item_icons)
+                  {
+                    var color_matrix = new ColorMatrix();
+                    color_matrix.Matrix33 = 0.5f;
+                    var image_attributes = new ImageAttributes();
+                    image_attributes.SetColorMatrix
+                      (color_matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    
+                    gfx.DrawImage
+                      (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, 32),
+                       icon_image_x, 0, 32, 32, GraphicsUnit.Pixel, image_attributes);
+                  }
+                  else
+                  {
+                    gfx.DrawImage
+                      (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, 32),
+                       icon_image_x, 0, 32, 32, GraphicsUnit.Pixel);
+                  }
+                }
               }
             }
             
-            if (item_layer_visible)
+            if (item_layer_visible != EventItemIDVisibilityOptions.NotVisible)
             {
               int data = level.item_data[x, y];
               if (data != 0)
               {
-                gfx.DrawString(data.ToString(), DefaultFont,
-                               Brushes.Turquoise, draw_x, draw_y + 12);
+                if (item_layer_visible == EventItemIDVisibilityOptions.Text)
+                {
+                  gfx.DrawString(data.ToString(), DefaultFont,
+                                 Brushes.Turquoise, draw_x, draw_y + 12);
+                }
+                else if (item_layer_visible == EventItemIDVisibilityOptions.Icons)
+                {
+                  if (transparent_event_item_icons)
+                  {
+                    var color_matrix = new ColorMatrix();
+                    color_matrix.Matrix33 = 0.5f;
+                    if ((event_layer_visible == EventItemIDVisibilityOptions.Icons) &&
+                        (level.event_data[x, y] != 0))
+                    {
+                      color_matrix.Matrix33 = 0.33f;
+                    }
+                    var image_attributes = new ImageAttributes();
+                    image_attributes.SetColorMatrix
+                      (color_matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    gfx.DrawImage
+                      (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, 32),
+                       192, 0, 32, 32, GraphicsUnit.Pixel, image_attributes);
+                  }
+                  else
+                  {
+                    // If both events and items are visible as non-transparent
+                    // icons and this position has both, only draw half of the
+                    // item icon so that the event icon is also visible.
+                    int draw_height = 32;
+                    if ((event_layer_visible == EventItemIDVisibilityOptions.Icons) &&
+                        (level.event_data[x, y] != 0))
+                    {
+                      draw_height = 16;
+                    }
+                    gfx.DrawImage
+                      (event_icon_graphics, new Rectangle(draw_x, draw_y, 32, draw_height),
+                       192, 0, 32, draw_height, GraphicsUnit.Pixel);
+                  }
+                }
               }
             }
           }
@@ -927,6 +1008,11 @@ namespace RabiRibi_Editor
       {
         resize_callback();
       }
+    }
+    
+    internal void SetEventIcon(int event_id, int index)
+    {
+      event_icon_color_indices[event_id] = index;
     }
   }
 }

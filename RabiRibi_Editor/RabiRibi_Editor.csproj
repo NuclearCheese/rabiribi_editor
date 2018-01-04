@@ -75,6 +75,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="Data Files\event_ids.txt" />
+    <EmbeddedResource Include="Data Files\event_icons.png" />
+    <EmbeddedResource Include="Data Files\item_ids.txt" />
     <None Include="Data Files\sample_metatile.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

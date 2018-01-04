@@ -55,6 +55,11 @@ namespace RabiRibi_Editor
       this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.transparent_icons_checkbox = new System.Windows.Forms.CheckBox();
+      this.item_visibility_selection = new System.Windows.Forms.ComboBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.event_visibility_selection = new System.Windows.Forms.ComboBox();
+      this.label1 = new System.Windows.Forms.Label();
       this.zoom_track_bar = new System.Windows.Forms.TrackBar();
       this.infoView1 = new RabiRibi_Editor.InfoView();
       this.set_zoom_button = new System.Windows.Forms.Button();
@@ -278,6 +283,11 @@ namespace RabiRibi_Editor
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.transparent_icons_checkbox);
+      this.tabPage1.Controls.Add(this.item_visibility_selection);
+      this.tabPage1.Controls.Add(this.label2);
+      this.tabPage1.Controls.Add(this.event_visibility_selection);
+      this.tabPage1.Controls.Add(this.label1);
       this.tabPage1.Controls.Add(this.zoom_track_bar);
       this.tabPage1.Controls.Add(this.infoView1);
       this.tabPage1.Controls.Add(this.set_zoom_button);
@@ -290,6 +300,62 @@ namespace RabiRibi_Editor
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "View";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // transparent_icons_checkbox
+      // 
+      this.transparent_icons_checkbox.Checked = true;
+      this.transparent_icons_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.transparent_icons_checkbox.Location = new System.Drawing.Point(110, 92);
+      this.transparent_icons_checkbox.Name = "transparent_icons_checkbox";
+      this.transparent_icons_checkbox.Size = new System.Drawing.Size(125, 24);
+      this.transparent_icons_checkbox.TabIndex = 9;
+      this.transparent_icons_checkbox.Text = "Transparent Icons";
+      this.transparent_icons_checkbox.UseVisualStyleBackColor = true;
+      this.transparent_icons_checkbox.CheckedChanged += new System.EventHandler(this.Transparent_icons_checkboxCheckedChanged);
+      // 
+      // item_visibility_selection
+      // 
+      this.item_visibility_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.item_visibility_selection.FormattingEnabled = true;
+      this.item_visibility_selection.Items.AddRange(new object[] {
+                  "Not visible",
+                  "Text",
+                  "Icons"});
+      this.item_visibility_selection.Location = new System.Drawing.Point(125, 64);
+      this.item_visibility_selection.Name = "item_visibility_selection";
+      this.item_visibility_selection.Size = new System.Drawing.Size(100, 21);
+      this.item_visibility_selection.TabIndex = 8;
+      this.item_visibility_selection.SelectedIndexChanged += new System.EventHandler(this.item_layer_checkbox_CheckedChanged);
+      // 
+      // label2
+      // 
+      this.label2.Location = new System.Drawing.Point(125, 47);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(100, 23);
+      this.label2.TabIndex = 7;
+      this.label2.Text = "Items:";
+      // 
+      // event_visibility_selection
+      // 
+      this.event_visibility_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.event_visibility_selection.FormattingEnabled = true;
+      this.event_visibility_selection.Items.AddRange(new object[] {
+                  "Not visible",
+                  "Text",
+                  "Icons"});
+      this.event_visibility_selection.Location = new System.Drawing.Point(125, 19);
+      this.event_visibility_selection.Name = "event_visibility_selection";
+      this.event_visibility_selection.Size = new System.Drawing.Size(100, 21);
+      this.event_visibility_selection.TabIndex = 6;
+      this.event_visibility_selection.SelectedIndexChanged += new System.EventHandler(this.event_layer_checkbox_CheckedChanged);
+      // 
+      // label1
+      // 
+      this.label1.Location = new System.Drawing.Point(125, 3);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(100, 23);
+      this.label1.TabIndex = 5;
+      this.label1.Text = "Events:";
       // 
       // zoom_track_bar
       // 
@@ -633,92 +699,7 @@ namespace RabiRibi_Editor
       this.item_selection.DropDownWidth = 325;
       this.item_selection.FormattingEnabled = true;
       this.item_selection.Items.AddRange(new object[] {
-                  "select an item ...",
-                  "0 no item",
-                  "1 Piko Hammer",
-                  "2 Air Jump",
-                  "3 Sliding Powder",
-                  "4 Carrot Bomb",
-                  "5 Hourglass",
-                  "6 Speed Boost",
-                  "7 Auto Earrings",
-                  "8 Ribbon (Ribbon joins on screen transition or save and reload)",
-                  "9 Soul Heart",
-                  "10 Rabi Slippers",
-                  "11 Bunny Whirl",
-                  "12 Quick Barrette",
-                  "13 Book of Carrot",
-                  "14 Chaos Rod",
-                  "15 Hammer Wave",
-                  "16 Hammer Roll",
-                  "17 Light Orb",
-                  "18 Water Orb",
-                  "19 Fire Orb",
-                  "20 Nature Orb",
-                  "21 P Hairpin",
-                  "22 Sunny Beam",
-                  "23 Plus Necklace",
-                  "24 Cyber Flower",
-                  "25 Healing Staff",
-                  "26 Max Bracelet",
-                  "27 Explode Shot",
-                  "28 Air Dash",
-                  "29 Bunny Strike",
-                  "30 Strange Box",
-                  "31 Wall Jump",
-                  "32 Spike Barrier",
-                  "33 Bunny Amulet",
-                  "34 Charge Ring",
-                  "35 Carrot Shooter",
-                  "36 Super Carrot",
-                  "37 Rumi Donut",
-                  "38 Rumi Cake",
-                  "39 Gold Carrot",
-                  "40 Cocoa Bomb",
-                  "42 Congratulations! Trophy",
-                  "43 Exclaimation point",
-                  "48 Rainbow Magic (Does not actually give rainbow magic)",
-                  "60 1.8 DLC",
-                  "61 1.8 DLC",
-                  "62 1.8 DLC",
-                  "63 1.8 DLC",
-                  "64 Health Plus",
-                  "65 Health Surge",
-                  "66 Mana Plus",
-                  "67 Mana Surge",
-                  "68 Crisis Boost",
-                  "69 Atk Grow",
-                  "70 Def Grow",
-                  "71 Atk Trade",
-                  "72 Def Trade",
-                  "73 Arm Strength",
-                  "74 Carrot Boost",
-                  "75 Weaken",
-                  "76 Self Defense",
-                  "77 Armored",
-                  "78 Lucky Seven",
-                  "79 Hex Cancel",
-                  "80 Pure Love",
-                  "81 Toxic Strike",
-                  "82 Frame Cancel",
-                  "83 Health Wager",
-                  "84 Mana Wager",
-                  "85 Stamina Plus",
-                  "86 Blessed",
-                  "87 Hitbox Down",
-                  "88 Cashback",
-                  "89 Survival",
-                  "90 Top Form",
-                  "91 Tough Skin",
-                  "92 Erina Badge",
-                  "93 Ribbon Badge",
-                  "94 Auto Trigger",
-                  "95 Lilith\'s Gift",
-                  "96 Health Up (also IDs up until 159)",
-                  "160 Attack Up (also IDs up until 223)",
-                  "224 Mana Up (also IDs up until 287)",
-                  "288 Regen Up (also IDs up until 351)",
-                  "352 Pack Up (also IDs up until 415)"});
+                  "select an item ..."});
       this.item_selection.Location = new System.Drawing.Point(6, 300);
       this.item_selection.Name = "item_selection";
       this.item_selection.Size = new System.Drawing.Size(218, 21);
@@ -982,6 +963,11 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.CheckBox transparent_icons_checkbox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.ComboBox item_visibility_selection;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.ComboBox event_visibility_selection;
     private System.Windows.Forms.ToolStripMenuItem newLevelToolStripMenuItem;
     private System.Windows.Forms.TrackBar zoom_track_bar;
     private RabiRibi_Editor.InfoView infoView1;
