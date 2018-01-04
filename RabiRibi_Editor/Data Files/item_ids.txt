@@ -1,0 +1,85 @@
+﻿0 no item
+1 Piko Hammer
+2 Air Jump
+3 Sliding Powder
+4 Carrot Bomb
+5 Hourglass
+6 Speed Boost
+7 Auto Earrings
+8 Ribbon (Ribbon joins on screen transition or save and reload)
+9 Soul Heart
+10 Rabi Slippers
+11 Bunny Whirl
+12 Quick Barrette
+13 Book of Carrot
+14 Chaos Rod
+15 Hammer Wave
+16 Hammer Roll
+17 Light Orb
+18 Water Orb
+19 Fire Orb
+20 Nature Orb
+21 P Hairpin
+22 Sunny Beam
+23 Plus Necklace
+24 Cyber Flower
+25 Healing Staff
+26 Max Bracelet
+27 Explode Shot
+28 Air Dash
+29 Bunny Strike
+30 Strange Box
+31 Wall Jump
+32 Spike Barrier
+33 Bunny Amulet
+34 Charge Ring
+35 Carrot Shooter
+36 Super Carrot
+37 Rumi Donut
+38 Rumi Cake
+39 Gold Carrot
+40 Cocoa Bomb
+42 Congratulations! Trophy
+43 Exclaimation point
+48 Rainbow Magic (Does not actually give rainbow magic)
+60 Bunny Clover (1.8 DLC)
+61 Wind Blessing (1.8 DLC)
+62 Fairy Flute (1.8 DLC)
+63 Bunny Memories (1.8 DLC)
+64 Health Plus
+65 Health Surge
+66 Mana Plus
+67 Mana Surge
+68 Crisis Boost
+69 Atk Grow
+70 Def Grow
+71 Atk Trade
+72 Def Trade
+73 Arm Strength
+74 Carrot Boost
+75 Weaken
+76 Self Defense
+77 Armored
+78 Lucky Seven
+79 Hex Cancel
+80 Pure Love
+81 Toxic Strike
+82 Frame Cancel
+83 Health Wager
+84 Mana Wager
+85 Stamina Plus
+86 Blessed
+87 Hitbox Down
+88 Cashback
+89 Survival
+90 Top Form
+91 Tough Skin
+92 Erina Badge
+93 Ribbon Badge
+94 Auto Trigger
+95 Lilith's Gift
+96 Health Up (also IDs up until 159)
+160 Attack Up (also IDs up until 223)
+224 Mana Up (also IDs up until 287)
+288 Regen Up (also IDs up until 351)
+352 Pack Up (also IDs up until 415)

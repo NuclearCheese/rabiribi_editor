@@ -648,6 +648,47 @@ namespace RabiRibi_Editor
           }
         }
         
+        // Load item IDs
+        using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.item_ids.txt"))
+        {
+          using (var input = new StreamReader(resource))
+          {
+            while (!input.EndOfStream)
+            {
+              string line = input.ReadLine().Trim();
+              
+              // skip blank lines
+              if (line == "")
+              {
+                continue;
+              }
+              item_selection.Items.Add(line);
+              
+              // parse the name and ID info to add to the info view
+              int id = int.Parse(line.Substring(0, line.IndexOf(' ')));
+              string name = line.Substring(line.IndexOf(' ')).Trim();
+              if (name.Contains("(also IDs up until"))
+              {
+                string parenthetical = name.Substring(name.LastIndexOf('(')).Trim();
+                name = name.Substring(0, name.LastIndexOf('(')).Trim();
+                
+                parenthetical = parenthetical.Substring(parenthetical.LastIndexOf(' ')).Trim();;
+                parenthetical = parenthetical.Substring(0, parenthetical.IndexOf(')')).Trim();
+                
+                int last_id = int.Parse(parenthetical);
+                for (int i = id; i <= last_id; i++)
+                {
+                  infoView1.AddItemName(i, name);
+                }
+              }
+              else
+              {
+                infoView1.AddItemName(id, name);
+              }
+            }
+          }
+        }
+        
         // Define the laser delay events
         for (int i = 0; i < 6; i++)
         {

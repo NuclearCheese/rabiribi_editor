@@ -26,6 +26,7 @@ namespace RabiRibi_Editor
     string[] labels;
     
     Dictionary<int, string> event_name_lookup = new Dictionary<int, string>();
+    Dictionary<int, string> item_name_lookup = new Dictionary<int, string>();
     
     public InfoView()
     {
@@ -68,6 +69,11 @@ namespace RabiRibi_Editor
       {
         event_name_lookup[id] = name;
       }
+    }
+    
+    internal void AddItemName(int id, string name)
+    {
+      item_name_lookup[id] = name;
     }
     
     string Get_Layer_Tile_String(int tile)
@@ -174,7 +180,23 @@ namespace RabiRibi_Editor
           }
           e.Graphics.DrawString(event_id.ToString() + " " + event_name, DefaultFont, Brushes.Black, max_label_width, y_list[10]);
           
-          e.Graphics.DrawString(level.item_data[x,y].ToString(), DefaultFont, Brushes.Black, max_label_width, y_list[11]);
+          var item_id = level.item_data[x,y];
+          string item_name;
+          
+          // Look up the name associated with this item
+          if (item_name_lookup.ContainsKey(item_id))
+          {
+            item_name = item_name_lookup[item_id];
+          }
+          else if (item_id == 0)
+          {
+            item_name = "<none>";
+          }
+          else
+          {
+            item_name = "<unknown>";
+          }
+          e.Graphics.DrawString(item_id.ToString() + " " + item_name, DefaultFont, Brushes.Black, max_label_width, y_list[11]);
           
           int room_x = x / 20;
           int room_y = LevelData.Tile_Y_To_Map_Y(y);
