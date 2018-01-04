@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace RabiRibi_Editor
@@ -23,6 +24,8 @@ namespace RabiRibi_Editor
     public LevelData level = null;
     
     string[] labels;
+    
+    Dictionary<int, string> event_name_lookup = new Dictionary<int, string>();
     
     public InfoView()
     {
@@ -46,6 +49,19 @@ namespace RabiRibi_Editor
       };
       
       DoubleBuffered = true;
+    }
+    
+    internal void AddEventName(int id, string name)
+    {
+      if (event_name_lookup.ContainsKey(id))
+      {
+        event_name_lookup[id] = 
+          event_name_lookup[id] + "/" + name;
+      }
+      else
+      {
+        event_name_lookup[id] = name;
+      }
     }
     
     string Get_Layer_Tile_String(int tile)
@@ -129,7 +145,29 @@ namespace RabiRibi_Editor
           e.Graphics.DrawString(Get_Layer_Tile_String(level.tile_data[6][x,y]), DefaultFont, Brushes.Black, max_label_width, y_list[7]);
           e.Graphics.DrawString(Get_Layer_Tile_String(level.tile_data[2][x,y]), DefaultFont, Brushes.Black, max_label_width, y_list[8]);
           e.Graphics.DrawString(level.collision_data[x,y].ToString(), DefaultFont, Brushes.Black, max_label_width, y_list[9]);
-          e.Graphics.DrawString(level.event_data[x,y].ToString(), DefaultFont, Brushes.Black, max_label_width, y_list[10]);
+          
+          var event_id = level.event_data[x,y];
+          string event_name;
+          
+          // Look up the name associated with this event.
+          if (event_name_lookup.ContainsKey(event_id))
+          {
+            event_name = event_name_lookup[event_id];
+          }
+          else if (event_id == 0)
+          {
+            event_name = "<none>";
+          }
+          else if ((event_id >= 5000) && (event_id < 5500))
+          {
+            event_name = "<subtype modifier " + event_id.ToString() + ">";
+          }
+          else
+          {
+            event_name = "<unknown>";
+          }
+          e.Graphics.DrawString(event_id.ToString() + " " + event_name, DefaultFont, Brushes.Black, max_label_width, y_list[10]);
+          
           e.Graphics.DrawString(level.item_data[x,y].ToString(), DefaultFont, Brushes.Black, max_label_width, y_list[11]);
           
           int room_x = x / 20;

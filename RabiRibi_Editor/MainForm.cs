@@ -632,6 +632,7 @@ namespace RabiRibi_Editor
               item = new MainForm.Event_Selection_Item(name, id);
               current_target.Items.Add(item);
               tileView1.SetEventIcon(id, event_icon_color_index);
+              infoView1.AddEventName(id, name);
             }
           }
         }
