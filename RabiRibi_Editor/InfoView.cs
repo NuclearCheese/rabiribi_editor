@@ -55,8 +55,14 @@ namespace RabiRibi_Editor
     {
       if (event_name_lookup.ContainsKey(id))
       {
-        event_name_lookup[id] = 
-          event_name_lookup[id] + "/" + name;
+        // This extra if statement works around the fact that we list the warp
+        // ID events twice in the event list file.  Without this, they'd show
+        // up as "Warp ID 0/Warp ID 0" and such.
+        if (event_name_lookup[id] != name)
+        {
+          event_name_lookup[id] =
+            event_name_lookup[id] + "/" + name;
+        }
       }
       else
       {

@@ -548,6 +548,14 @@ namespace RabiRibi_Editor
                 event_icon_color_index = 2;
                 continue;
               }
+              else if (line == "[warpnolist]")
+              {
+                // Some warp events don't get listed anywhere in the GUI, but
+                // should still get a warp event icon
+                current_target = null;
+                event_icon_color_index = 2;
+                continue;
+              }
               else if (line == "[mapwarps]")
               {
                 current_target = warp_map_selection;
@@ -630,7 +638,10 @@ namespace RabiRibi_Editor
               short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
               string name = line.Substring(line.IndexOf(' ')).Trim();
               item = new MainForm.Event_Selection_Item(name, id);
-              current_target.Items.Add(item);
+              if (current_target != null)
+              {
+                current_target.Items.Add(item);
+              }
               tileView1.SetEventIcon(id, event_icon_color_index);
               infoView1.AddEventName(id, name);
             }

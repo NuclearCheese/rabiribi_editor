@@ -124,6 +124,11 @@ icon 3
 250 Warp cross-map to map 8
 251 Warp cross-map to map 9
 
+[warpnolist]
+208 Warp entrance
+240 Warp exit
+112 Warp stone graphic (3 tiles below)
+
 [entity]
 1003 Four-way fire bar
 1004 Three-way fire bar
