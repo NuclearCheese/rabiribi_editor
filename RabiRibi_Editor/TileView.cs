@@ -310,6 +310,15 @@ namespace RabiRibi_Editor
       top -= (int)scroll_y;
       bottom -= (int)scroll_y;
       
+      // Due to the smoothing of the graphics when zoomed, sometimes an update
+      // to a tile visually bleeds over into the area of a neighboring tile
+      // slightly.  We can work around this by invalidating a slightly larger
+      // area than was actually affected.
+      left--;
+      right++;
+      top--;
+      bottom++;
+      
       int x = (int)(left * 32 * zoom);
       int width = (int)((right - left + 1) * 32 * zoom);
       int y = (int)(top * 32 * zoom);
