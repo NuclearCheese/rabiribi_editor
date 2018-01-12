@@ -551,6 +551,9 @@ dir down
 533 Enable normal entity spawning
 534 Disable entity spawning
 
+536 Set game speed
+value_label Speed multiplier (>100 is slowdown)
+
 537 Set to Story mode
 538 Set to Speedrun mode
 539 Set to Standard mode
@@ -568,8 +571,21 @@ dir down
 549 Disable 550 (reenable post-boss cutscenes)
 550 Disable post-boss cutscenes for town member bosses
 
+551 Music speed
+value_label Speed (% of normal)
+
 552 Refill bunny amulet charge
 553 Refill boost points and MP
 
 554 Move down four screens
 555 Move up four screens
+
+556 Set spike damage
+value_label Damage (0 = default)
+
+559 Set hammer EXP
+value_label EXP amount
+560 Set fairy EXP
+value_label EXP amount
+561 Set carrot bomb EXP
+value_label EXP amount
