@@ -66,6 +66,8 @@ namespace RabiRibi_Editor
       this.zoom_level_textbox = new System.Windows.Forms.TextBox();
       this.zoom_label = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.custom_event_selection = new System.Windows.Forms.ComboBox();
+      this.map_transition_event_selection = new System.Windows.Forms.ComboBox();
       this.environment_event_selection = new System.Windows.Forms.ComboBox();
       this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
       this.entity_dir_selection = new System.Windows.Forms.ComboBox();
@@ -100,7 +102,6 @@ namespace RabiRibi_Editor
       this.tools_panel = new System.Windows.Forms.Panel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.metatile_layer_label = new System.Windows.Forms.Label();
-      this.map_transition_event_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -415,6 +416,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.custom_event_selection);
       this.tabPage2.Controls.Add(this.map_transition_event_selection);
       this.tabPage2.Controls.Add(this.environment_event_selection);
       this.tabPage2.Controls.Add(this.entity_laser_delay_selection);
@@ -453,6 +455,32 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // custom_event_selection
+      // 
+      this.custom_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.custom_event_selection.DropDownWidth = 300;
+      this.custom_event_selection.FormattingEnabled = true;
+      this.custom_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.custom_event_selection.Name = "custom_event_selection";
+      this.custom_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.custom_event_selection.TabIndex = 32;
+      this.custom_event_selection.Visible = false;
+      // 
+      // map_transition_event_selection
+      // 
+      this.map_transition_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.map_transition_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.map_transition_event_selection.DropDownWidth = 300;
+      this.map_transition_event_selection.FormattingEnabled = true;
+      this.map_transition_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.map_transition_event_selection.Name = "map_transition_event_selection";
+      this.map_transition_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.map_transition_event_selection.TabIndex = 31;
+      this.map_transition_event_selection.Visible = false;
       // 
       // environment_event_selection
       // 
@@ -577,7 +605,8 @@ namespace RabiRibi_Editor
                   "Warp Events",
                   "Map Transition Events",
                   "Misc. Events",
-                  "Environment Objects"});
+                  "Environment Objects",
+                  "Custom Events"});
       this.event_category_selection.Location = new System.Drawing.Point(6, 266);
       this.event_category_selection.Name = "event_category_selection";
       this.event_category_selection.Size = new System.Drawing.Size(218, 21);
@@ -930,19 +959,6 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
       this.metatile_layer_label.TabIndex = 0;
       // 
-      // map_transition_event_selection
-      // 
-      this.map_transition_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.map_transition_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.map_transition_event_selection.DropDownWidth = 300;
-      this.map_transition_event_selection.FormattingEnabled = true;
-      this.map_transition_event_selection.Location = new System.Drawing.Point(6, 300);
-      this.map_transition_event_selection.Name = "map_transition_event_selection";
-      this.map_transition_event_selection.Size = new System.Drawing.Size(218, 21);
-      this.map_transition_event_selection.TabIndex = 31;
-      this.map_transition_event_selection.Visible = false;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -979,6 +995,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox custom_event_selection;
     private System.Windows.Forms.ComboBox map_transition_event_selection;
     private System.Windows.Forms.CheckBox transparent_icons_checkbox;
     private System.Windows.Forms.Label label2;

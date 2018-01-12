@@ -548,10 +548,10 @@ namespace RabiRibi_Editor
                 event_icon_color_index = 2;
                 continue;
               }
-              else if (line == "[warpnolist]")
+              else if (line == "[nolist]")
               {
-                // Some warp events don't get listed anywhere in the GUI, but
-                // should still get a warp event icon
+                // Some events don't get listed anywhere in the GUI, but
+                // should still get an event icon
                 current_target = null;
                 event_icon_color_index = 2;
                 continue;
@@ -578,6 +578,12 @@ namespace RabiRibi_Editor
               {
                 current_target = environment_event_selection;
                 event_icon_color_index = 4;
+                continue;
+              }
+              else if (line == "[custom]")
+              {
+                current_target = custom_event_selection;
+                event_icon_color_index = 2;
                 continue;
               }
               
@@ -717,6 +723,7 @@ namespace RabiRibi_Editor
         map_transition_event_selection.SelectedIndex = 0;
         event_category_selection.SelectedIndex = 0;
         environment_event_selection.SelectedIndex = 0;
+        custom_event_selection.SelectedIndex = 0;
         
         Update_Scrollbar_Size();
         Application.Idle += Idle_Handler;
@@ -808,7 +815,9 @@ namespace RabiRibi_Editor
           warp_destination_selection.Visible = warp_map_selection.Visible =
           warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
           warp_local_id_selection.Visible = misc_event_selection.Visible =
-          environment_event_selection.Visible = warp_graphic_checkbox.Visible = false;
+          environment_event_selection.Visible = warp_graphic_checkbox.Visible =
+          map_transition_event_selection.Visible =
+          custom_event_selection.Visible = false;
       }
       else
       {
@@ -826,6 +835,7 @@ namespace RabiRibi_Editor
         map_transition_event_selection.Visible = event_category_selection.SelectedIndex == 5;
         misc_event_selection.Visible = event_category_selection.SelectedIndex == 6;
         environment_event_selection.Visible = event_category_selection.SelectedIndex == 7;
+        custom_event_selection.Visible = event_category_selection.SelectedIndex == 8;
       }
       Update_Entity_Selection_Visibility();
     }
@@ -1183,6 +1193,25 @@ namespace RabiRibi_Editor
           case 6:
             {
               short data = ((Event_Selection_Item)misc_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommand(cmd);
+            }
+            break;
+            
+            // Custom Events
+          case 8:
+            {
+              short data = ((Event_Selection_Item)custom_event_selection.SelectedItem).id;
               
               CommandStack.CommandEntry cmd =
                 new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
