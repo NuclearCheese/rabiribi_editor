@@ -548,6 +548,74 @@ dir down
 530 Set items on map to level 4
 531 Reset all event flags to zero
 
+532 Give buff/debuff
+value_label Duration (seconds)
+list_label Buff/Debuff
+list_entry 5000 Speed Down
+list_entry 5001 Numb
+list_entry 5002 Poisoned
+list_entry 5003 Attack Down
+list_entry 5004 Defense Down
+list_entry 5005 Cursed
+list_entry 5006 Stunned
+list_entry 5007 Ban Skill
+list_entry 5008 Mana Down
+list_entry 5009 Freeze
+list_entry 5010 Burn
+list_entry 5011 Attack Up
+list_entry 5012 Defense Up
+list_entry 5013 HP Recover
+list_entry 5014 SP Recover
+list_entry 5015 Shrink
+list_entry 5016 Giant
+list_entry 5017 Arrest
+list_entry 5018 Speed Up
+list_entry 5019 Halo Buff
+list_entry 5020 Badge Copy
+list_entry 5021 Null Melee
+list_entry 5022 Defense Boost
+list_entry 5023 Defense Drop
+list_entry 5024 Stamina Down
+list_entry 5025 Null Slow
+list_entry 5026 Super Armour
+list_entry 5027 Quad Damage
+list_entry 5028 Double Damage
+list_entry 5029 Speedy
+list_entry 5030 Max HP Up
+list_entry 5031 Max MP Up
+list_entry 5032 Amulet Cut
+list_entry 5033 HP Regen
+list_entry 5034 MP Regen
+list_entry 5035 Give ATK Down
+list_entry 5036 Give DEF Down
+list_entry 5037 Unstable
+list_entry 5038 Boost Fail
+list_entry 5039 Hex Cancel
+list_entry 5040 Lucky Seven
+list_entry 5041 Quick Reflex
+list_entry 5042 Defense Boost
+list_entry 5043 Endurance
+list_entry 5044 Fattigue
+list_entry 5045 Halo Boost 1
+list_entry 5046 Halo Boost 2
+list_entry 5047 Halo Boost 3
+list_entry 5048 99 Reflect
+list_entry 5049 Survival Instinct
+list_entry 5050 Amulet Drain
+list_entry 5051 Mortality
+list_entry 5052 No Badges
+list_entry 5053 Instant Death
+list_entry 5054 Health Absorb
+list_entry 5055 Power Absorb
+list_entry 5056 300 Revenge
+list_entry 5057 Bunny Lover
+list_entry 5058 Healing
+list_entry 5059 T Minus Two
+list_entry 5060 T Minus One
+list_entry 5061 Attack Boost
+list_entry 5062 Meow Respawn
+list_entry 5063 Zero Offense
+
 533 Enable normal entity spawning
 534 Disable entity spawning
 
@@ -560,6 +628,18 @@ value_label Speed multiplier (>100 is slowdown)
 540 Set to Alternative mode
 541 Set to Bunny Heaven mode
 542 Set to Bunny Hell mode
+
+543 Set Difficulty
+list_label Difficulty
+list_entry 5000 Casual
+list_entry 5001 Novice
+list_entry 5002 Normal
+list_entry 5003 Hard
+list_entry 5004 Hell
+list_entry 5005 Bunny Extinction
+list_entry 5006 Unknown
+list_entry 5007 Impossible
+list_entry 5008 Extra
 
 544 Force boss mode to true
 545 Disable boss mode and remove scroll lock

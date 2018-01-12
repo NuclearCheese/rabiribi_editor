@@ -72,6 +72,10 @@ namespace RabiRibi_Editor
       
       public string custom_value_label;
       
+      public string custom_list_label;
+      
+      public List<Event_Selection_Item> custom_list;
+      
       public Event_Selection_Item(string event_name, short event_id)
       {
         name = event_name;
@@ -80,6 +84,8 @@ namespace RabiRibi_Editor
         type_list = new List<MainForm.Event_Selection_Item>();
         laser_delay = false;
         custom_value_label = null;
+        custom_list_label = null;
+        custom_list = null;
       }
       
       public override string ToString()
@@ -656,6 +662,27 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              else if (line.StartsWith("list_label"))
+              {
+                line = line.Substring(10).Trim();
+                item.custom_list_label = line;
+                continue;
+              }
+              
+              else if (line.StartsWith("list_entry"))
+              {
+                line = line.Substring(10).Trim();
+                if (item.custom_list == null)
+                {
+                  item.custom_list = new List<MainForm.Event_Selection_Item>();
+                }
+                
+                short subtype_id = short.Parse(line.Substring(0, line.IndexOf(' ')));
+                line = line.Substring(line.IndexOf(' ')).Trim();
+                item.custom_list.Add(new Event_Selection_Item(line, subtype_id));
+                continue;
+              }
+              
               // None of the above -> this is a new event definition
               short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
               string name = line.Substring(line.IndexOf(' ')).Trim();
@@ -829,7 +856,8 @@ namespace RabiRibi_Editor
           environment_event_selection.Visible = warp_graphic_checkbox.Visible =
           map_transition_event_selection.Visible =
           custom_event_selection.Visible = custom_event_value_entry.Visible =
-          custom_event_value_label.Visible = custom_event_orientation_selection.Visible = false;
+          custom_event_value_label.Visible = custom_event_orientation_selection.Visible =
+          custom_event_list_label.Visible = custom_event_list_selection.Visible = false;
       }
       else
       {
@@ -853,24 +881,34 @@ namespace RabiRibi_Editor
         {
           // Determine if the custom event value controls should be visible
           Event_Selection_Item item = (Event_Selection_Item)custom_event_selection.SelectedItem;
-          if (item.custom_value_label == null)
-          {
-            custom_event_value_entry.Visible = custom_event_value_label.Visible =
-              custom_event_orientation_selection.Visible =
-              false;
-          }
-          else
+          custom_event_value_entry.Visible = custom_event_value_label.Visible =
+            custom_event_list_label.Visible = custom_event_list_selection.Visible =
+            custom_event_orientation_selection.Visible = false;
+          if (item.custom_value_label != null)
           {
             custom_event_value_entry.Visible = custom_event_value_label.Visible =
               custom_event_orientation_selection.Visible =
               true;
             custom_event_value_label.Text = item.custom_value_label;
           }
+          if (item.custom_list_label != null)
+          {
+            custom_event_list_label.Visible = custom_event_list_selection.Visible =
+              custom_event_orientation_selection.Visible = true;
+            custom_event_list_label.Text = item.custom_list_label;
+            custom_event_list_selection.Items.Clear();
+            for (int i = 0; i < item.custom_list.Count; i++)
+            {
+              custom_event_list_selection.Items.Add(item.custom_list[i]);
+            }
+            custom_event_list_selection.SelectedIndex = 0;
+          }
         }
         else
         {
           custom_event_value_entry.Visible = custom_event_value_label.Visible =
-            false;
+            custom_event_list_label.Visible = custom_event_list_selection.Visible
+            = custom_event_orientation_selection.Visible = false;
         }
       }
       Update_Entity_Selection_Visibility();
@@ -1251,8 +1289,10 @@ namespace RabiRibi_Editor
               
               short data = item.id;
               
-              if (item.custom_value_label == null)
+              if ((item.custom_value_label == null) &&
+                  (item.custom_list_label == null))
               {
+                // No modifiers - just place the event everywhere
                 CommandStack.CommandEntry cmd =
                   new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
                                                 left_tile, right_tile, top_tile, bottom_tile);
@@ -1267,49 +1307,74 @@ namespace RabiRibi_Editor
               }
               else
               {
-                short modifier;
-                if (!short.TryParse(custom_event_value_entry.Text, out modifier))
+                //short modifier;
+                short[] event_data;
+                if ((item.custom_list_label != null) &&
+                    (item.custom_value_label != null))
                 {
-                  MessageBox.Show("Could not parse the custom event value.");
-                  break;
+                  event_data = new short[3];
                 }
-                modifier += 5000;
+                else
+                {
+                  event_data = new short[2];
+                }
+                event_data[0] = data;
+                if (item.custom_value_label != null)
+                {
+                  short modifier;
+                  if (!short.TryParse(custom_event_value_entry.Text, out modifier))
+                  {
+                    MessageBox.Show("Could not parse the custom event value.");
+                    break;
+                  }
+                  modifier += 5000;
+                  event_data[event_data.GetLength(0) - 1] = modifier;
+                }
+                if ((item.custom_list_label != null))
+                {
+                  Event_Selection_Item sub_item = (Event_Selection_Item)custom_event_list_selection.SelectedItem;
+                  event_data[1] = sub_item.id;
+                }
                 // If the modifiers are above, place the events along the bottom
                 // row.  If they're to the right, place the events along the left.
                 if (custom_event_orientation_selection.SelectedIndex == 0)
                 {
                   // Above
-                  if (bottom_tile < 1)
+                  if (bottom_tile < (event_data.GetLength(0) - 1))
                   {
                     // Not enough room
                     MessageBox.Show("Entity needs more space above to fit modifiers.");
                     break;
                   }
                   CommandStack.CommandEntry cmd =
-                  new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
-                                                left_tile, right_tile, bottom_tile - 1, bottom_tile);
+                    new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                                  left_tile, right_tile, bottom_tile - (event_data.GetLength(0) - 1), bottom_tile);
                   for (int i = 0; i < cmd.data.GetLength(0); i++)
                   {
-                    cmd.data[i, 0] = modifier;
-                    cmd.data[i, 1] = data;
+                    for (int j = 0; j < event_data.GetLength(0); j++)
+                    {
+                      cmd.data[i, j] = event_data[j];
+                    }
                   }
                   command_stack.RunCommand(cmd);
                 }
                 else
                 {
                   // Right
-                  if (left_tile > (LevelData.map_tile_width - 2))
+                  if (left_tile > (LevelData.map_tile_width - event_data.GetLength(0)))
                   {
                     MessageBox.Show("Entity needs more space to the right to fit modifiers.");
                     break;
                   }
                   CommandStack.CommandEntry cmd =
-                  new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
-                                                left_tile, left_tile + 1, top_tile, bottom_tile);
-                  for (int j = 0; j < cmd.data.GetLength(1); j++)
+                    new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                                  left_tile, left_tile + (event_data.GetLength(0) - 1), top_tile, bottom_tile);
+                  for (int i = 0; i < event_data.GetLength(0); i++)
                   {
-                    cmd.data[1, j] = modifier;
-                    cmd.data[0, j] = data;
+                    for (int j = 0; j < cmd.data.GetLength(1); j++)
+                    {
+                      cmd.data[i, j] = event_data[i];
+                    }
                   }
                   command_stack.RunCommand(cmd);
                 }
