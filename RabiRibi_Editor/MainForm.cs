@@ -562,6 +562,12 @@ namespace RabiRibi_Editor
                 event_icon_color_index = 2;
                 continue;
               }
+              else if (line == "[transitions]")
+              {
+                current_target = map_transition_event_selection;
+                event_icon_color_index = 2;
+                continue;
+              }
               else if (line == "[entity]")
               {
                 current_target = entity_event_selection;
@@ -708,6 +714,7 @@ namespace RabiRibi_Editor
         warp_destination_selection.SelectedIndex = 0;
         warp_map_selection.SelectedIndex = 0;
         warp_local_id_selection.SelectedIndex = 0;
+        map_transition_event_selection.SelectedIndex = 0;
         event_category_selection.SelectedIndex = 0;
         environment_event_selection.SelectedIndex = 0;
         
@@ -816,8 +823,9 @@ namespace RabiRibi_Editor
           warp_entrance_checkbox.Visible = warp_exit_checkbox.Visible =
           warp_local_id_selection.Visible = warp_graphic_checkbox.Visible
           = event_category_selection.SelectedIndex == 4;
-        misc_event_selection.Visible = event_category_selection.SelectedIndex == 5;
-        environment_event_selection.Visible = event_category_selection.SelectedIndex == 6;
+        map_transition_event_selection.Visible = event_category_selection.SelectedIndex == 5;
+        misc_event_selection.Visible = event_category_selection.SelectedIndex == 6;
+        environment_event_selection.Visible = event_category_selection.SelectedIndex == 7;
       }
       Update_Entity_Selection_Visibility();
     }
@@ -1152,8 +1160,27 @@ namespace RabiRibi_Editor
             }
             break;
             
-            // Misc Events
+            // Map Transition Events
           case 5:
+            {
+              short data = ((Event_Selection_Item)map_transition_event_selection.SelectedItem).id;
+              
+              CommandStack.CommandEntry cmd =
+                new CommandStack.CommandEntry(CommandStack.CommandType.Write_Event,
+                                              left_tile, right_tile, top_tile, bottom_tile);
+              for (int j = 0; j < cmd.data.GetLength(0); j++)
+              {
+                for (int k = 0; k < cmd.data.GetLength(1); k++)
+                {
+                  cmd.data[j,k] = data;
+                }
+              }
+              command_stack.RunCommand(cmd);
+            }
+            break;
+            
+            // Misc Events
+          case 6:
             {
               short data = ((Event_Selection_Item)misc_event_selection.SelectedItem).id;
               
@@ -1408,7 +1435,7 @@ namespace RabiRibi_Editor
             break;
             
             // Environmental Events
-          case 6:
+          case 7:
             {
               short data = ((Event_Selection_Item)environment_event_selection.SelectedItem).id;
               CommandStack.CommandEntry cmd = new CommandStack.CommandEntry

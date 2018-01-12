@@ -100,6 +100,7 @@ namespace RabiRibi_Editor
       this.tools_panel = new System.Windows.Forms.Panel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.metatile_layer_label = new System.Windows.Forms.Label();
+      this.map_transition_event_selection = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -414,6 +415,7 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.map_transition_event_selection);
       this.tabPage2.Controls.Add(this.environment_event_selection);
       this.tabPage2.Controls.Add(this.entity_laser_delay_selection);
       this.tabPage2.Controls.Add(this.entity_dir_selection);
@@ -573,6 +575,7 @@ namespace RabiRibi_Editor
                   "Tile Events",
                   "Entities",
                   "Warp Events",
+                  "Map Transition Events",
                   "Misc. Events",
                   "Environment Objects"});
       this.event_category_selection.Location = new System.Drawing.Point(6, 266);
@@ -927,6 +930,19 @@ namespace RabiRibi_Editor
       this.metatile_layer_label.Size = new System.Drawing.Size(100, 23);
       this.metatile_layer_label.TabIndex = 0;
       // 
+      // map_transition_event_selection
+      // 
+      this.map_transition_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.map_transition_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.map_transition_event_selection.DropDownWidth = 300;
+      this.map_transition_event_selection.FormattingEnabled = true;
+      this.map_transition_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.map_transition_event_selection.Name = "map_transition_event_selection";
+      this.map_transition_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.map_transition_event_selection.TabIndex = 31;
+      this.map_transition_event_selection.Visible = false;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -963,6 +979,7 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.ComboBox map_transition_event_selection;
     private System.Windows.Forms.CheckBox transparent_icons_checkbox;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.ComboBox item_visibility_selection;

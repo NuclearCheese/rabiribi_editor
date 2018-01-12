@@ -129,6 +129,34 @@ icon 3
 240 Warp exit
 112 Warp stone graphic (3 tiles below)
 
+[transitions]
+161 Set transition target to area0.map
+162 Set transition target to area1.map
+163 Set transition target to area2.map
+164 Set transition target to area3.map
+165 Set transition target to area4.map
+166 Set transition target to area5.map
+167 Set transition target to area6.map
+168 Set transition target to area.map
+169 Set transition target to area8.map
+170 Set transition target to area9.map
+200 Trigger transition to target #0
+201 Trigger transition to target #1
+202 Trigger transition to target #2
+203 Trigger transition to target #3
+204 Trigger transition to target #4
+205 Trigger transition to target #5
+206 Trigger transition to target #6
+207 Trigger transition to target #7
+227 Transition target #0
+228 Transition target #1
+229 Transition target #2
+230 Transition target #3
+231 Transition target #4
+232 Transition target #5
+176 Transition target #6
+177 Transition target #7
+
 [entity]
 1003 Four-way fire bar
 1004 Three-way fire bar
