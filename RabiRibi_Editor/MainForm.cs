@@ -737,8 +737,7 @@ namespace RabiRibi_Editor
                 for (int i = 0; i < entity_event_selection.Items.Count; i++)
                 {
                   Event_Selection_Item sub_item = (Event_Selection_Item)entity_event_selection.Items[i];
-                  sub_item.id += 4000;
-                  item.custom_list.Add(sub_item);
+                  item.custom_list.Add(new Event_Selection_Item(sub_item.name, (short)(sub_item.id + 4000)));
                 }
                 continue;
               }
