@@ -616,8 +616,11 @@ list_entry 5061 Attack Boost
 list_entry 5062 Meow Respawn
 list_entry 5063 Zero Offense
 
-533 Enable normal entity spawning
+533 Enable normal entity spawning (disable 534 and 535)
 534 Disable entity spawning
+535 Replace all entity spawns with selected entity
+list_label Entity
+list_entity
 
 536 Set game speed
 value_label Speed multiplier (>100 is slowdown)
@@ -662,6 +665,79 @@ value_label Speed (% of normal)
 
 556 Set spike damage
 value_label Damage (0 = default)
+
+557 Play music
+list_label Music
+list_entry 5000 No Music
+list_entry 5001 Adventure Starts Here
+list_entry 5002 Spectral Cve
+list_entry 5003 Forgotten Cave
+list_entry 5004 Underwater Ambient
+list_entry 5005 Library Ambient
+list_entry 5006 Forgotten Cave II
+list_entry 5007 Nightwalker
+list_entry 5008 Bounce Bounce
+list_entry 5009 Rabi Rabi Beach
+list_entry 5010 Pandora's Palace
+list_entry 5011 Rabi Rabi Ravine
+list_entry 5012 Home Sweet Home
+list_entry 5013 Rabi Rabi Park
+list_entry 5014 Inside UPRPRC
+list_entry 5015 Sky Town Island
+list_entry 5016 Winter Wonderland
+list_entry 5017 Cyberspace.exe
+list_entry 5018 Evernight Peak
+list_entry 5019 Exotic Laboratory
+list_entry 5020 Golden Riverbank
+list_entry 5021 Floating Graveyard
+list_entry 5022 System Interior II
+list_entry 5023 Aurora Palace
+list_entry 5024 Speicher Galerie
+list_entry 5025 Deep Under the Sea
+list_entry 5026 Sky-High Bridge
+list_entry 5027 Warp Destination
+list_entry 5028 Volcanic Caverns
+list_entry 5029 Plurkwood
+list_entry 5030 Another D
+list_entry 5031 Icy Summit
+list_entry 5032 Plan B
+list_entry 5033 Midboss Battle
+list_entry 5034 Melting Point
+list_entry 5035 Miriam's Shop
+list_entry 5036 Bunny Panic!!!
+list_entry 5037 The Truth Never Spoken
+list_entry 5038 Brawk Breaks ver. 2
+list_entry 5039 Brawl Breaks
+list_entry 5040 Sandbag minigame
+list_entry 5041 Staff Roll
+list_entry 5042 RFN - III
+list_entry 5043 No Remorse
+list_entry 5044 Get on with It
+list_entry 5045 Theme of Rabi-Ribi 8bit
+list_entry 5046 Theme of Rabi-Ribi
+list_entry 5047 Full on Combat
+list_entry 5048 Hi-Tech Duel
+list_entry 5049 Unfamiliar Place
+list_entry 5050 Unfamiliar Place Again
+list_entry 5051 Kitty Attack
+list_entry 5052 M.R.
+list_entry 5053 Main Menu
+list_entry 5054 Sudden Death
+list_entry 5055 Rabi Rabi Ravine ver. 2
+list_entry 5056 Azure
+list_entry 5057 Artbook Intro
+list_entry 5058 Rabi-Ribi Piano Title
+list_entry 5059 Mischievous Masquerade
+list_entry 5060 Play Rough?
+list_entry 5061 FINALE
+list_entry 5062 Countdown!
+list_entry 5063 (Hall of Memories DLC area miniboss)
+list_entry 5064 LAST 100SEC
+
+558 Set item level
+value_label Item level
+list_label Item
+list_item
 
 559 Set hammer EXP
 value_label EXP amount

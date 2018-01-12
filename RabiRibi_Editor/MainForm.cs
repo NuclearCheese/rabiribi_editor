@@ -506,6 +506,47 @@ namespace RabiRibi_Editor
         
         // TODO other tools (what else?)
         
+        // Load item IDs
+        using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.item_ids.txt"))
+        {
+          using (var input = new StreamReader(resource))
+          {
+            while (!input.EndOfStream)
+            {
+              string line = input.ReadLine().Trim();
+              
+              // skip blank lines
+              if (line == "")
+              {
+                continue;
+              }
+              item_selection.Items.Add(line);
+              
+              // parse the name and ID info to add to the info view
+              int id = int.Parse(line.Substring(0, line.IndexOf(' ')));
+              string name = line.Substring(line.IndexOf(' ')).Trim();
+              if (name.Contains("(also IDs up until"))
+              {
+                string parenthetical = name.Substring(name.LastIndexOf('(')).Trim();
+                name = name.Substring(0, name.LastIndexOf('(')).Trim();
+                
+                parenthetical = parenthetical.Substring(parenthetical.LastIndexOf(' ')).Trim();;
+                parenthetical = parenthetical.Substring(0, parenthetical.IndexOf(')')).Trim();
+                
+                int last_id = int.Parse(parenthetical);
+                for (int i = id; i <= last_id; i++)
+                {
+                  infoView1.AddItemName(i, name);
+                }
+              }
+              else
+              {
+                infoView1.AddItemName(id, name);
+              }
+            }
+          }
+        }
+        
         // Load event IDs
         using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.event_ids.txt"))
         {
@@ -655,6 +696,7 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              // Set a name for and enable the custom event modifier value
               else if (line.StartsWith("value_label"))
               {
                 line = line.Substring(11).Trim();
@@ -662,6 +704,7 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              // Set a name for and enable the custom event sub-list
               else if (line.StartsWith("list_label"))
               {
                 line = line.Substring(10).Trim();
@@ -669,6 +712,7 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              // Add an item to the custom sub-list
               else if (line.StartsWith("list_entry"))
               {
                 line = line.Substring(10).Trim();
@@ -683,6 +727,41 @@ namespace RabiRibi_Editor
                 continue;
               }
               
+              // Fill in the custom sub-list with entity events
+              else if (line == "list_entity")
+              {
+                if (item.custom_list == null)
+                {
+                  item.custom_list = new List<MainForm.Event_Selection_Item>();
+                }
+                for (int i = 0; i < entity_event_selection.Items.Count; i++)
+                {
+                  Event_Selection_Item sub_item = (Event_Selection_Item)entity_event_selection.Items[i];
+                  sub_item.id += 4000;
+                  item.custom_list.Add(sub_item);
+                }
+                continue;
+              }
+              
+              // Fill in the custom sub-list with item names
+              else if (line == "list_item")
+              {
+                if (item.custom_list == null)
+                {
+                  item.custom_list = new List<MainForm.Event_Selection_Item>();
+                }
+                // Start at 1 to skip the "select an item ..." entry
+                for (int i = 1; i < item_selection.Items.Count; i++)
+                {
+                  string item_text = (string)item_selection.Items[i];
+                  short sub_id = short.Parse(item_text.Substring(0, item_text.IndexOf(' ')).Trim());
+                  item_text = item_text.Substring(item_text.IndexOf(' ')).Trim();
+                  sub_id += 5000;
+                  item.custom_list.Add(new Event_Selection_Item(item_text, sub_id));
+                }
+                continue;
+              }
+              
               // None of the above -> this is a new event definition
               short id = short.Parse(line.Substring(0, line.IndexOf(' ')));
               string name = line.Substring(line.IndexOf(' ')).Trim();
@@ -693,47 +772,6 @@ namespace RabiRibi_Editor
               }
               tileView1.SetEventIcon(id, event_icon_color_index);
               infoView1.AddEventName(id, name);
-            }
-          }
-        }
-        
-        // Load item IDs
-        using (var resource = GetType().Assembly.GetManifestResourceStream("RabiRibi_Editor.Data_Files.item_ids.txt"))
-        {
-          using (var input = new StreamReader(resource))
-          {
-            while (!input.EndOfStream)
-            {
-              string line = input.ReadLine().Trim();
-              
-              // skip blank lines
-              if (line == "")
-              {
-                continue;
-              }
-              item_selection.Items.Add(line);
-              
-              // parse the name and ID info to add to the info view
-              int id = int.Parse(line.Substring(0, line.IndexOf(' ')));
-              string name = line.Substring(line.IndexOf(' ')).Trim();
-              if (name.Contains("(also IDs up until"))
-              {
-                string parenthetical = name.Substring(name.LastIndexOf('(')).Trim();
-                name = name.Substring(0, name.LastIndexOf('(')).Trim();
-                
-                parenthetical = parenthetical.Substring(parenthetical.LastIndexOf(' ')).Trim();;
-                parenthetical = parenthetical.Substring(0, parenthetical.IndexOf(')')).Trim();
-                
-                int last_id = int.Parse(parenthetical);
-                for (int i = id; i <= last_id; i++)
-                {
-                  infoView1.AddItemName(i, name);
-                }
-              }
-              else
-              {
-                infoView1.AddItemName(id, name);
-              }
             }
           }
         }
@@ -1353,7 +1391,7 @@ namespace RabiRibi_Editor
                   {
                     for (int j = 0; j < event_data.GetLength(0); j++)
                     {
-                      cmd.data[i, j] = event_data[j];
+                      cmd.data[i, j] = event_data[event_data.GetLength(0) - j - 1];
                     }
                   }
                   command_stack.RunCommand(cmd);
