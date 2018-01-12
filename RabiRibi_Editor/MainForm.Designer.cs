@@ -66,6 +66,13 @@ namespace RabiRibi_Editor
       this.zoom_level_textbox = new System.Windows.Forms.TextBox();
       this.zoom_label = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.custom_event_list_selection = new System.Windows.Forms.ComboBox();
+      this.custom_event_list_label = new System.Windows.Forms.Label();
+      this.custom_event_selection = new System.Windows.Forms.ComboBox();
+      this.custom_event_value_entry = new System.Windows.Forms.TextBox();
+      this.custom_event_value_label = new System.Windows.Forms.Label();
+      this.custom_event_orientation_selection = new System.Windows.Forms.ComboBox();
+      this.map_transition_event_selection = new System.Windows.Forms.ComboBox();
       this.environment_event_selection = new System.Windows.Forms.ComboBox();
       this.entity_laser_delay_selection = new System.Windows.Forms.ComboBox();
       this.entity_dir_selection = new System.Windows.Forms.ComboBox();
@@ -414,6 +421,13 @@ namespace RabiRibi_Editor
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.custom_event_list_selection);
+      this.tabPage2.Controls.Add(this.custom_event_list_label);
+      this.tabPage2.Controls.Add(this.custom_event_selection);
+      this.tabPage2.Controls.Add(this.custom_event_value_entry);
+      this.tabPage2.Controls.Add(this.custom_event_value_label);
+      this.tabPage2.Controls.Add(this.custom_event_orientation_selection);
+      this.tabPage2.Controls.Add(this.map_transition_event_selection);
       this.tabPage2.Controls.Add(this.environment_event_selection);
       this.tabPage2.Controls.Add(this.entity_laser_delay_selection);
       this.tabPage2.Controls.Add(this.entity_dir_selection);
@@ -451,6 +465,89 @@ namespace RabiRibi_Editor
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Tools";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // custom_event_list_selection
+      // 
+      this.custom_event_list_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_list_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.custom_event_list_selection.FormattingEnabled = true;
+      this.custom_event_list_selection.Location = new System.Drawing.Point(6, 355);
+      this.custom_event_list_selection.Name = "custom_event_list_selection";
+      this.custom_event_list_selection.Size = new System.Drawing.Size(204, 21);
+      this.custom_event_list_selection.TabIndex = 34;
+      this.custom_event_list_selection.Visible = false;
+      // 
+      // custom_event_list_label
+      // 
+      this.custom_event_list_label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_list_label.Location = new System.Drawing.Point(6, 330);
+      this.custom_event_list_label.Name = "custom_event_list_label";
+      this.custom_event_list_label.Size = new System.Drawing.Size(200, 23);
+      this.custom_event_list_label.TabIndex = 33;
+      this.custom_event_list_label.Visible = false;
+      // 
+      // custom_event_selection
+      // 
+      this.custom_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.custom_event_selection.DropDownWidth = 300;
+      this.custom_event_selection.FormattingEnabled = true;
+      this.custom_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.custom_event_selection.Name = "custom_event_selection";
+      this.custom_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.custom_event_selection.TabIndex = 32;
+      this.custom_event_selection.Visible = false;
+      this.custom_event_selection.SelectedIndexChanged += new System.EventHandler(this.Custom_event_selectionSelectedIndexChanged);
+      // 
+      // custom_event_value_entry
+      // 
+      this.custom_event_value_entry.Location = new System.Drawing.Point(6, 410);
+      this.custom_event_value_entry.Name = "custom_event_value_entry";
+      this.custom_event_value_entry.Size = new System.Drawing.Size(100, 20);
+      this.custom_event_value_entry.TabIndex = 2;
+      this.custom_event_value_entry.Text = "0";
+      this.custom_event_value_entry.Visible = false;
+      // 
+      // custom_event_value_label
+      // 
+      this.custom_event_value_label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_value_label.Location = new System.Drawing.Point(6, 385);
+      this.custom_event_value_label.Name = "custom_event_value_label";
+      this.custom_event_value_label.Size = new System.Drawing.Size(200, 23);
+      this.custom_event_value_label.TabIndex = 1;
+      this.custom_event_value_label.Visible = false;
+      // 
+      // custom_event_orientation_selection
+      // 
+      this.custom_event_orientation_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.custom_event_orientation_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.custom_event_orientation_selection.FormattingEnabled = true;
+      this.custom_event_orientation_selection.Items.AddRange(new object[] {
+                  "Modifiers above",
+                  "Modifiers to the right"});
+      this.custom_event_orientation_selection.Location = new System.Drawing.Point(6, 450);
+      this.custom_event_orientation_selection.Name = "custom_event_orientation_selection";
+      this.custom_event_orientation_selection.Size = new System.Drawing.Size(204, 21);
+      this.custom_event_orientation_selection.TabIndex = 1;
+      this.custom_event_orientation_selection.Visible = false;
+      // 
+      // map_transition_event_selection
+      // 
+      this.map_transition_event_selection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.map_transition_event_selection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.map_transition_event_selection.DropDownWidth = 300;
+      this.map_transition_event_selection.FormattingEnabled = true;
+      this.map_transition_event_selection.Location = new System.Drawing.Point(6, 300);
+      this.map_transition_event_selection.Name = "map_transition_event_selection";
+      this.map_transition_event_selection.Size = new System.Drawing.Size(218, 21);
+      this.map_transition_event_selection.TabIndex = 31;
+      this.map_transition_event_selection.Visible = false;
       // 
       // environment_event_selection
       // 
@@ -573,8 +670,10 @@ namespace RabiRibi_Editor
                   "Tile Events",
                   "Entities",
                   "Warp Events",
+                  "Map Transition Events",
                   "Misc. Events",
-                  "Environment Objects"});
+                  "Environment Objects",
+                  "Custom Events"});
       this.event_category_selection.Location = new System.Drawing.Point(6, 266);
       this.event_category_selection.Name = "event_category_selection";
       this.event_category_selection.Size = new System.Drawing.Size(218, 21);
@@ -963,6 +1062,13 @@ namespace RabiRibi_Editor
       this.ResumeLayout(false);
       this.PerformLayout();
     }
+    private System.Windows.Forms.Label custom_event_list_label;
+    private System.Windows.Forms.ComboBox custom_event_list_selection;
+    private System.Windows.Forms.ComboBox custom_event_orientation_selection;
+    private System.Windows.Forms.Label custom_event_value_label;
+    private System.Windows.Forms.TextBox custom_event_value_entry;
+    private System.Windows.Forms.ComboBox custom_event_selection;
+    private System.Windows.Forms.ComboBox map_transition_event_selection;
     private System.Windows.Forms.CheckBox transparent_icons_checkbox;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.ComboBox item_visibility_selection;

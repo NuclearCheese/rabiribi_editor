@@ -124,10 +124,43 @@ icon 3
 250 Warp cross-map to map 8
 251 Warp cross-map to map 9
 
-[warpnolist]
+[nolist]
 208 Warp entrance
 240 Warp exit
 112 Warp stone graphic (3 tiles below)
+
+195 Right direction modifier
+196 Left direction modifier
+198 Up direction modifier
+199 Down direction modifier
+
+[transitions]
+161 Set transition target to area0.map
+162 Set transition target to area1.map
+163 Set transition target to area2.map
+164 Set transition target to area3.map
+165 Set transition target to area4.map
+166 Set transition target to area5.map
+167 Set transition target to area6.map
+168 Set transition target to area.map
+169 Set transition target to area8.map
+170 Set transition target to area9.map
+200 Trigger transition to target #0
+201 Trigger transition to target #1
+202 Trigger transition to target #2
+203 Trigger transition to target #3
+204 Trigger transition to target #4
+205 Trigger transition to target #5
+206 Trigger transition to target #6
+207 Trigger transition to target #7
+227 Transition target #0
+228 Transition target #1
+229 Transition target #2
+230 Transition target #3
+231 Transition target #4
+232 Transition target #5
+176 Transition target #6
+177 Transition target #7
 
 [entity]
 1003 Four-way fire bar
@@ -502,3 +535,213 @@ dir down
 5562 Bushes (place 2 tiles above ground)
 5568 Rumi's house (place 3 tiles above ground)
 5569 Mr. Tako's desk
+
+[custom]
+522 Disable 523 (reenable checking event conditions)
+523 Always trigger events, even if conditions aren't met
+524 Disable 525 and 526 (events trigger normally)
+525 Event tiles just set their flag
+526 Event tiles just unset their flag
+527 Set items on map to level 1
+528 Set items on map to level 2
+529 Set items on map to level 3
+530 Set items on map to level 4
+531 Reset all event flags to zero
+
+532 Give buff/debuff
+value_label Duration (seconds)
+list_label Buff/Debuff
+list_entry 5000 Speed Down
+list_entry 5001 Numb
+list_entry 5002 Poisoned
+list_entry 5003 Attack Down
+list_entry 5004 Defense Down
+list_entry 5005 Cursed
+list_entry 5006 Stunned
+list_entry 5007 Ban Skill
+list_entry 5008 Mana Down
+list_entry 5009 Freeze
+list_entry 5010 Burn
+list_entry 5011 Attack Up
+list_entry 5012 Defense Up
+list_entry 5013 HP Recover
+list_entry 5014 SP Recover
+list_entry 5015 Shrink
+list_entry 5016 Giant
+list_entry 5017 Arrest
+list_entry 5018 Speed Up
+list_entry 5019 Halo Buff
+list_entry 5020 Badge Copy
+list_entry 5021 Null Melee
+list_entry 5022 Defense Boost
+list_entry 5023 Defense Drop
+list_entry 5024 Stamina Down
+list_entry 5025 Null Slow
+list_entry 5026 Super Armour
+list_entry 5027 Quad Damage
+list_entry 5028 Double Damage
+list_entry 5029 Speedy
+list_entry 5030 Max HP Up
+list_entry 5031 Max MP Up
+list_entry 5032 Amulet Cut
+list_entry 5033 HP Regen
+list_entry 5034 MP Regen
+list_entry 5035 Give ATK Down
+list_entry 5036 Give DEF Down
+list_entry 5037 Unstable
+list_entry 5038 Boost Fail
+list_entry 5039 Hex Cancel
+list_entry 5040 Lucky Seven
+list_entry 5041 Quick Reflex
+list_entry 5042 Defense Boost
+list_entry 5043 Endurance
+list_entry 5044 Fattigue
+list_entry 5045 Halo Boost 1
+list_entry 5046 Halo Boost 2
+list_entry 5047 Halo Boost 3
+list_entry 5048 99 Reflect
+list_entry 5049 Survival Instinct
+list_entry 5050 Amulet Drain
+list_entry 5051 Mortality
+list_entry 5052 No Badges
+list_entry 5053 Instant Death
+list_entry 5054 Health Absorb
+list_entry 5055 Power Absorb
+list_entry 5056 300 Revenge
+list_entry 5057 Bunny Lover
+list_entry 5058 Healing
+list_entry 5059 T Minus Two
+list_entry 5060 T Minus One
+list_entry 5061 Attack Boost
+list_entry 5062 Meow Respawn
+list_entry 5063 Zero Offense
+
+533 Enable normal entity spawning (disable 534 and 535)
+534 Disable entity spawning
+535 Replace all entity spawns with selected entity
+list_label Entity
+list_entity
+
+536 Set game speed
+value_label Speed multiplier (>100 is slowdown)
+
+537 Set to Story mode
+538 Set to Speedrun mode
+539 Set to Standard mode
+540 Set to Alternative mode
+541 Set to Bunny Heaven mode
+542 Set to Bunny Hell mode
+
+543 Set Difficulty
+list_label Difficulty
+list_entry 5000 Casual
+list_entry 5001 Novice
+list_entry 5002 Normal
+list_entry 5003 Hard
+list_entry 5004 Hell
+list_entry 5005 Bunny Extinction
+list_entry 5006 Unknown
+list_entry 5007 Impossible
+list_entry 5008 Extra
+
+544 Force boss mode to true
+545 Disable boss mode and remove scroll lock
+546 Remove boss mode scroll lock
+
+547 Disable 548 (reenable events starting)
+548 Disable any events from starting
+
+549 Disable 550 (reenable post-boss cutscenes)
+550 Disable post-boss cutscenes for town member bosses
+
+551 Music speed
+value_label Speed (% of normal)
+
+552 Refill bunny amulet charge
+553 Refill boost points and MP
+
+554 Move down four screens
+555 Move up four screens
+
+556 Set spike damage
+value_label Damage (0 = default)
+
+557 Play music
+list_label Music
+list_entry 5000 No Music
+list_entry 5001 Adventure Starts Here
+list_entry 5002 Spectral Cve
+list_entry 5003 Forgotten Cave
+list_entry 5004 Underwater Ambient
+list_entry 5005 Library Ambient
+list_entry 5006 Forgotten Cave II
+list_entry 5007 Nightwalker
+list_entry 5008 Bounce Bounce
+list_entry 5009 Rabi Rabi Beach
+list_entry 5010 Pandora's Palace
+list_entry 5011 Rabi Rabi Ravine
+list_entry 5012 Home Sweet Home
+list_entry 5013 Rabi Rabi Park
+list_entry 5014 Inside UPRPRC
+list_entry 5015 Sky Town Island
+list_entry 5016 Winter Wonderland
+list_entry 5017 Cyberspace.exe
+list_entry 5018 Evernight Peak
+list_entry 5019 Exotic Laboratory
+list_entry 5020 Golden Riverbank
+list_entry 5021 Floating Graveyard
+list_entry 5022 System Interior II
+list_entry 5023 Aurora Palace
+list_entry 5024 Speicher Galerie
+list_entry 5025 Deep Under the Sea
+list_entry 5026 Sky-High Bridge
+list_entry 5027 Warp Destination
+list_entry 5028 Volcanic Caverns
+list_entry 5029 Plurkwood
+list_entry 5030 Another D
+list_entry 5031 Icy Summit
+list_entry 5032 Plan B
+list_entry 5033 Midboss Battle
+list_entry 5034 Melting Point
+list_entry 5035 Miriam's Shop
+list_entry 5036 Bunny Panic!!!
+list_entry 5037 The Truth Never Spoken
+list_entry 5038 Brawk Breaks ver. 2
+list_entry 5039 Brawl Breaks
+list_entry 5040 Sandbag minigame
+list_entry 5041 Staff Roll
+list_entry 5042 RFN - III
+list_entry 5043 No Remorse
+list_entry 5044 Get on with It
+list_entry 5045 Theme of Rabi-Ribi 8bit
+list_entry 5046 Theme of Rabi-Ribi
+list_entry 5047 Full on Combat
+list_entry 5048 Hi-Tech Duel
+list_entry 5049 Unfamiliar Place
+list_entry 5050 Unfamiliar Place Again
+list_entry 5051 Kitty Attack
+list_entry 5052 M.R.
+list_entry 5053 Main Menu
+list_entry 5054 Sudden Death
+list_entry 5055 Rabi Rabi Ravine ver. 2
+list_entry 5056 Azure
+list_entry 5057 Artbook Intro
+list_entry 5058 Rabi-Ribi Piano Title
+list_entry 5059 Mischievous Masquerade
+list_entry 5060 Play Rough?
+list_entry 5061 FINALE
+list_entry 5062 Countdown!
+list_entry 5063 (Hall of Memories DLC area miniboss)
+list_entry 5064 LAST 100SEC
+
+558 Set item level
+value_label Item level
+list_label Item
+list_item
+
+559 Set hammer EXP
+value_label EXP amount
+560 Set fairy EXP
+value_label EXP amount
+561 Set carrot bomb EXP
+value_label EXP amount
